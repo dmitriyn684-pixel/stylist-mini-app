@@ -1,0 +1,63 @@
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&display=swap');
+@import "tailwindcss";
+
+@theme {
+  /* Тёплый белый, нежная "girly" палитра — лаванда/розовый/голубой вместо
+     зелёно-коралловой спортивной Lifesum-темы */
+  --color-cream: #FFFBF9;
+  --color-cream-dark: #F6ECF1;
+  --color-ink: #2B2118;
+  --color-ink-soft: #55493C;
+  --color-olive: #B0A0AC;
+  --color-olive-light: #D9CDD6;
+
+  --color-lavender: #C9A9E8;
+  --color-lavender-light: #E6D9F5;
+  --color-pink: #F4B8C8;
+  --color-pink-light: #FFE3EA;
+  --color-blue: #A8D8EA;
+  --color-blue-light: #D6EEF7;
+  --color-error: #E8607D;
+
+  --color-card: #FFFFFF;
+
+  --font-display: 'Fraunces', serif;
+  --font-sans: 'Manrope', sans-serif;
+
+  --shadow-soft: 0 8px 24px -8px rgba(43,33,24,0.12);
+  --shadow-card: 0 2px 12px rgba(43,33,24,0.06);
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--color-cream);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  overscroll-behavior-y: none;
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
+
+/* Деликатный премиальный акцент — переливающийся градиент. Используется
+   точечно (hero-блок Главной, кнопка чата), не на весь экран. */
+@keyframes shimmer {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.shimmer-bg {
+  background: linear-gradient(135deg, #C9A9E8, #FFD1DC, #A8D8EA, #C9A9E8);
+  background-size: 300% 300%;
+  animation: shimmer 6s ease infinite;
+}
