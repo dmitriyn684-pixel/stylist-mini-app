@@ -9,6 +9,48 @@ export interface MannequinHighlight {
   color: string;
 }
 
+/**
+ * Реальная вертикальная раскладка манекена — от стоп (y=0) до макушки.
+ * Сумма inseam + waistToHip + shoulderToWaist (мерки от фото) не обязана
+ * совпадать с measurements.height (мерка роста через отдельную формулу
+ * с эмпирической поправкой в measurementsUtils.ts) — раньше камера в
+ * AvatarViewer считала высоту кадра по measurements.height напрямую, а
+ * сама геометрия строилась по этой сумме сегментов. При расхождении голова
+ * уезжала выше кадра камеры. Экспортируем расчёт, чтобы оба места (меш и
+ * камера) всегда были согласованы по построению, а не «в среднем сходились».
+ */
+export function computeMannequinLayout(measurements: BodyMeasurements) {
+  const height = measurements.height * CM_TO_UNITS;
+  const shoulderRadius = (measurements.shoulderWidth / 2) * CM_TO_UNITS;
+  const waistRadius = (measurements.waistCircumference / (2 * Math.PI)) * CM_TO_UNITS;
+  const hipRadius = (measurements.hipCircumference / (2 * Math.PI)) * CM_TO_UNITS;
+  const torsoLength = measurements.shoulderToWaist * CM_TO_UNITS;
+  const hipLength = measurements.waistToHip * CM_TO_UNITS;
+  const legLength = measurements.inseam * CM_TO_UNITS;
+  const armLength = height * 0.44;
+  const headRadius = height / 15;
+
+  const hipY = legLength;
+  const waistY = hipY + hipLength;
+  const shoulderY = waistY + torsoLength;
+  const headCenterY = shoulderY + headRadius * 2.3;
+  const topY = headCenterY + headRadius; // макушка — реальная верхняя точка модели
+
+  return {
+    shoulderRadius,
+    waistRadius,
+    hipRadius,
+    legLength,
+    armLength,
+    headRadius,
+    hipY,
+    waistY,
+    shoulderY,
+    headCenterY,
+    topY,
+  };
+}
+
 interface MannequinProps {
   measurements: BodyMeasurements;
   highlights?: MannequinHighlight[]; // несколько зон сразу (например верх+низ для лука)
@@ -40,24 +82,7 @@ export function ParametricMannequin({ measurements, highlights = [] }: Mannequin
   const torsoColor = full?.color ?? highlights.find((h) => h.zone === 'torso')?.color ?? SKIN;
   const legsColor = full?.color ?? highlights.find((h) => h.zone === 'legs')?.color ?? SKIN;
   const hipColor = full?.color ?? SKIN;
-  const p = useMemo(() => {
-    const height = measurements.height * CM_TO_UNITS;
-    const shoulderRadius = (measurements.shoulderWidth / 2) * CM_TO_UNITS;
-    const waistRadius = (measurements.waistCircumference / (2 * Math.PI)) * CM_TO_UNITS;
-    const hipRadius = (measurements.hipCircumference / (2 * Math.PI)) * CM_TO_UNITS;
-    const torsoLength = measurements.shoulderToWaist * CM_TO_UNITS;
-    const hipLength = measurements.waistToHip * CM_TO_UNITS;
-    const legLength = measurements.inseam * CM_TO_UNITS;
-    const armLength = height * 0.44;
-    const headRadius = height / 15;
-
-    // Раскладка снизу вверх — ступни на y = 0, дальше реальные пропорции мерок
-    const hipY = legLength;
-    const waistY = hipY + hipLength;
-    const shoulderY = waistY + torsoLength;
-
-    return { shoulderRadius, waistRadius, hipRadius, legLength, armLength, headRadius, hipY, waistY, shoulderY };
-  }, [measurements]);
+  const p = useMemo(() => computeMannequinLayout(measurements), [measurements]);
 
   return (
     <group>

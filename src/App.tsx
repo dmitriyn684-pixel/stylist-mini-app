@@ -20,7 +20,7 @@ import { ChatScreen } from './screens/ChatScreen';
 import { CapsuleWardrobeScreen } from './screens/CapsuleWardrobeScreen';
 import { PremiumScreen } from './screens/PremiumScreen';
 import { PlaceholderScreen } from './components/ui/PlaceholderScreen';
-import { SuitcaseIcon, ShoppingIcon } from './components/ui/icons';
+import { SuitcaseIcon, ShoppingIcon, ProfileIcon } from './components/ui/icons';
 
 function App() {
   useTelegram();
@@ -55,6 +55,7 @@ function App() {
             <Route path="/stylist/capsule" element={<CapsuleWardrobeScreen />} />
             <Route path="/shopping" element={<PlaceholderScreen icon={ShoppingIcon} title="Шопинг" note="Умный поиск и примерка — в v2" />} />
             <Route path="/profile" element={<ProfileScreen />} />
+            <Route path="/profile/edit" element={<PlaceholderScreen icon={ProfileIcon} title="Редактировать профиль" note="Появится в v2" />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Route>
         </>

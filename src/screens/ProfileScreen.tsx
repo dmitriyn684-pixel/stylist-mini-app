@@ -4,10 +4,11 @@ import { ProfileIcon, ChartIcon, TrophyIcon, CrownIcon, SearchIcon, PuzzleIcon, 
 import { AvatarViewer } from '../components/avatar/AvatarViewer';
 import { useAvatarStore } from '../store/useAvatarStore';
 import { useColorAnalysis } from '../hooks/useColorAnalysis';
+import { useUserProfile } from '../hooks/useUserProfile';
+import { useTelegram } from '../hooks/useTelegram';
 import { usePremiumStore } from '../store/usePremiumStore';
-import { mockUser } from '../utils/mockData';
+import { useWardrobeStore } from '../store/useWardrobeStore';
 
-const mockStats = { items: 47, outfits: 23, challenges: 8 };
 const mockAchievements = [
   { Icon: CrownIcon, label: 'Икона стиля' },
   { Icon: SearchIcon, label: 'Ревизор гардероба' },
@@ -19,7 +20,15 @@ export function ProfileScreen() {
   const navigate = useNavigate();
   const { measurements, kibbeResult } = useAvatarStore();
   const { result: colorResult } = useColorAnalysis();
+  const { profile } = useUserProfile();
+  const { user } = useTelegram();
   const isPremium = usePremiumStore((s) => s.isPremium);
+  const items = useWardrobeStore((s) => s.items);
+  const outfits = useWardrobeStore((s) => s.outfits);
+
+  const name = profile?.name || user.first_name || 'Гость';
+  // Челленджей как фичи в приложении пока нет — честный 0, а не выдуманное число.
+  const stats = { items: items.length, outfits: outfits.length, challenges: 0 };
 
   return (
     <div className="px-6 pt-[calc(env(safe-area-inset-top)+20px)] pb-[calc(env(safe-area-inset-bottom)+110px)]">
@@ -38,7 +47,7 @@ export function ProfileScreen() {
         </div>
       )}
 
-      <h1 className="font-display text-[26px] text-ink mt-5 mb-1">{mockUser.name}</h1>
+      <h1 className="font-display text-[26px] text-ink mt-5 mb-1">{name}</h1>
       <p className="text-[13px] text-ink-soft mb-1">
         Цветотип: <span className="font-semibold text-ink">{colorResult?.seasonalType ?? 'не определён'}</span>
       </p>
@@ -52,15 +61,15 @@ export function ProfileScreen() {
         </p>
         <div className="flex justify-between">
           <div className="text-center">
-            <p className="text-[20px] font-bold text-ink">{mockStats.items}</p>
+            <p className="text-[20px] font-bold text-ink">{stats.items}</p>
             <p className="text-[11px] text-olive">Вещей</p>
           </div>
           <div className="text-center">
-            <p className="text-[20px] font-bold text-ink">{mockStats.outfits}</p>
+            <p className="text-[20px] font-bold text-ink">{stats.outfits}</p>
             <p className="text-[11px] text-olive">Луков</p>
           </div>
           <div className="text-center">
-            <p className="text-[20px] font-bold text-ink">{mockStats.challenges}</p>
+            <p className="text-[20px] font-bold text-ink">{stats.challenges}</p>
             <p className="text-[11px] text-olive">Челленджей</p>
           </div>
         </div>
@@ -104,7 +113,7 @@ export function ProfileScreen() {
       </button>
 
       <div className="flex flex-col gap-3">
-        <Button variant="secondary">Редактировать профиль</Button>
+        <Button variant="secondary" onClick={() => navigate('/profile/edit')}>Редактировать профиль</Button>
         <Button variant="secondary" onClick={() => navigate('/avatar/create')}>Обновить 3D-аватар</Button>
         <Button variant="ghost">Настройки уведомлений</Button>
       </div>

@@ -11,6 +11,14 @@ const API_BASE = import.meta.env.VITE_API_URL ?? '';
 const COLOR_ANALYSIS_KEY = 'color_analysis_result';
 const PROFILE_KEY = 'stylist_profile';
 
+// Диспатчим после записи в localStorage, чтобы хуки-читатели (useColorAnalysis,
+// useUserProfile) могли обновиться реактивно — они читают localStorage один раз
+// при монтировании через useState(() => ...), а не подписаны на изменения.
+// Без этого события экраны, смонтированные ДО того как фетч отработал (обычный
+// случай — фетч асинхронный, а Home/Profile рендерятся сразу), навсегда
+// остаются со значением на момент монтирования, даже когда данные уже пришли.
+export const PROFILE_SYNCED_EVENT = 'stylist:profile-synced';
+
 interface BridgedColorAnalysis {
   seasonalType?: string;
   koreanSubtype?: string;
@@ -38,6 +46,9 @@ interface BridgedProfile {
  */
 function useBridgeProfileFromBot(userId: number | undefined) {
   useEffect(() => {
+    // TODO: временный лог для диагностики — подтвердить, что реальный
+    // Telegram user id доходит до фетча (не 0/undefined). Убрать после проверки.
+    console.log('[bridge] Telegram userId для фетча профиля:', userId);
     if (!userId) return;
 
     fetch(`${API_BASE}/api/user/profile/${userId}`)
@@ -63,6 +74,8 @@ function useBridgeProfileFromBot(userId: number | undefined) {
           };
           localStorage.setItem(COLOR_ANALYSIS_KEY, JSON.stringify(result));
         }
+
+        window.dispatchEvent(new Event(PROFILE_SYNCED_EVENT));
       })
       .catch(() => {
         // backend недоступен или профиля ещё нет — просто работаем с тем,

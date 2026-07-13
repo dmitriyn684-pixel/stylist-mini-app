@@ -5,9 +5,10 @@ interface HeroStatsProps {
   totalItems: number;
   totalOutfits: number;
   readyPercent: number;
+  onProfileClick?: () => void;
 }
 
-export function HeroStats({ name, totalItems, totalOutfits, readyPercent }: HeroStatsProps) {
+export function HeroStats({ name, totalItems, totalOutfits, readyPercent, onProfileClick }: HeroStatsProps) {
   const today = new Intl.DateTimeFormat('ru-RU', { day: 'numeric', month: 'long' }).format(new Date());
 
   return (
@@ -15,9 +16,13 @@ export function HeroStats({ name, totalItems, totalOutfits, readyPercent }: Hero
       {/* Заголовок */}
       <div className="flex items-center justify-between mb-8 text-white">
         <p className="font-display text-[22px]">Доброе утро, {name}</p>
-        <div className="w-9 h-9 rounded-full bg-white/25 backdrop-blur flex items-center justify-center">
+        <button
+          onClick={onProfileClick}
+          className="w-9 h-9 rounded-full bg-white/25 backdrop-blur flex items-center justify-center"
+          aria-label="Профиль"
+        >
           <ProfileIcon className="w-5 h-5" />
-        </div>
+        </button>
       </div>
 
       {/* Кольцо + боковые метрики */}
