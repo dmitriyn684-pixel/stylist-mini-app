@@ -75,7 +75,7 @@ export function HomeScreen() {
 
       <div className="px-6 -mt-4 flex flex-col gap-4">
         <CategoryBars bars={categoryBars} />
-        <DayLookCard {...dayLook} />
+        <DayLookCard {...dayLook} onSeeMore={() => navigate('/stylist')} />
         <QuickActions actions={mockQuickActions} />
         <ChallengeCard {...mockChallenge} />
         <AmbassadorsScroll ambassadors={mockAmbassadors} />

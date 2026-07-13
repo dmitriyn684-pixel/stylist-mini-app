@@ -3,9 +3,10 @@ import { ArrowRightIcon, SparkleIcon } from '../ui/icons';
 interface DayLookCardProps {
   title: string;
   tip: string;
+  onSeeMore?: () => void;
 }
 
-export function DayLookCard({ title, tip }: DayLookCardProps) {
+export function DayLookCard({ title, tip, onSeeMore }: DayLookCardProps) {
   return (
     <div className="bg-card rounded-2xl shadow-card p-6 flex flex-col items-center text-center gap-3">
       <div
@@ -16,7 +17,10 @@ export function DayLookCard({ title, tip }: DayLookCardProps) {
       </div>
       <h3 className="font-display text-[20px] text-ink">{title}</h3>
       <p className="text-[13px] text-ink-soft leading-relaxed max-w-[280px]">{tip}</p>
-      <button className="flex items-center gap-1.5 text-[11px] font-bold tracking-[0.14em] text-lavender mt-1">
+      <button
+        onClick={onSeeMore}
+        className="flex items-center gap-1.5 text-[11px] font-bold tracking-[0.14em] text-lavender mt-1"
+      >
         SEE MORE
         <ArrowRightIcon className="w-3.5 h-3.5" />
       </button>

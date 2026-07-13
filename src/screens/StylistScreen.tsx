@@ -2,11 +2,11 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '../components/ui/Button';
 import { Chip } from '../components/ui/Chip';
-import { PaletteIcon, BagIcon, DownloadIcon, RefreshIcon, CheckIcon } from '../components/ui/icons';
+import { PaletteIcon, BagIcon, DownloadIcon, RefreshIcon } from '../components/ui/icons';
+import { ColorGrid } from '../components/ui/ColorGrid';
 import { useColorAnalysis } from '../hooks/useColorAnalysis';
 import { useAvatarStore } from '../store/useAvatarStore';
 import { downloadPaletteImage } from '../utils/downloadPalette';
-import type { ColorSwatch } from '../types/analysis';
 
 const tabs = [
   { key: 'base', label: 'Базовые' },
@@ -15,36 +15,6 @@ const tabs = [
 ] as const;
 
 type TabKey = (typeof tabs)[number]['key'];
-
-function ColorGrid({ swatches }: { swatches: ColorSwatch[] }) {
-  const [copied, setCopied] = useState<string | null>(null);
-
-  const copy = async (hex: string) => {
-    try {
-      await navigator.clipboard.writeText(hex);
-    } catch {
-      // Буфер обмена недоступен (например, нет разрешения) — просто подсветим и промолчим
-    }
-    setCopied(hex);
-    setTimeout(() => setCopied((c) => (c === hex ? null : c)), 1200);
-  };
-
-  return (
-    <div className="grid grid-cols-4 gap-3">
-      {swatches.map((s) => (
-        <button key={s.hex} onClick={() => copy(s.hex)} className="flex flex-col items-center gap-1.5">
-          <span
-            className="w-full aspect-square rounded-2xl border border-ink/10 flex items-center justify-center text-[10px] font-bold"
-            style={{ background: s.hex, color: '#fff', textShadow: '0 1px 2px rgba(0,0,0,0.35)' }}
-          >
-            {copied === s.hex && <CheckIcon className="w-4 h-4" />}
-          </span>
-          <span className="text-[10px] font-mono text-olive">{s.hex.toUpperCase()}</span>
-        </button>
-      ))}
-    </div>
-  );
-}
 
 export function StylistScreen() {
   const { result, clear } = useColorAnalysis();

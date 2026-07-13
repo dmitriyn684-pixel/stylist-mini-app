@@ -14,6 +14,7 @@ export function ChatScreen() {
   const messages = useChatStore((s) => s.messages);
   const isTyping = useChatStore((s) => s.isTyping);
   const sendMessage = useChatStore((s) => s.sendMessage);
+  const addPaletteMessage = useChatStore((s) => s.addPaletteMessage);
   const remaining = useChatStore((s) => s.remaining());
 
   const { result: colorResult } = useColorAnalysis();
@@ -27,6 +28,7 @@ export function ChatScreen() {
       kibbeType: kibbeResult?.type ?? colorResult?.kibbeType ?? null,
       measurements: measurements ?? null,
       wardrobe: items.map((i) => ({ category: i.category, color: i.color })),
+      palette: colorResult?.palette ?? null,
     }),
     [colorResult, kibbeResult, measurements, items]
   );
@@ -59,6 +61,17 @@ export function ChatScreen() {
         )}
         <MessageList messages={messages} />
       </div>
+
+      {colorResult?.palette && (
+        <div className="px-4 pb-2 shrink-0">
+          <button
+            onClick={() => addPaletteMessage(colorResult.palette)}
+            className="text-[12px] font-semibold text-lavender flex items-center gap-1"
+          >
+            🎨 Показать мою палитру
+          </button>
+        </div>
+      )}
 
       <ChatInput onSend={(text) => sendMessage(text, profile)} disabled={isTyping || remaining <= 0} limitReached={remaining <= 0} />
     </div>

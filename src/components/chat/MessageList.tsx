@@ -1,4 +1,5 @@
 import type { ChatMessage } from '../../types/chat';
+import { PaletteMessage } from './PaletteMessage';
 
 function TypingDots() {
   return (
@@ -24,7 +25,13 @@ export function MessageList({ messages }: { messages: ChatMessage[] }) {
             m.role === 'user' ? 'self-end bg-lavender text-white' : 'self-start bg-card text-ink shadow-card'
           } ${m.error ? '!bg-error/10 !text-error' : ''}`}
         >
-          {m.streaming && !m.content ? <TypingDots /> : m.content}
+          {m.kind === 'palette' && m.palette ? (
+            <PaletteMessage palette={m.palette} />
+          ) : m.streaming && !m.content ? (
+            <TypingDots />
+          ) : (
+            m.content
+          )}
         </div>
       ))}
     </div>

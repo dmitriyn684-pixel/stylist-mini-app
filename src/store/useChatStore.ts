@@ -18,6 +18,7 @@ interface ChatState {
   usageCount: number;
   remaining: () => number;
   sendMessage: (text: string, profile: ChatProfile) => Promise<void>;
+  addPaletteMessage: (palette: ChatMessage['palette']) => void;
   clear: () => void;
 }
 
@@ -77,6 +78,13 @@ export const useChatStore = create<ChatState>()(
             }));
           },
         });
+      },
+
+      addPaletteMessage: (palette) => {
+        if (!palette) return;
+        set((s) => ({
+          messages: [...s.messages, { id: genId(), role: 'assistant', content: '', kind: 'palette', palette }],
+        }));
       },
 
       clear: () => set({ messages: [] }),
