@@ -4,12 +4,29 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no" />
     <title>Stylist AI</title>
+    <script type="text/javascript">
+      // Single Page Apps for GitHub Pages — разворачивает редирект из 404.html
+      // обратно в нормальный путь ДО того, как React Router его прочитает.
+      // https://github.com/rafgraph/spa-github-pages
+      (function (l) {
+        if (l.search[1] === '/') {
+          var decoded = l.search
+            .slice(1)
+            .split('&')
+            .map(function (s) {
+              return s.replace(/~and~/g, '&');
+            })
+            .join('?');
+          window.history.replaceState(null, null, l.pathname.slice(0, -1) + decoded + l.hash);
+        }
+      })(window.location);
+    </script>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <!-- @mediapipe/pose несовместим с ESM-бандлерами (UMD со скрытым экспортом) —
          грузим классическим script-тегом, как в официальных примерах MediaPipe,
          это выставляет window.Pose и window.POSE_CONNECTIONS -->
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose@0.5.1675469404/pose.js" crossorigin="anonymous"></script>
-    <script type="module" crossorigin src="/stylist-mini-app/assets/index-D5hiRyzB.js"></script>
+    <script type="module" crossorigin src="/stylist-mini-app/assets/index-DiDA3BI-.js"></script>
     <link rel="stylesheet" crossorigin href="/stylist-mini-app/assets/index-DZlGeAnx.css">
   </head>
   <body>
