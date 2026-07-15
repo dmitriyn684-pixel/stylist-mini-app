@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { HeroStats } from '../components/home/HeroStats';
-import { CategoryBars } from '../components/home/CategoryBars';
+import { AiWardrobeSection } from '../components/home/AiWardrobeSection';
 import { DayLookCard } from '../components/home/DayLookCard';
 import { QuickActions } from '../components/home/QuickActions';
 import { ChallengeCard } from '../components/home/ChallengeCard';
@@ -10,12 +10,6 @@ import { useUserProfile } from '../hooks/useUserProfile';
 import { useColorAnalysis } from '../hooks/useColorAnalysis';
 import { useWardrobeStore } from '../store/useWardrobeStore';
 import { mockChallenge, mockAmbassadors, mockQuickActions } from '../utils/mockData';
-
-const CATEGORY_COLORS: Record<string, string> = {
-  Верх: 'var(--color-lavender)',
-  Низ: 'var(--color-blue)',
-  Обувь: 'var(--color-pink)',
-};
 
 export function HomeScreen() {
   const navigate = useNavigate();
@@ -46,13 +40,6 @@ export function HomeScreen() {
   const readyPercent =
     totalItems > 0 ? Math.round((items.filter((i) => i.timesWorn > 0).length / totalItems) * 100) : 0;
 
-  const categoryBars = (['Верх', 'Низ', 'Обувь'] as const).map((label) => ({
-    label,
-    value: items.filter((it) => it.category === label).length,
-    max: Math.max(totalItems, 1),
-    color: CATEGORY_COLORS[label],
-  }));
-
   const dayLook = colorResult?.seasonalType
     ? {
         title: 'Твой цветотип определён',
@@ -74,8 +61,13 @@ export function HomeScreen() {
         onOpenStylist={() => navigate('/stylist')}
       />
 
+      <AiWardrobeSection
+        items={items}
+        onAddItem={() => navigate('/wardrobe/add')}
+        onItemClick={(id) => navigate(`/wardrobe/item/${id}`)}
+      />
+
       <div className="px-6 flex flex-col gap-4">
-        <CategoryBars bars={categoryBars} />
         <DayLookCard {...dayLook} onSeeMore={() => navigate('/stylist')} />
         <QuickActions actions={mockQuickActions} />
         <ChallengeCard {...mockChallenge} />
