@@ -25,18 +25,20 @@ export function HeroStats({ name, totalItems, totalOutfits, readyPercent, onProf
         </button>
       </div>
 
-      {/* Кольцо + боковые метрики */}
+      {/* AI Core + боковые метрики */}
       <div className="flex items-center justify-center gap-6 text-white">
         <div className="text-center">
           <p className="text-2xl font-bold leading-none">{totalItems}</p>
           <p className="text-[10px] font-semibold tracking-[0.14em] mt-1 opacity-90">ВЕЩЕЙ</p>
         </div>
 
-        <div className="w-36 h-36 rounded-full border-2 border-white/80 flex flex-col items-center justify-center shrink-0">
-          <p className="text-5xl font-bold leading-none">{readyPercent}%</p>
-          <p className="text-[10px] font-semibold tracking-[0.14em] mt-2 opacity-90 text-center px-2">
-            ГАРДЕРОБ РАЗОБРАН
-          </p>
+        <div className="ai-core">
+          <div className="ai-core-inner">
+            <p className="text-4xl font-bold leading-none">{readyPercent}%</p>
+            <p className="text-[9px] font-semibold tracking-[0.12em] mt-1.5 opacity-90 text-center px-3">
+              ГАРДЕРОБ РАЗОБРАН
+            </p>
+          </div>
         </div>
 
         <div className="text-center">
@@ -49,7 +51,6 @@ export function HeroStats({ name, totalItems, totalOutfits, readyPercent, onProf
         SEE STATS
         <ChevronDownIcon className="w-3.5 h-3.5" />
       </button>
-
       <p className="text-center text-[12px] text-white/80 font-medium mt-5 capitalize">Сегодня, {today}</p>
     </div>
   );
