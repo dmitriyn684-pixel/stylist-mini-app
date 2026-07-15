@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { HeroStats } from '../components/home/HeroStats';
 import { AiAnalyzerSection } from '../components/home/AiAnalyzerSection';
+import { AiOutfitSection } from '../components/home/AiOutfitSection';
 import { CategoryBars } from '../components/home/CategoryBars';
 import { DayLookCard } from '../components/home/DayLookCard';
 import { QuickActions } from '../components/home/QuickActions';
@@ -75,6 +76,8 @@ export function HomeScreen() {
       />
 
       <AiAnalyzerSection />
+
+      <AiOutfitSection />
 
       <div className="px-6 flex flex-col gap-4">
         <CategoryBars bars={categoryBars} />
