@@ -27,13 +27,6 @@ export const mockChallenge = {
   title: 'Надень то, что не носила больше месяца',
 };
 
-export const mockAmbassadors = [
-  { name: 'Алёна' },
-  { name: 'Катя' },
-  { name: 'Мира' },
-  { name: 'Соня' },
-];
-
 export const mockQuickActions = [
   { key: 'photo', label: 'Сфоткать вещь', Icon: CameraIcon, to: '/wardrobe/add' },
   { key: 'suitcase', label: 'Собрать чемодан', Icon: SuitcaseIcon, to: '/wardrobe/suitcase' },

@@ -327,10 +327,6 @@ HEADER
 WARDROBE STYLE
 ===================================== */
 
-.wardrobe-section {
-  margin-top: 35px;
-}
-
 .section-title {
   display: flex;
   justify-content: space-between;
@@ -347,122 +343,6 @@ WARDROBE STYLE
   margin-top: 5px;
   color: #9b8d95;
   font-size: 14px;
-}
-
-.add-item {
-  width: 52px;
-  height: 52px;
-  border-radius: 50%;
-  border: none;
-  background: linear-gradient(135deg, #ffd5e7, #d9ceff);
-  font-size: 28px;
-  box-shadow: 0 15px 30px rgba(220, 170, 220, .35);
-  transition: .35s;
-}
-
-.add-item:active {
-  transform: scale(.9) rotate(10deg);
-}
-
-.categories {
-  display: flex;
-  gap: 12px;
-  overflow-x: auto;
-  padding: 25px 22px;
-}
-
-.categories::-webkit-scrollbar {
-  display: none;
-}
-
-.category {
-  min-width: 55px;
-  height: 55px;
-  border-radius: 20px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: rgba(255, 255, 255, .6);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  font-size: 20px;
-  border: 1px solid rgba(255, 255, 255, .8);
-  transition: .4s;
-}
-
-.category.active {
-  background: linear-gradient(135deg, #32251e, #695244);
-  color: white;
-  transform: translateY(-5px);
-}
-
-.clothes-grid {
-  padding: 0 20px;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 18px;
-}
-
-.clothing-card {
-  background: rgba(255, 255, 255, .65);
-  border-radius: 30px;
-  overflow: hidden;
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  box-shadow: 0 20px 50px rgba(100, 70, 90, .12);
-  animation: cardAppear .8s ease;
-  transition: .4s;
-  text-align: left;
-}
-
-.clothing-card:hover {
-  transform: translateY(-8px);
-}
-
-.photo {
-  height: 190px;
-  overflow: hidden;
-}
-
-.photo img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: .6s;
-}
-
-.clothing-card:hover img {
-  transform: scale(1.08);
-}
-
-.item-info {
-  padding: 15px;
-}
-
-.item-info h3 {
-  font-size: 15px;
-}
-
-.item-info span {
-  display: inline-block;
-  margin-top: 8px;
-  font-size: 12px;
-  padding: 6px 12px;
-  border-radius: 20px;
-  background: #fff0f7;
-  color: #c27c9b;
-  font-weight: 600;
-}
-
-@keyframes cardAppear {
-  from {
-    opacity: 0;
-    transform: translateY(40px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
 
 /* =====================================
