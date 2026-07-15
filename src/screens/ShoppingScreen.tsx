@@ -45,7 +45,7 @@ export function ShoppingScreen() {
               href={wildberriesSearchUrl(item.name)}
               target="_blank"
               rel="noreferrer"
-              className="relative block mb-2 rounded-[14px] overflow-hidden"
+              className="relative block mb-2 rounded-[14px] overflow-hidden shadow-card border border-ink/5"
               style={{
                 height: cardHeight(item.id),
                 breakInside: 'avoid',

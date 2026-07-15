@@ -20,13 +20,17 @@ export function PremiumScreen() {
         ← Назад
       </button>
 
-      <h1 className="font-display text-[28px] text-ink mb-1 flex items-center gap-2">
+      <h1 className="font-display text-[28px] text-ink mb-6 flex items-center gap-2">
         <SparkleIcon className="w-6 h-6 text-lavender" /> Stylist AI Premium
       </h1>
-      <p className="text-[13px] text-olive mb-6">
-        Оплата пока не подключена — в приложении ещё нет своего Telegram-бота, через который проходят платежи
-        (Stars/ЮKassa требуют бота с обработкой инвойсов). Кнопка ниже включает Premium локально, только для тестирования.
-      </p>
+
+      <div className="bg-cream-dark rounded-xl px-4 py-3 mb-6">
+        <p className="text-[12px] text-ink-soft leading-relaxed">
+          Оплата пока не подключена — в приложении ещё нет своего Telegram-бота, через который проходят платежи
+          (Stars/ЮKassa требуют бота с обработкой инвойсов). Кнопка ниже включает Premium локально, только для
+          тестирования.
+        </p>
+      </div>
 
       <div className="bg-card rounded-2xl shadow-card p-5 mb-6">
         <p className="text-[13px] font-bold text-ink mb-3">Что даёт Premium</p>
@@ -62,7 +66,7 @@ export function PremiumScreen() {
         </div>
       ) : (
         <Button className="shimmer-bg w-full !text-white" onClick={() => setPremium(true)}>
-          Активировать (тест)
+          Активировать <span className="opacity-70 font-normal text-[13px]">(тест)</span>
         </Button>
       )}
     </div>

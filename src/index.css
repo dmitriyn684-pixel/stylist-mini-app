@@ -59,9 +59,12 @@
 }
 
 * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+  /* margin/padding/box-sizing НЕ трогаем здесь — Tailwind Preflight уже
+     даёт этот сброс внутри @layer base. Этот файл вне @layer, а неслоистые
+     правила по спеке cascade layers всегда бьют слоистые независимо от
+     специфичности — с margin:0/padding:0 здесь эта же строка убивала
+     Tailwind-утилиты отступов (margin/padding/gap) по всему приложению
+     (карточки слипались на каждом экране). */
   -webkit-font-smoothing: antialiased;
   -webkit-tap-highlight-color: transparent;
 }
