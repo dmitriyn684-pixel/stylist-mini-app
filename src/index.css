@@ -781,6 +781,87 @@ PROFILE
   font-size: 15px;
 }
 
+/* =====================================
+PART 7
+BOTTOM NAVIGATION
+===================================== */
+
+.bottom-nav {
+  position: fixed;
+  /* + env(safe-area-inset-bottom) сверх авторского 18px — иначе на iPhone
+     с домашним индикатором панель в него утыкается. Сам 18px не трогали. */
+  bottom: calc(18px + env(safe-area-inset-bottom));
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100% - 35px);
+  max-width: 395px;
+  height: 78px;
+  padding: 10px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  background: rgba(255, 255, 255, .65);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+  border: 1px solid rgba(255, 255, 255, .8);
+  border-radius: 35px;
+  box-shadow: 0 20px 60px rgba(80, 50, 80, .18);
+  z-index: 100;
+}
+
+.nav-item {
+  border: none;
+  background: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  color: #a1939c;
+  transition: .35s;
+  position: relative;
+}
+
+.nav-icon {
+  font-size: 22px;
+  transition: .35s;
+  display: flex;
+}
+
+.nav-item.active {
+  color: #34251f;
+}
+
+.nav-item.active .nav-icon {
+  transform: translateY(-8px) scale(1.15);
+}
+
+.nav-item.active::before {
+  content: "";
+  position: absolute;
+  top: -8px;
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ffd5e7, #d9d0ff);
+  z-index: -1;
+  box-shadow: 0 10px 25px rgba(220, 160, 220, .4);
+}
+
+.ai-nav {
+  width: 65px;
+  height: 65px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #31241d, #765947);
+  color: white;
+  margin-top: -35px;
+  box-shadow: 0 20px 40px rgba(70, 45, 30, .35);
+}
+
+.nav-item:active {
+  transform: scale(.88);
+}
+
 ::-webkit-scrollbar {
   display: none;
 }
