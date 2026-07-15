@@ -1,12 +1,11 @@
-import type { CapsuleItem } from '../types/capsule';
 import type { ColorAnalysisResult } from '../types/analysis';
 
-function hexToRgb(hex: string): [number, number, number] {
+export function hexToRgb(hex: string): [number, number, number] {
   const n = parseInt(hex.replace('#', ''), 16);
   return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
 }
 
-function colorDistance(a: string, b: string): number {
+export function colorDistance(a: string, b: string): number {
   const [r1, g1, b1] = hexToRgb(a);
   const [r2, g2, b2] = hexToRgb(b);
   return Math.sqrt((r1 - r2) ** 2 + (g1 - g2) ** 2 + (b1 - b2) ** 2);
@@ -20,8 +19,12 @@ const MAX_DISTANCE = Math.sqrt(255 ** 2 * 3);
  * скана фото). Чем ближе цвета лука к "своим" оттенкам и дальше от
  * "избегать" — тем выше процент. Без палитры честно возвращаем null,
  * а не подставляем случайное число.
+ *
+ * items — только { color: string }, а не конкретный CapsuleItem/WardrobeItem,
+ * чтобы одна и та же функция работала и для каталога, и для реального
+ * гардероба пользователя (см. outfitGenerator.ts).
  */
-export function computeOutfitMatch(items: CapsuleItem[], palette: ColorAnalysisResult['palette'] | null): number | null {
+export function computeOutfitMatch(items: { color: string }[], palette: ColorAnalysisResult['palette'] | null): number | null {
   if (!palette || items.length === 0) return null;
 
   const good = [...palette.base, ...palette.accent].map((c) => c.hex);
