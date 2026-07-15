@@ -1,38 +1,56 @@
 import { useRef, useState } from 'react';
-
-const STYLE_TAGS = ['✨ Elegant', '🤍 Minimal', '💎 Luxury'];
+import { ColorGrid } from '../ui/ColorGrid';
+import { loadImageFromFile, resizeToCanvas, canvasToDataUrl } from '../../utils/imageUtils';
+import { scanPhoto, type PhotoScanResult } from '../../services/photoAnalysisService';
+import { useColorAnalysis } from '../../hooks/useColorAnalysis';
 
 export function AiAnalyzerSection() {
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { save } = useColorAnalysis();
   const [photo, setPhoto] = useState<string | null>(null);
   const [isScanning, setIsScanning] = useState(false);
-  const [showResult, setShowResult] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [result, setResult] = useState<PhotoScanResult | null>(null);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    const reader = new FileReader();
-    reader.onload = () => {
-      setPhoto(reader.result as string);
-      setShowResult(false);
-    };
-    reader.readAsDataURL(file);
+    e.target.value = ''; // чтобы выбор того же файла повторно тоже сработал
+
+    try {
+      // Сжимаем на клиенте перед отправкой — полноразмерное фото с телефона
+      // (несколько МБ) не нужно гонять на сервер, для анализа цвета лица
+      // достаточно 900px по большей стороне.
+      const image = await loadImageFromFile(file);
+      const canvas = resizeToCanvas(image, 900);
+      const dataUrl = canvasToDataUrl(canvas, 0.85);
+      setPhoto(dataUrl);
+      setResult(null);
+      setError(null);
+    } catch {
+      setError('Не удалось обработать фото — попробуй другое');
+    }
   };
 
-  const handleScanClick = () => {
+  const handleScanClick = async () => {
     if (!photo) {
       fileInputRef.current?.click();
       return;
     }
+
     setIsScanning(true);
-    setShowResult(false);
-    // Реального AI-анализа фото в проекте нет (бэкенд умеет только текстовый
-    // чат) — это визуальное демо, короткая имитация сканирования и заранее
-    // заданный пример результата, честно помеченный как демо.
-    setTimeout(() => {
+    setError(null);
+    setResult(null);
+
+    try {
+      const analysis = await scanPhoto(photo);
+      setResult(analysis);
+      save(analysis);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Не удалось выполнить анализ');
+    } finally {
       setIsScanning(false);
-      setShowResult(true);
-    }, 1800);
+    }
   };
 
   return (
@@ -74,36 +92,33 @@ export function AiAnalyzerSection() {
           </button>
         </div>
 
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept="image/*"
-          onChange={handleFileChange}
-          className="hidden"
-        />
+        <input ref={fileInputRef} type="file" accept="image/*" onChange={handleFileChange} className="hidden" />
       </div>
 
-      {showResult && (
+      {error && (
+        <p className="text-center text-[13px] text-error px-6 -mt-2 mb-2 fade-card">{error}</p>
+      )}
+
+      {result && (
         <div className="analysis-result fade-card">
           <div className="result-header">
-            <h3>Ваш стиль</h3>
-            <div className="score">98%</div>
+            <h3>{result.seasonalType}</h3>
+            <div className="score">{result.confidence}%</div>
           </div>
 
-          <p className="text-[11px] text-olive -mt-1 mb-1">
-            Демо-превью — реальный AI-анализ фото появится позже
-          </p>
-
           <div className="style-tags">
-            {STYLE_TAGS.map((tag) => (
-              <span key={tag}>{tag}</span>
-            ))}
+            <span>🎨 {result.skinUndertone}</span>
+            <span>⚖️ {result.contrastLevel} контраст</span>
+            <span>👤 {result.kibbeType}</span>
           </div>
 
           <div className="recommendations">
             <h4>AI рекомендации</h4>
-            <p>Добавьте аксессуары золотого оттенка. Образ станет более премиальным.</p>
+            <p>{result.description}</p>
           </div>
+
+          <p className="text-[12px] font-bold text-ink mt-5 mb-2">Твоя палитра</p>
+          <ColorGrid swatches={result.palette.base} />
         </div>
       )}
     </section>
