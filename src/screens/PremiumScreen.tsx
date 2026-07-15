@@ -61,7 +61,7 @@ export function PremiumScreen() {
           </Button>
         </div>
       ) : (
-        <Button className="w-full" onClick={() => setPremium(true)}>
+        <Button className="shimmer-bg w-full !text-white" onClick={() => setPremium(true)}>
           Активировать (тест)
         </Button>
       )}

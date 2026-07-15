@@ -8,7 +8,7 @@ interface DayLookCardProps {
 
 export function DayLookCard({ title, tip, onSeeMore }: DayLookCardProps) {
   return (
-    <div className="bg-card rounded-2xl shadow-card p-6 flex flex-col items-center text-center gap-3">
+    <div className="shimmer-border bg-card rounded-2xl shadow-card p-6 flex flex-col items-center text-center gap-3">
       <div
         className="w-14 h-14 rounded-full flex items-center justify-center"
         style={{ background: 'linear-gradient(135deg, var(--color-pink-light), var(--color-pink))' }}

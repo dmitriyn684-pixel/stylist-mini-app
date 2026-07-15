@@ -82,10 +82,7 @@ export function ProfileScreen() {
         <div className="flex gap-4">
           {mockAchievements.map((a) => (
             <div key={a.label} className="flex flex-col items-center gap-1.5 flex-1">
-              <div
-                className="w-11 h-11 rounded-full flex items-center justify-center"
-                style={{ background: 'linear-gradient(135deg, var(--color-lavender-light), var(--color-pink-light))' }}
-              >
+              <div className="shimmer-gold w-11 h-11 rounded-full flex items-center justify-center">
                 <a.Icon className="w-5 h-5 text-white" />
               </div>
               <p className="text-[10px] text-olive text-center leading-tight">{a.label}</p>
@@ -101,15 +98,19 @@ export function ProfileScreen() {
 
       <button
         onClick={() => navigate('/premium')}
-        className="w-full flex items-center gap-3 rounded-2xl shadow-card p-4 mb-6 text-left"
-        style={{ background: isPremium ? 'linear-gradient(120deg, var(--color-lavender-light), var(--color-pink-light))' : 'var(--color-card)' }}
+        className={`w-full flex items-center gap-3 rounded-2xl shadow-card p-4 mb-6 text-left ${!isPremium ? 'shimmer-bg' : ''}`}
+        style={isPremium ? { background: 'linear-gradient(120deg, var(--color-lavender-light), var(--color-pink-light))' } : undefined}
       >
-        <SparkleIcon className="w-6 h-6 text-lavender shrink-0" />
+        <SparkleIcon className={`w-6 h-6 shrink-0 ${isPremium ? 'text-lavender' : 'text-white'}`} />
         <span className="flex-1">
-          <span className="block text-[14px] font-bold text-ink">{isPremium ? 'Premium активен' : 'Оформить Premium'}</span>
-          <span className="block text-[12px] text-olive">{isPremium ? 'Безлимитный AI-стилист' : 'Безлимитный чат со стилистом'}</span>
+          <span className={`block text-[14px] font-bold ${isPremium ? 'text-ink' : 'text-white'}`}>
+            {isPremium ? 'Premium активен' : 'Оформить Premium'}
+          </span>
+          <span className={`block text-[12px] ${isPremium ? 'text-olive' : 'text-white/85'}`}>
+            {isPremium ? 'Безлимитный AI-стилист' : 'Безлимитный чат со стилистом'}
+          </span>
         </span>
-        <span className="text-olive">→</span>
+        <span className={isPremium ? 'text-olive' : 'text-white/85'}>→</span>
       </button>
 
       <div className="flex flex-col gap-3">

@@ -18,7 +18,7 @@ export function HeroStats({ name, totalItems, totalOutfits, readyPercent, onProf
         <p className="font-display text-[22px]">Доброе утро, {name}</p>
         <button
           onClick={onProfileClick}
-          className="w-9 h-9 rounded-full bg-white/25 backdrop-blur flex items-center justify-center"
+          className="pulse-glow w-9 h-9 rounded-full bg-white/25 backdrop-blur flex items-center justify-center"
           aria-label="Профиль"
         >
           <ProfileIcon className="w-5 h-5" />
