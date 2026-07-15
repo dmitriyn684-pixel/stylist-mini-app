@@ -64,16 +64,17 @@ export function HomeScreen() {
       };
 
   return (
-    <div className="pb-[calc(env(safe-area-inset-bottom)+110px)]">
+    <div className="app">
       <HeroStats
         name={name}
         totalItems={totalItems}
         totalOutfits={totalOutfits}
         readyPercent={readyPercent}
         onProfileClick={() => navigate('/profile')}
+        onOpenStylist={() => navigate('/stylist')}
       />
 
-      <div className="px-6 -mt-4 flex flex-col gap-4">
+      <div className="px-6 flex flex-col gap-4">
         <CategoryBars bars={categoryBars} />
         <DayLookCard {...dayLook} onSeeMore={() => navigate('/stylist')} />
         <QuickActions actions={mockQuickActions} />
