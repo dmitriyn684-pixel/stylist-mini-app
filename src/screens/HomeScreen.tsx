@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { HeroStats } from '../components/home/HeroStats';
 import { AiWardrobeSection } from '../components/home/AiWardrobeSection';
+import { AiAnalyzerSection } from '../components/home/AiAnalyzerSection';
 import { DayLookCard } from '../components/home/DayLookCard';
 import { QuickActions } from '../components/home/QuickActions';
 import { ChallengeCard } from '../components/home/ChallengeCard';
@@ -66,6 +67,8 @@ export function HomeScreen() {
         onAddItem={() => navigate('/wardrobe/add')}
         onItemClick={(id) => navigate(`/wardrobe/item/${id}`)}
       />
+
+      <AiAnalyzerSection />
 
       <div className="px-6 flex flex-col gap-4">
         <DayLookCard {...dayLook} onSeeMore={() => navigate('/stylist')} />
