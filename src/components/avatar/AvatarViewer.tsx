@@ -6,9 +6,15 @@ import type { BodyMeasurements } from '../../types/avatar';
 interface AvatarViewerProps {
   measurements: BodyMeasurements;
   highlights?: MannequinHighlight[];
+  // Компонент раньше жёстко задавал h-[400px] сам себе — вызывающий код,
+  // которому нужна карточка пониже (LookCard), оборачивал его в свой div
+  // с меньшей высотой, но сам Canvas этого не знал и всё равно рендерился
+  // на 400px, вылезая за пределы обёртки (см. обсуждение бага с ценами,
+  // наезжающими на манекен). Теперь высоту задаёт вызывающий код.
+  heightClassName?: string;
 }
 
-export function AvatarViewer({ measurements, highlights }: AvatarViewerProps) {
+export function AvatarViewer({ measurements, highlights, heightClassName = 'h-[400px]' }: AvatarViewerProps) {
   // Кадрируем камеру по РЕАЛЬНОЙ верхней точке построенной модели (topY —
   // макушка), а не по measurements.height напрямую: сумма сегментов мерок
   // (inseam + waistToHip + shoulderToWaist) не гарантированно равна росту
@@ -19,7 +25,7 @@ export function AvatarViewer({ measurements, highlights }: AvatarViewerProps) {
   const target: [number, number, number] = [0, modelHeightUnits / 2, 0];
 
   return (
-    <div className="w-full h-[400px] rounded-2xl overflow-hidden" style={{ background: 'var(--color-cream-dark)' }}>
+    <div className={`w-full ${heightClassName} rounded-2xl overflow-hidden`} style={{ background: 'var(--color-cream-dark)' }}>
       <Canvas
         style={{ width: '100%', height: '100%' }}
         camera={{ position: [0, modelHeightUnits * 0.55, modelHeightUnits * 1.6], fov: 45 }}

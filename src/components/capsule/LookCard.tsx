@@ -29,11 +29,9 @@ export function LookCard({ look, measurements, saved, onToggleSave }: LookCardPr
   }, [items]);
 
   return (
-    <div className="shrink-0 w-[280px] bg-card rounded-2xl shadow-card overflow-hidden">
+    <div className="w-full bg-card rounded-2xl shadow-card overflow-hidden">
       {measurements ? (
-        <div className="h-[220px]">
-          <AvatarViewer measurements={measurements} highlights={highlights} />
-        </div>
+        <AvatarViewer measurements={measurements} highlights={highlights} heightClassName="h-[260px]" />
       ) : (
         <div className="h-[80px] flex items-center justify-center gap-1.5 bg-cream-dark">
           {items.map((i) => (

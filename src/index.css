@@ -1335,15 +1335,19 @@ LIQUID GLASS
   transition: .5s cubic-bezier(.2, .8, .2, 1);
 }
 
-/* Живой блик — главный эффект. */
+/* Живой блик — главный эффект. Ширина фиксированная (не % от карточки) —
+   иначе на широкой карточке блик превращается в толстый непрозрачный столб
+   (был баг: width:70% от родителя давал ~250px сплошной заливки на карточке
+   ~350px шириной). left остаётся в % от родителя — так блик одинаково
+   пролетает через карточку любой ширины. */
 .liquid-card::before {
   content: "";
   position: absolute;
   left: -120%;
   top: 0;
-  width: 70%;
+  width: 50px;
   height: 100%;
-  background: linear-gradient(110deg, transparent, rgba(255, 255, 255, .75), transparent);
+  background: linear-gradient(110deg, transparent, rgba(255, 255, 255, .55), transparent);
   animation: glassShine 7s infinite;
   pointer-events: none;
 }

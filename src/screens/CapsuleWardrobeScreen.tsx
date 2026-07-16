@@ -69,7 +69,7 @@ export function CapsuleWardrobeScreen() {
       {looks.length === 0 ? (
         <p className="text-center text-[13px] text-olive py-12">В этом бюджете для этого стиля пока нет подборок — попробуй увеличить бюджет.</p>
       ) : (
-        <div className="flex gap-4 overflow-x-auto -mx-6 px-6 pb-2">
+        <div className="flex flex-col gap-4">
           {looks.map((look) => (
             <LookCard
               key={look.id}
