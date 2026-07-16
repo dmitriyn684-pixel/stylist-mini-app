@@ -1335,27 +1335,27 @@ LIQUID GLASS
   transition: .5s cubic-bezier(.2, .8, .2, 1);
 }
 
-/* Живой блик — главный эффект. Ширина фиксированная (не % от карточки) —
-   иначе на широкой карточке блик превращается в толстый непрозрачный столб
-   (был баг: width:70% от родителя давал ~250px сплошной заливки на карточке
-   ~350px шириной). left остаётся в % от родителя — так блик одинаково
-   пролетает через карточку любой ширины. */
+/* Живой блик — главный эффект. Раньше двигали `left` (layout-свойство, не
+   GPU-ускоряется, дёргано при активном backdrop-filter) и держали блик
+   неподвижным 60% цикла (кейфреймы 40%→100% стояли на месте) — из-за этого
+   эффект и выглядел как статичная полоса. Теперь: элемент растянут на всю
+   карточку (inset:0), узкая яркая полоса вырезается явными стоп-точками
+   градиента (~12% ширины ≈ 40-50px на карточке 350-400px), и вся полоса
+   едет через translateX — GPU-композитинг, без пересчёта layout. */
 .liquid-card::before {
   content: "";
   position: absolute;
-  left: -120%;
-  top: 0;
-  width: 50px;
-  height: 100%;
-  background: linear-gradient(110deg, transparent, rgba(255, 255, 255, .55), transparent);
-  animation: glassShine 7s infinite;
+  inset: 0;
+  background: linear-gradient(105deg, transparent 44%, rgba(255, 255, 255, .6) 50%, transparent 56%);
+  transform: translateX(-100%);
+  animation: glassShine 6s ease-in-out infinite;
   pointer-events: none;
 }
 
 @keyframes glassShine {
-  0% { left: -120%; }
-  40% { left: 160%; }
-  100% { left: 160%; }
+  0% { transform: translateX(-100%); }
+  35% { transform: translateX(100%); }
+  100% { transform: translateX(100%); }
 }
 
 /* Внутреннее свечение. */
