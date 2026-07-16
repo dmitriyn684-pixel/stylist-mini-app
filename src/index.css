@@ -84,14 +84,18 @@ html, body, #root {
 
 body {
   font-family: Inter, SF Pro Display, system-ui, sans-serif;
-  background: linear-gradient(180deg, #FFF8F6 0%, #FFF9FD 35%, #F9F8FF 100%);
+  background: linear-gradient(180deg, #FFEDF0 0%, #F3E9FF 45%, #FFF1DC 100%);
   color: var(--text);
   overflow-x: hidden;
   position: relative;
   overscroll-behavior-y: none;
 }
 
-/* Живой фон — два плавающих цветовых пятна за контентом. */
+/* Живой фон — три плавающих цветовых пятна за контентом. Раньше были
+   почти незаметны (opacity .40-.45 на очень светлом фоне) — стеклянные
+   карточки просвечивали в пустоту и выглядели "белым по белому". Подняли
+   непрозрачность/добавили третье тёплое пятно, чтобы у glass-эффекта
+   было что просвечивать. */
 body:before {
   content: "";
   position: fixed;
@@ -99,7 +103,7 @@ body:before {
   top: -200px;
   width: 600px;
   height: 600px;
-  background: radial-gradient(circle, rgba(255, 190, 220, .45), transparent 70%);
+  background: radial-gradient(circle, rgba(255, 150, 195, .65), transparent 70%);
   filter: blur(60px);
   animation: floatBlob1 16s ease-in-out infinite;
   pointer-events: none;
@@ -113,9 +117,26 @@ body:after {
   bottom: -180px;
   width: 520px;
   height: 520px;
-  background: radial-gradient(circle, rgba(200, 220, 255, .40), transparent 70%);
+  background: radial-gradient(circle, rgba(180, 160, 255, .55), transparent 70%);
   filter: blur(70px);
   animation: floatBlob2 22s ease-in-out infinite;
+  pointer-events: none;
+  z-index: -5;
+}
+
+/* Третье, тёплое пятно — body поддерживает только 2 псевдоэлемента
+   (:before/:after, уже заняты), поэтому это настоящий div, один раз
+   вставленный в App.tsx поверх всех экранов. */
+.glow-champagne {
+  position: fixed;
+  left: 50%;
+  bottom: -260px;
+  width: 560px;
+  height: 560px;
+  background: radial-gradient(circle, rgba(235, 190, 120, .5), transparent 70%);
+  filter: blur(75px);
+  transform: translateX(-50%);
+  animation: floatBlob1 19s ease-in-out infinite reverse;
   pointer-events: none;
   z-index: -5;
 }
