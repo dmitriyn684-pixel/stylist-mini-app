@@ -2,12 +2,17 @@ import { useEffect, useMemo, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { MessageList } from '../components/chat/MessageList';
 import { ChatInput } from '../components/chat/ChatInput';
-import { ChatIcon } from '../components/ui/icons';
 import { useChatStore } from '../store/useChatStore';
 import { useColorAnalysis } from '../hooks/useColorAnalysis';
 import { useAvatarStore } from '../store/useAvatarStore';
 import { useWardrobeStore } from '../store/useWardrobeStore';
 import type { ChatProfile } from '../types/chat';
+
+const QUICK_ACTIONS = [
+  { label: '🌸 Весенний образ', prompt: 'Помоги подобрать весенний образ' },
+  { label: '💼 На работу', prompt: 'Помоги подобрать образ на работу' },
+  { label: '❤️ Свидание', prompt: 'Помоги подобрать образ на свидание' },
+];
 
 export function ChatScreen() {
   const navigate = useNavigate();
@@ -15,6 +20,7 @@ export function ChatScreen() {
   const isTyping = useChatStore((s) => s.isTyping);
   const sendMessage = useChatStore((s) => s.sendMessage);
   const addPaletteMessage = useChatStore((s) => s.addPaletteMessage);
+  const addNote = useChatStore((s) => s.addNote);
   const remaining = useChatStore((s) => s.remaining());
 
   const { result: colorResult } = useColorAnalysis();
@@ -33,37 +39,68 @@ export function ChatScreen() {
     [colorResult, kibbeResult, measurements, items]
   );
 
+  const disabled = isTyping || remaining <= 0;
+
   const scrollRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' });
   }, [messages]);
 
+  // В чате нет реального анализа фото (бэкенд чата — только текст, DeepSeek
+  // без vision) — вместо того чтобы делать вид, что фото учтено, честно
+  // подсказываем, где оно реально работает (Часть 4, сканер на Главной).
+  const handlePhotoClick = () => fileInputRef.current?.click();
+  const handlePhotoSelected = () => {
+    if (fileInputRef.current) fileInputRef.current.value = '';
+    addNote('Пока не умею разбирать фото прямо в чате — загляни в «AI Анализ» на Главной, там реальный AI-сканер фото.');
+  };
+
   return (
     <div className="h-full flex flex-col bg-cream">
-      <div className="flex items-center gap-3 px-4 pt-[calc(env(safe-area-inset-top)+16px)] pb-3 border-b border-ink/10 shrink-0">
-        <button onClick={() => navigate(-1)} className="text-[13px] font-semibold text-olive">
-          ← Назад
-        </button>
-        <div className="flex items-center gap-2">
-          <ChatIcon className="w-4 h-4 text-lavender" />
-          <div>
-            <p className="text-[14px] font-bold text-ink">AI-стилист</p>
-            <p className="text-[11px] text-olive">Осталось сегодня: {Number.isFinite(remaining) ? remaining : '∞ (Premium)'}</p>
-          </div>
+      <button
+        onClick={() => navigate(-1)}
+        className="shrink-0 text-[13px] font-semibold text-olive px-4 pt-[calc(env(safe-area-inset-top)+16px)] text-left"
+      >
+        ← Назад
+      </button>
+
+      <div className="chat-header shrink-0">
+        <div className="stylist-avatar">✦</div>
+        <div>
+          <h2>DimkoFF AI</h2>
+          <p>{Number.isFinite(remaining) ? `Осталось сегодня: ${remaining}` : 'Безлимит · Premium'}</p>
+        </div>
+        <div className="online-dot" />
+      </div>
+
+      <div ref={scrollRef} className="flex-1 overflow-y-auto">
+        <div className="chat-window">
+          {messages.length === 0 && (
+            <div className="message ai-message">
+              Привет 👋 Я твой AI стилист. Спроси меня про образ, гардероб или что надеть — я знаю твой цветотип,
+              тип фигуры и вещи в шкафу.
+            </div>
+          )}
+          <MessageList messages={messages} />
         </div>
       </div>
 
-      <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-4">
-        {messages.length === 0 && (
-          <p className="text-center text-[13px] text-olive mt-10 px-6 leading-relaxed">
-            Привет! Спроси меня про образ, гардероб или что надеть — я знаю твой цветотип, тип фигуры и вещи в шкафу.
-          </p>
-        )}
-        <MessageList messages={messages} />
+      <div className="quick-actions shrink-0">
+        {QUICK_ACTIONS.map((a) => (
+          <button
+            key={a.label}
+            type="button"
+            disabled={disabled}
+            onClick={() => sendMessage(a.prompt, profile)}
+          >
+            {a.label}
+          </button>
+        ))}
       </div>
 
       {colorResult?.palette && (
-        <div className="px-4 pb-2 shrink-0">
+        <div className="px-6 pb-2 shrink-0">
           <button
             onClick={() => addPaletteMessage(colorResult.palette)}
             className="text-[12px] font-semibold text-lavender flex items-center gap-1"
@@ -73,7 +110,14 @@ export function ChatScreen() {
         </div>
       )}
 
-      <ChatInput onSend={(text) => sendMessage(text, profile)} disabled={isTyping || remaining <= 0} limitReached={remaining <= 0} />
+      <input ref={fileInputRef} type="file" accept="image/*" onChange={handlePhotoSelected} className="hidden" />
+
+      <ChatInput
+        onSend={(text) => sendMessage(text, profile)}
+        onPhotoClick={handlePhotoClick}
+        disabled={disabled}
+        limitReached={remaining <= 0}
+      />
     </div>
   );
 }

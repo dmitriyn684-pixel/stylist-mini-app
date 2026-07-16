@@ -17,13 +17,13 @@ function TypingDots() {
 
 export function MessageList({ messages }: { messages: ChatMessage[] }) {
   return (
-    <div className="flex flex-col gap-3">
+    <>
       {messages.map((m) => (
         <div
           key={m.id}
-          className={`max-w-[82%] rounded-2xl px-4 py-2.5 text-[14px] leading-relaxed whitespace-pre-wrap ${
-            m.role === 'user' ? 'self-end bg-lavender text-white' : 'self-start bg-card text-ink shadow-card'
-          } ${m.error ? '!bg-error/10 !text-error' : ''}`}
+          className={`message whitespace-pre-wrap ${m.role === 'user' ? 'user-message' : 'ai-message'} ${
+            m.error ? '!bg-error/10 !text-error' : ''
+          } ${m.kind === 'note' ? 'text-ink-soft italic' : 'text-ink'}`}
         >
           {m.kind === 'palette' && m.palette ? (
             <PaletteMessage palette={m.palette} />
@@ -34,6 +34,6 @@ export function MessageList({ messages }: { messages: ChatMessage[] }) {
           )}
         </div>
       ))}
-    </div>
+    </>
   );
 }
