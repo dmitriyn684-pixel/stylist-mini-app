@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { HeroStats } from '../components/home/HeroStats';
 import { AiAnalyzerSection } from '../components/home/AiAnalyzerSection';
 import { AiOutfitSection } from '../components/home/AiOutfitSection';
+import { AiShoppingSection } from '../components/home/AiShoppingSection';
 import { AiPassportSection } from '../components/home/AiPassportSection';
 import { CategoryBars } from '../components/home/CategoryBars';
 import { DayLookCard } from '../components/home/DayLookCard';
@@ -79,6 +80,8 @@ export function HomeScreen() {
       <AiAnalyzerSection />
 
       <AiOutfitSection />
+
+      <AiShoppingSection />
 
       <AiPassportSection />
 

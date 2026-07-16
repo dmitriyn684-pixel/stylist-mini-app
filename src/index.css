@@ -1124,3 +1124,148 @@ AI CHAT
 @keyframes fade-stagger {
   to { opacity: 1; transform: translateY(0); }
 }
+
+/* =====================================
+PART 9
+AI SHOPPING
+===================================== */
+
+.shopping-section {
+  margin-top: 40px;
+}
+
+.shopping-ai {
+  width: 52px;
+  height: 52px;
+  border: none;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ffdbe8, #ddd2ff);
+  font-size: 22px;
+  box-shadow: 0 15px 30px rgba(220, 170, 220, .25);
+}
+
+.shopping-card {
+  margin: 20px;
+  overflow: hidden;
+  border-radius: 35px;
+  background: rgba(255, 255, 255, .75);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: 0 20px 60px rgba(90, 60, 90, .12);
+  transition: .5s;
+}
+
+.shopping-card:hover {
+  transform: translateY(-6px);
+}
+
+.shopping-photo {
+  height: 320px;
+  position: relative;
+  overflow: hidden;
+}
+
+.shopping-photo-fill {
+  width: 100%;
+  height: 100%;
+  transition: .6s;
+}
+
+.shopping-card:hover .shopping-photo-fill {
+  transform: scale(1.08);
+}
+
+.shopping-badge {
+  position: absolute;
+  left: 20px;
+  top: 20px;
+  padding: 10px 18px;
+  border-radius: 30px;
+  background: rgba(255, 255, 255, .82);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+}
+
+.shopping-info {
+  padding: 25px;
+}
+
+.shopping-info h3 {
+  font-size: 24px;
+}
+
+.shopping-info p {
+  margin-top: 10px;
+  line-height: 1.6;
+  color: #94848d;
+}
+
+.shopping-price {
+  margin-top: 25px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.shopping-price span {
+  display: block;
+  margin-top: 5px;
+  color: #aa9ba2;
+  font-size: 13px;
+}
+
+.buy-btn {
+  padding: 14px 24px;
+  border: none;
+  border-radius: 30px;
+  background: linear-gradient(90deg, #31241d, #705445);
+  color: white;
+  font-weight: 600;
+}
+
+.cheaper-link {
+  display: block;
+  width: 100%;
+  margin-top: 14px;
+  padding: 12px;
+  border: none;
+  background: none;
+  text-align: center;
+  font-size: 13px;
+  color: #aa9ba2;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.shopping-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+  padding: 0 20px 20px;
+}
+
+.mini-item {
+  display: block;
+  background: rgba(255, 255, 255, .65);
+  padding: 10px;
+  border-radius: 22px;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(100, 70, 100, .08);
+  text-decoration: none;
+  color: inherit;
+}
+
+.mini-item-fill {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 18px;
+  margin-bottom: 10px;
+}
+
+.mini-item p {
+  font-size: 13px;
+  color: #6d5d67;
+}
