@@ -96,11 +96,19 @@ export function AiAnalyzerSection() {
         </div>
 
         <input ref={fileInputRef} type="file" accept="image/*" onChange={handleFileChange} className="hidden" />
+
+        {isScanning && (
+          <div className="premium-progress mb-3">
+            <div className="premium-fill" />
+          </div>
+        )}
       </div>
 
       {error && (
         <p className="text-center text-[13px] text-error px-6 -mt-2 mb-2 fade-card">{error}</p>
       )}
+
+      {isScanning && <div className="skeleton-card mx-5 mb-2" />}
 
       {result && (
         <div className="analysis-result fade-card">

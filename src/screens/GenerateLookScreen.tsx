@@ -122,6 +122,13 @@ export function GenerateLookScreen() {
           </div>
 
           <div className="liquid-card generator-card">
+            <div className="particles">
+              <span />
+              <span />
+              <span />
+              <span />
+              <span />
+            </div>
             <div className="ai-generator">
               <div className="generator-ring" />
               <div className="generator-center">

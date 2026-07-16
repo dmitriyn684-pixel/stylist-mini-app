@@ -146,6 +146,17 @@ body:after {
   }
 }
 
+/* Карточки по очереди — работает, когда несколько .fade-card идут подряд
+   среди детей одного родителя (списки образов/результатов); там, где
+   .fade-card единственная в родителе, nth-child(1) просто даёт лёгкую
+   стартовую задержку. */
+.fade-card:nth-child(1) { animation-delay: .05s; }
+.fade-card:nth-child(2) { animation-delay: .12s; }
+.fade-card:nth-child(3) { animation-delay: .20s; }
+.fade-card:nth-child(4) { animation-delay: .28s; }
+.fade-card:nth-child(5) { animation-delay: .36s; }
+.fade-card:nth-child(6) { animation-delay: .44s; }
+
 /* Glass-эффект (Glassmorphism). */
 .glass {
   background: rgba(255, 255, 255, .58);
@@ -1333,6 +1344,25 @@ LIQUID GLASS
   border: 1px solid rgba(255, 255, 255, .72);
   box-shadow: var(--glass-shadow);
   transition: .5s cubic-bezier(.2, .8, .2, 1);
+  /* Дышащее premium-свечение — лёгкая пульсация внешней тени поверх
+     статичной var(--glass-shadow). Через box-shadow на самом элементе, а не
+     отдельным слоем: ::before и ::after у .liquid-card уже заняты бликом и
+     внутренним свечением (см. ниже), третьего псевдоэлемента не бывает. */
+  animation: cardGlow 8s ease-in-out infinite;
+}
+
+@keyframes cardGlow {
+  0%, 100% { box-shadow: var(--glass-shadow); }
+  50% { box-shadow: var(--glass-shadow), 0 0 40px rgba(255, 200, 225, .35); }
+}
+
+/* .fade-card тоже задаёт свой `animation` (шорт-хенд полностью перезаписывает,
+   не складывается) — без этого правила карточки с обоими классами застревали
+   бы на opacity:0 навсегда, потому что более специфичный/поздний в каскаде
+   .liquid-card выигрывал бы один против fadeLuxury. Явно перечисляем обе
+   анимации вместе через запятую для этой комбинации классов. */
+.liquid-card.fade-card {
+  animation: fadeLuxury .8s forwards, cardGlow 8s ease-in-out infinite;
 }
 
 /* Живой блик — главный эффект. Раньше двигали `left` (layout-свойство, не
@@ -1368,10 +1398,13 @@ LIQUID GLASS
   pointer-events: none;
 }
 
-/* Наклон при касании — ощущение 3D на тапе (мобильный аналог :hover). */
+/* Наклон при касании — ощущение 3D на тапе (мобильный аналог :hover).
+   Останавливаем cardGlow на время нажатия — иначе анимация каждый кадр
+   переписывает box-shadow обратно и "тень нажатия" не была бы видна. */
 .liquid-card:active {
   transform: scale(.97) translateY(5px);
   box-shadow: 0 10px 30px rgba(180, 140, 160, .25);
+  animation-play-state: paused;
 }
 
 /* Эффект глубины при наведении — отдельный опциональный модификатор,
@@ -1559,4 +1592,81 @@ AI OUTFIT GENERATOR 2.0
 
 .status-line b {
   color: var(--color-ink);
+}
+
+/*=========================================
+PART 13
+PREMIUM MOTION & LUXURY INTERACTIONS
+=========================================*/
+
+/* Premium progress — для индикации активной, но не измеримой в % работы
+   (AI сканирует фото и т.п.). Не подходит для реальных данных с точным
+   значением (для тех уже есть ProgressBar.tsx с настоящим value/max). */
+.premium-progress {
+  height: 8px;
+  border-radius: 20px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, .45);
+  margin-top: 15px;
+}
+
+.premium-fill {
+  height: 100%;
+  width: 75%;
+  border-radius: 20px;
+  background: linear-gradient(90deg, var(--color-champagne), var(--color-pink), var(--color-lavender));
+  background-size: 250%;
+  animation: progressMove 3s linear infinite;
+}
+
+@keyframes progressMove {
+  100% { background-position: 250%; }
+}
+
+/* Skeleton loading — placeholder на месте карточки, пока AI считает
+   реальный результат (не выдаём случайные данные, просто честно
+   показываем "здесь скоро будет карточка"). */
+.skeleton-card {
+  height: 180px;
+  border-radius: 30px;
+  background: linear-gradient(90deg, rgba(255, 255, 255, .25), rgba(255, 255, 255, .55), rgba(255, 255, 255, .25));
+  background-size: 300%;
+  animation: shimmer 1.6s infinite;
+}
+
+@keyframes shimmer {
+  100% { background-position: 300%; }
+}
+
+/* Плавающие частицы — декоративный акцент для "AI-моментов" (Hero-орб,
+   экран генерации). Кладутся первым ребёнком в контейнер с position:relative
+   (у .liquid-card он уже есть) и overflow:hidden у самого контейнера, чтобы
+   не вылезали за скругления. */
+.particles {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.particles span {
+  position: absolute;
+  bottom: 0;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .65);
+  animation: floatParticle linear infinite;
+}
+
+.particles span:nth-child(1) { left: 10%; animation-duration: 8s; animation-delay: 0s; }
+.particles span:nth-child(2) { left: 28%; animation-duration: 11s; animation-delay: 2s; }
+.particles span:nth-child(3) { left: 52%; animation-duration: 9s; animation-delay: 1s; }
+.particles span:nth-child(4) { left: 74%; animation-duration: 13s; animation-delay: 4s; }
+.particles span:nth-child(5) { left: 90%; animation-duration: 10s; animation-delay: 3s; }
+
+@keyframes floatParticle {
+  0% { transform: translateY(120px) scale(.5); opacity: 0; }
+  20% { opacity: .8; }
+  100% { transform: translateY(-300px) scale(1.4); opacity: 0; }
 }

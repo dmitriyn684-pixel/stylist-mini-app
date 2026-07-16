@@ -75,6 +75,13 @@ export function HeroStats({ name, onProfileClick, onCreateLook }: HeroStatsProps
 
       <div className="liquid-card hero-ai fade-card">
         <div className="floating-light" />
+        <div className="particles">
+          <span />
+          <span />
+          <span />
+          <span />
+          <span />
+        </div>
 
         <div className="ai-core">
           <div className="core-inner">AI</div>
