@@ -17,7 +17,8 @@ export function AiPassportSection() {
   const outfits = useWardrobeStore((s) => s.outfits);
   const isPremium = usePremiumStore((s) => s.isPremium);
 
-  const name = profile?.name || user.first_name || 'Гость';
+  // Только имя из анкеты бота — никаких Telegram first_name/заглушек (см. HomeScreen.tsx).
+  const name = profile?.name ?? null;
   const styleId = `DIM-${String(user.id || 0).padStart(4, '0').slice(-4)}`;
   const kibbeType = kibbeResult?.type ?? colorResult?.kibbeType ?? null;
   const brandsCount = new Set(items.map((i) => i.brand).filter(Boolean)).size;
@@ -41,7 +42,7 @@ export function AiPassportSection() {
             </div>
           </div>
           <div>
-            <h2>{name}</h2>
+            <h2>{name ?? 'Профиль'}</h2>
             <p>AI Fashion Profile</p>
           </div>
         </div>

@@ -5,7 +5,7 @@ import { useWardrobeStore } from '../../store/useWardrobeStore';
 import { computeOutfitMatch } from '../../utils/outfitMatch';
 
 interface HeroStatsProps {
-  name: string;
+  name: string | null;
   onProfileClick?: () => void;
   onCreateLook?: () => void;
 }
@@ -57,10 +57,16 @@ export function HeroStats({ name, onProfileClick, onCreateLook }: HeroStatsProps
     <section className="home-screen">
       <header className="welcome">
         <div>
-          <p>{greeting()}</p>
-          <h1>{name}</h1>
+          {name ? (
+            <>
+              <p>{greeting()}</p>
+              <h1>{name}</h1>
+            </>
+          ) : (
+            <h1>{greeting()}!</h1>
+          )}
         </div>
-        <button onClick={onProfileClick} className="profile-glow" aria-label={`Профиль — ${name}`}>
+        <button onClick={onProfileClick} className="profile-glow" aria-label={name ? `Профиль — ${name}` : 'Профиль'}>
           <div className="profile-avatar">
             <ProfileIcon className="w-6 h-6" />
           </div>

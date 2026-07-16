@@ -2,7 +2,10 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AnimatePresence, motion, type PanInfo } from 'framer-motion';
 import { Button } from '../ui/Button';
-import { PaletteIcon, HangerIcon, ProfileIcon, SparkleIcon } from '../ui/icons';
+import slide1 from '../../assets/onboarding/slide-1.jpg';
+import slide2 from '../../assets/onboarding/slide-2.jpg';
+import slide3 from '../../assets/onboarding/slide-3.jpg';
+import slide4 from '../../assets/onboarding/slide-4.jpg';
 
 interface OnboardingScreenProps {
   onFinish: () => void;
@@ -10,22 +13,23 @@ interface OnboardingScreenProps {
 
 const slides = [
   {
-    Icon: PaletteIcon,
+    image: slide1,
     title: 'Узнай свой цветотип',
     subtitle: 'По 12-сезонной системе + корейской методике',
   },
   {
-    Icon: HangerIcon,
+    image: slide2,
     title: 'Получи капсульный гардероб',
-    subtitle: 'Со ссылками на Wildberries и Lamoda',
+    subtitle: 'Лучшие бренды Instagram — в одной капсуле',
+    caption: 'Избранные магазины из твоей ленты. Не масс-маркет',
   },
   {
-    Icon: ProfileIcon,
+    image: slide3,
     title: 'Примеряй на свою 3D-фигуру',
     subtitle: '3 фото = твой цифровой двойник. Одежда сидит идеально.',
   },
   {
-    Icon: SparkleIcon,
+    image: slide4,
     title: 'Готова?',
     subtitle: 'Начнём с определения твоего стиля',
   },
@@ -51,16 +55,41 @@ export function OnboardingScreen({ onFinish }: OnboardingScreenProps) {
   const slide = slides[index];
 
   return (
-    <div className="h-full flex flex-col bg-cream px-6 pt-[calc(env(safe-area-inset-top)+16px)] pb-[calc(env(safe-area-inset-bottom)+32px)]">
-      <div className="flex justify-end">
-        {!isLast && (
-          <button onClick={onFinish} className="text-[13px] font-semibold text-olive px-2 py-2">
-            Пропустить
-          </button>
-        )}
-      </div>
+    <div className="relative h-full overflow-hidden bg-ink">
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={index}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.35 }}
+          className="absolute inset-0"
+        >
+          <img src={slide.image} alt="" className="absolute inset-0 w-full h-full object-cover" />
+          {/* Тёмный градиент снизу — фото остаётся ярким сверху, текст читаем снизу
+              без сплошной плашки поверх всей карточки. */}
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                'linear-gradient(180deg, rgba(20,15,12,.1) 0%, rgba(20,15,12,.05) 30%, rgba(20,15,12,.55) 68%, rgba(20,15,12,.88) 100%)',
+            }}
+          />
+        </motion.div>
+      </AnimatePresence>
 
-      <div className="flex-1 flex items-center justify-center overflow-hidden">
+      <div className="relative h-full flex flex-col px-6 pt-[calc(env(safe-area-inset-top)+16px)] pb-[calc(env(safe-area-inset-bottom)+32px)]">
+        <div className="flex justify-end">
+          {!isLast && (
+            <button
+              onClick={onFinish}
+              className="text-[13px] font-semibold text-white px-3 py-1.5 rounded-full bg-black/25 backdrop-blur-sm"
+            >
+              Пропустить
+            </button>
+          )}
+        </div>
+
         <AnimatePresence mode="wait">
           <motion.div
             key={index}
@@ -68,41 +97,33 @@ export function OnboardingScreen({ onFinish }: OnboardingScreenProps) {
             dragConstraints={{ left: 0, right: 0 }}
             dragElastic={0.6}
             onDragEnd={handleDragEnd}
-            initial={{ opacity: 0, x: 40 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -40 }}
-            transition={{ duration: 0.28 }}
-            className="w-full flex flex-col items-center text-center gap-6 cursor-grab active:cursor-grabbing"
+            initial={{ opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.3 }}
+            className="mt-auto cursor-grab active:cursor-grabbing"
           >
-            <div
-              className="w-40 h-40 rounded-full flex items-center justify-center"
-              style={{
-                background:
-                  'radial-gradient(circle at 30% 30%, var(--color-lavender-light), var(--color-pink-light) 55%, var(--color-blue-light) 100%)',
-              }}
-            >
-              <slide.Icon className="w-16 h-16 text-white" />
-            </div>
-            <div>
-              <h1 className="font-display text-[30px] leading-tight text-ink mb-3">{slide.title}</h1>
-              <p className="text-[15px] text-ink-soft leading-relaxed max-w-[280px]">{slide.subtitle}</p>
-            </div>
+            <h1 className="font-display text-[36px] leading-[1.08] tracking-tight text-white mb-3 drop-shadow-sm">
+              {slide.title}
+            </h1>
+            <p className="text-[15px] text-white/90 leading-relaxed max-w-[300px]">{slide.subtitle}</p>
+            {slide.caption && <p className="text-[12px] text-white/65 mt-2 max-w-[300px]">{slide.caption}</p>}
           </motion.div>
         </AnimatePresence>
-      </div>
 
-      <div className="flex items-center justify-center gap-2 mb-8">
-        {slides.map((_, i) => (
-          <div
-            key={i}
-            className={`h-[6px] rounded-full transition-all ${i === index ? 'w-6 bg-lavender' : 'w-[6px] bg-olive-light'}`}
-          />
-        ))}
-      </div>
+        <div className="flex items-center gap-2 mt-8 mb-6">
+          {slides.map((_, i) => (
+            <div
+              key={i}
+              className={`h-[6px] rounded-full transition-all ${i === index ? 'w-6 bg-white' : 'w-[6px] bg-white/40'}`}
+            />
+          ))}
+        </div>
 
-      <Button onClick={goNext} className="w-full">
-        {isLast ? 'Создать аватар' : 'Далее'}
-      </Button>
+        <Button variant="secondary" onClick={goNext} className="w-full">
+          {isLast ? 'Создать аватар' : 'Далее'}
+        </Button>
+      </div>
     </div>
   );
 }

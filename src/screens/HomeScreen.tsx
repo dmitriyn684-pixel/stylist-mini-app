@@ -8,7 +8,6 @@ import { CategoryBars } from '../components/home/CategoryBars';
 import { DayLookCard } from '../components/home/DayLookCard';
 import { QuickActions } from '../components/home/QuickActions';
 import { ChallengeCard } from '../components/home/ChallengeCard';
-import { useTelegram } from '../hooks/useTelegram';
 import { useUserProfile } from '../hooks/useUserProfile';
 import { useColorAnalysis } from '../hooks/useColorAnalysis';
 import { useWardrobeStore } from '../store/useWardrobeStore';
@@ -22,19 +21,22 @@ const CATEGORY_COLORS: Record<string, string> = {
 
 export function HomeScreen() {
   const navigate = useNavigate();
-  const { user } = useTelegram();
   const { profile, hasProfile } = useUserProfile();
   const { result: colorResult } = useColorAnalysis();
   const items = useWardrobeStore((s) => s.items);
 
-  const name = profile?.name || user.first_name || 'Гость';
+  // Имя показываем только если пользователь реально указал его в анкете
+  // бота — никаких Telegram first_name или заглушек вроде "Гость": в браузере
+  // вне Telegram first_name — это моковое "Аня" (см. useTelegram.ts), и
+  // показывать его как будто мы знаем имя пользователя нечестно.
+  const name = profile?.name ?? null;
 
   // Ничего не пришло из бота и гардероб пуст — честный empty-state вместо
   // demo-цифр (47 вещей и т.п.), которые раньше показывались всегда.
   if (!hasProfile && !colorResult && items.length === 0) {
     return (
       <div className="px-6 pt-[calc(env(safe-area-inset-top)+60px)] pb-[calc(env(safe-area-inset-bottom)+110px)] flex flex-col items-center text-center gap-4">
-        <h1 className="font-display text-[22px] text-ink">Привет, {name}!</h1>
+        <h1 className="font-display text-[22px] text-ink">{name ? `Привет, ${name}!` : 'Привет!'}</h1>
         <p className="text-[14px] text-ink-soft leading-relaxed max-w-[280px]">
           Пройди анализ в боте @StylistDimkoFF, чтобы увидеть здесь свой цветотип, тип фигуры и персональные
           рекомендации.

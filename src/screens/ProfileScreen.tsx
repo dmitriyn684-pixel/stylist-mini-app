@@ -5,7 +5,6 @@ import { AvatarViewer } from '../components/avatar/AvatarViewer';
 import { useAvatarStore } from '../store/useAvatarStore';
 import { useColorAnalysis } from '../hooks/useColorAnalysis';
 import { useUserProfile } from '../hooks/useUserProfile';
-import { useTelegram } from '../hooks/useTelegram';
 import { usePremiumStore } from '../store/usePremiumStore';
 import { useWardrobeStore } from '../store/useWardrobeStore';
 
@@ -21,12 +20,12 @@ export function ProfileScreen() {
   const { measurements, kibbeResult } = useAvatarStore();
   const { result: colorResult } = useColorAnalysis();
   const { profile } = useUserProfile();
-  const { user } = useTelegram();
   const isPremium = usePremiumStore((s) => s.isPremium);
   const items = useWardrobeStore((s) => s.items);
   const outfits = useWardrobeStore((s) => s.outfits);
 
-  const name = profile?.name || user.first_name || 'Гость';
+  // Только имя из анкеты бота — никаких Telegram first_name/заглушек (см. HomeScreen.tsx).
+  const name = profile?.name ?? null;
   // Челленджей как фичи в приложении пока нет — честный 0, а не выдуманное число.
   const stats = { items: items.length, outfits: outfits.length, challenges: 0 };
 
@@ -47,7 +46,7 @@ export function ProfileScreen() {
         </div>
       )}
 
-      <h1 className="font-display text-[26px] text-ink mt-5 mb-1">{name}</h1>
+      <h1 className="font-display text-[26px] text-ink mt-5 mb-1">{name ?? 'Профиль'}</h1>
       <p className="text-[13px] text-ink-soft mb-1">
         Цветотип: <span className="font-semibold text-ink">{colorResult?.seasonalType ?? 'не определён'}</span>
       </p>
