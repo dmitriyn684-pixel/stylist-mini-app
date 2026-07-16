@@ -16,6 +16,8 @@ interface ChatState {
   isTyping: boolean;
   usageDate: string;
   usageCount: number;
+  isUnlimited: boolean;
+  setUnlimited: (value: boolean) => void;
   remaining: () => number;
   sendMessage: (text: string, profile: ChatProfile) => Promise<void>;
   addPaletteMessage: (palette: ChatMessage['palette']) => void;
@@ -30,9 +32,15 @@ export const useChatStore = create<ChatState>()(
       isTyping: false,
       usageDate: today(),
       usageCount: 0,
+      // Не персистится (см. partialize ниже) — источник правды на бэкенде
+      // (ADMIN_TELEGRAM_ID), заново запрашивается при каждом старте приложения
+      // через useAdminChatAccess, чтобы не остаться с устаревшим true в
+      // localStorage, если админский ID когда-нибудь поменяют.
+      isUnlimited: false,
+      setUnlimited: (value) => set({ isUnlimited: value }),
 
       remaining: () => {
-        if (usePremiumStore.getState().isPremium) return Infinity;
+        if (usePremiumStore.getState().isPremium || get().isUnlimited) return Infinity;
         const s = get();
         if (s.usageDate !== today()) return FREE_LIMIT;
         return Math.max(0, FREE_LIMIT - s.usageCount);

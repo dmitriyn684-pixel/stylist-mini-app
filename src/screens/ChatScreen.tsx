@@ -4,6 +4,8 @@ import { MessageList } from '../components/chat/MessageList';
 import { ChatInput } from '../components/chat/ChatInput';
 import { useChatStore } from '../store/useChatStore';
 import { useColorAnalysis } from '../hooks/useColorAnalysis';
+import { useTelegram } from '../hooks/useTelegram';
+import { useAdminChatAccess } from '../hooks/useAdminChatAccess';
 import { useAvatarStore } from '../store/useAvatarStore';
 import { useWardrobeStore } from '../store/useWardrobeStore';
 import type { ChatProfile } from '../types/chat';
@@ -22,6 +24,10 @@ export function ChatScreen() {
   const addPaletteMessage = useChatStore((s) => s.addPaletteMessage);
   const addNote = useChatStore((s) => s.addNote);
   const remaining = useChatStore((s) => s.remaining());
+  const isUnlimitedAdmin = useChatStore((s) => s.isUnlimited);
+
+  const { user } = useTelegram();
+  useAdminChatAccess(user.id);
 
   const { result: colorResult } = useColorAnalysis();
   const measurements = useAvatarStore((s) => s.measurements);
@@ -69,7 +75,13 @@ export function ChatScreen() {
         <div className="stylist-avatar">✦</div>
         <div>
           <h2>DimkoFF AI</h2>
-          <p>{Number.isFinite(remaining) ? `Осталось сегодня: ${remaining}` : 'Безлимит · Premium'}</p>
+          <p>
+            {Number.isFinite(remaining)
+              ? `Осталось сегодня: ${remaining}`
+              : isUnlimitedAdmin
+                ? 'Безлимит · Admin'
+                : 'Безлимит · Premium'}
+          </p>
         </div>
         <div className="online-dot" />
       </div>
