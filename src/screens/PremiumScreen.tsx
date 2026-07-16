@@ -65,7 +65,7 @@ export function PremiumScreen() {
           </Button>
         </div>
       ) : (
-        <Button className="shimmer-bg w-full !text-white" onClick={() => setPremium(true)}>
+        <Button className="premium-btn w-full" onClick={() => setPremium(true)}>
           Активировать <span className="opacity-70 font-normal text-[13px]">(тест)</span>
         </Button>
       )}

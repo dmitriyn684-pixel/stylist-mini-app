@@ -30,9 +30,13 @@ export function AiPassportSection() {
 
   return (
     <section className="profile-section">
-      <div className="passport-card">
+      <div className="passport-card liquid depth">
+        <span className="glow-pink" />
+        <span className="glow-blue" />
         <div className="profile-top">
-          <div className="big-avatar">✦</div>
+          <div className="premium-ring">
+            <div className="big-avatar">✦</div>
+          </div>
           <div>
             <h2>{name}</h2>
             <p>AI Fashion Profile</p>
