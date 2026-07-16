@@ -118,7 +118,7 @@ export function AiShoppingSection() {
           </div>
 
           <a
-            className="cheaper-link"
+            className="text-link"
             href={lamodaSearchUrl(hero.item.name)}
             target="_blank"
             rel="noreferrer"

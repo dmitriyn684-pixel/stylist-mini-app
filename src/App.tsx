@@ -15,6 +15,7 @@ import { ItemDetailScreen } from './screens/ItemDetailScreen';
 import { TryOnScreen } from './screens/TryOnScreen';
 import { OutfitsListScreen } from './screens/OutfitsListScreen';
 import { OutfitCreatorScreen } from './screens/OutfitCreatorScreen';
+import { GenerateLookScreen } from './screens/GenerateLookScreen';
 import { OutfitDetailScreen } from './screens/OutfitDetailScreen';
 import { ChatScreen } from './screens/ChatScreen';
 import { CapsuleWardrobeScreen } from './screens/CapsuleWardrobeScreen';
@@ -43,6 +44,7 @@ function App() {
           <Route path="/avatar/tryon/:itemId" element={<TryOnScreen />} />
           <Route path="/wardrobe/add" element={<AddItemScreen />} />
           <Route path="/wardrobe/outfits/create" element={<OutfitCreatorScreen />} />
+          <Route path="/wardrobe/outfits/generate" element={<GenerateLookScreen />} />
           <Route path="/chat" element={<ChatScreen />} />
           <Route path="/premium" element={<PremiumScreen />} />
           <Route element={<Layout />}>

@@ -649,6 +649,10 @@ AI OUTFIT GENERATOR
   font-weight: 600;
 }
 
+.try-button:disabled {
+  opacity: .6;
+}
+
 .small-outfits {
   display: flex;
   gap: 12px;
@@ -1255,7 +1259,10 @@ AI SHOPPING
   font-weight: 600;
 }
 
-.cheaper-link {
+/* Лёгкая второстепенная кнопка-ссылка — раньше называлась .cheaper-link
+   (была только у "Найти дешевле"), переименована: теперь тот же стиль
+   нужен и для других второстепенных действий (см. GenerateLookScreen). */
+.text-link {
   display: block;
   width: 100%;
   margin-top: 14px;
@@ -1443,4 +1450,109 @@ LIQUID GLASS
 
 .premium-btn:active {
   transform: scale(.97);
+}
+
+/*======================================================
+PART 12
+AI OUTFIT GENERATOR 2.0
+======================================================*/
+
+.generate-header {
+  padding: 15px 5px 20px;
+  text-align: center;
+}
+
+.generate-header h2 {
+  font-size: 26px;
+  letter-spacing: -1px;
+}
+
+.generate-header p {
+  margin-top: 8px;
+  font-size: 14px;
+  color: #91838a;
+}
+
+.generator-card {
+  padding: 35px 25px;
+  text-align: center;
+}
+
+/* AI Sphere. */
+.ai-generator {
+  margin: 20px auto 35px;
+  width: 220px;
+  height: 220px;
+  position: relative;
+}
+
+.generator-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: conic-gradient(var(--color-champagne), var(--color-pink), var(--color-lavender), #FFF7EF, var(--color-champagne));
+  animation: generatorRotate 5s linear infinite;
+  filter: blur(.3px);
+}
+
+@keyframes generatorRotate {
+  100% { transform: rotate(360deg); }
+}
+
+.generator-center {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 170px;
+  height: 170px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .78);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.pulse-core {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-pink), var(--color-lavender));
+  animation: pulseCore 2.5s infinite;
+}
+
+@keyframes pulseCore {
+  50% {
+    transform: scale(1.15);
+    box-shadow: 0 0 60px rgba(220, 180, 230, .8);
+  }
+}
+
+.generator-status {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  margin-top: 30px;
+}
+
+.status-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-radius: 22px;
+  background: rgba(255, 255, 255, .58);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+}
+
+.status-line span {
+  font-size: 14px;
+  color: var(--color-ink-soft);
+}
+
+.status-line b {
+  color: var(--color-ink);
 }

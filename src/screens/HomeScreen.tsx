@@ -67,7 +67,7 @@ export function HomeScreen() {
       <HeroStats
         name={name}
         onProfileClick={() => navigate('/profile')}
-        onCreateLook={() => navigate('/wardrobe/outfits/create')}
+        onCreateLook={() => navigate('/wardrobe/outfits/generate')}
       />
 
       <AiAnalyzerSection />
