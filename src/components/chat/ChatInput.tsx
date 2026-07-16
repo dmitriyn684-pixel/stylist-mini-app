@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ArrowRightIcon, MoonIcon } from '../ui/icons';
+import { ArrowRightIcon, MoonIcon, CameraIcon } from '../ui/icons';
 
 interface ChatInputProps {
   onSend: (text: string) => void;
@@ -30,7 +30,7 @@ export function ChatInput({ onSend, onPhotoClick, disabled, limitReached }: Chat
     <div className="shrink-0 pb-[calc(env(safe-area-inset-bottom)+16px)] pt-2">
       <div className="chat-input">
         <button type="button" className="photo-btn" onClick={onPhotoClick} disabled={disabled} aria-label="Прикрепить фото">
-          📷
+          <CameraIcon className="w-5 h-5" />
         </button>
         <input
           value={text}

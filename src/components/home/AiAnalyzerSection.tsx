@@ -3,6 +3,7 @@ import { ColorGrid } from '../ui/ColorGrid';
 import { loadImageFromFile, resizeToCanvas, canvasToDataUrl } from '../../utils/imageUtils';
 import { scanPhoto, type PhotoScanResult } from '../../services/photoAnalysisService';
 import { useColorAnalysis } from '../../hooks/useColorAnalysis';
+import { CameraIcon, PaletteIcon, ContrastIcon, ProfileIcon } from '../ui/icons';
 
 export function AiAnalyzerSection() {
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -75,7 +76,9 @@ export function AiAnalyzerSection() {
 
           {!photo && (
             <>
-              <div className="upload-icon">📸</div>
+              <div className="upload-icon">
+                <CameraIcon className="w-9 h-9" />
+              </div>
               <h3>Загрузить образ</h3>
               <p>AI определит стиль, цвета и идеальные сочетания</p>
             </>
@@ -107,9 +110,15 @@ export function AiAnalyzerSection() {
           </div>
 
           <div className="style-tags">
-            <span>🎨 {result.skinUndertone}</span>
-            <span>⚖️ {result.contrastLevel} контраст</span>
-            <span>👤 {result.kibbeType}</span>
+            <span>
+              <PaletteIcon className="w-3.5 h-3.5" /> {result.skinUndertone}
+            </span>
+            <span>
+              <ContrastIcon className="w-3.5 h-3.5" /> {result.contrastLevel} контраст
+            </span>
+            <span>
+              <ProfileIcon className="w-3.5 h-3.5" /> {result.kibbeType}
+            </span>
           </div>
 
           <div className="recommendations">

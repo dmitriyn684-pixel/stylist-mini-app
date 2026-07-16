@@ -5,6 +5,7 @@ import { useColorAnalysis } from '../../hooks/useColorAnalysis';
 import { useAvatarStore } from '../../store/useAvatarStore';
 import { useWardrobeStore } from '../../store/useWardrobeStore';
 import { usePremiumStore } from '../../store/usePremiumStore';
+import { SparkleIcon, HangerIcon, WardrobeIcon, ShoppingIcon } from '../ui/icons';
 
 export function AiPassportSection() {
   const navigate = useNavigate();
@@ -30,12 +31,14 @@ export function AiPassportSection() {
 
   return (
     <section className="profile-section">
-      <div className="passport-card liquid depth">
+      <div className="passport-card liquid-card depth">
         <span className="glow-pink" />
         <span className="glow-blue" />
         <div className="profile-top">
           <div className="premium-ring">
-            <div className="big-avatar">✦</div>
+            <div className="big-avatar">
+              <SparkleIcon className="w-8 h-8" />
+            </div>
           </div>
           <div>
             <h2>{name}</h2>
@@ -60,7 +63,9 @@ export function AiPassportSection() {
         {kibbeType ? (
           <>
             <div className="style-main">
-              <div className="style-icon">✨</div>
+              <div className="style-icon">
+                <SparkleIcon className="w-6 h-6" />
+              </div>
               <div>
                 <h4>{kibbeType}</h4>
                 <p>{confidence != null ? `${confidence}% совпадение` : colorResult?.seasonalType}</p>
@@ -100,10 +105,18 @@ export function AiPassportSection() {
         <h2>AI Stylist PRO</h2>
         <p>{isPremium ? 'Все возможности уже разблокированы' : 'Раскрой свой полный стиль'}</p>
         <ul>
-          <li>✨ Неограниченный AI стилист</li>
-          <li>👗 Создание образов каждый день</li>
-          <li>💎 Анализ всего гардероба</li>
-          <li>🛍 Умный шопинг</li>
+          <li>
+            <SparkleIcon className="w-4 h-4" /> Неограниченный AI стилист
+          </li>
+          <li>
+            <HangerIcon className="w-4 h-4" /> Создание образов каждый день
+          </li>
+          <li>
+            <WardrobeIcon className="w-4 h-4" /> Анализ всего гардероба
+          </li>
+          <li>
+            <ShoppingIcon className="w-4 h-4" /> Умный шопинг
+          </li>
         </ul>
         <button type="button" onClick={() => navigate('/premium')}>
           {isPremium ? 'Управлять подпиской' : 'Активировать Premium'}

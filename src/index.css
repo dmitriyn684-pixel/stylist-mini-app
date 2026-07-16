@@ -4,17 +4,22 @@
 @theme {
   /* Тёплый белый, нежная "girly" палитра — лаванда/розовый/голубой вместо
      зелёно-коралловой спортивной Lifesum-темы */
-  --color-cream: #FFFBF9;
+  /* Luxury Pastel — зафиксированное направление (см. PART 11): молочный/
+     пудрово-розовый/лавандовый + шампань/золото вместо голубого акцента. */
+  --color-cream: #FFF9F7;
   --color-cream-dark: #F6ECF1;
   --color-ink: #2B2118;
   --color-ink-soft: #55493C;
   --color-olive: #B0A0AC;
   --color-olive-light: #D9CDD6;
 
-  --color-lavender: #C9A9E8;
-  --color-lavender-light: #E6D9F5;
-  --color-pink: #F4B8C8;
+  --color-lavender: #DDD4FF;
+  --color-lavender-light: #ECE7FF;
+  --color-pink: #F7C9D8;
   --color-pink-light: #FFE3EA;
+  --color-champagne: #EBD3A3;
+  --color-champagne-light: #FFF0D8;
+  --color-gold: #D8B36A;
   --color-blue: #A8D8EA;
   --color-blue-light: #D6EEF7;
   --color-error: #E8607D;
@@ -244,31 +249,10 @@ HEADER
   }
 }
 
-.ai-orb {
-  width: 120px;
-  height: 120px;
-  margin: auto;
-  border-radius: 50%;
-  padding: 5px;
-  background: linear-gradient(135deg, #ffc4dd, #cbbcff, #bfe8ff);
-  animation: orbMove 6s infinite;
-}
-
-.orb-inner {
-  height: 100%;
-  width: 100%;
-  border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: white;
-  font-size: 45px;
-}
-
-@keyframes orbMove {
-  50% {
-    transform: rotate(180deg) scale(1.08);
-  }
+/* Место старого .ai-orb/.orb-inner (эмодзи ✨ в белом кружке) — теперь
+   .ai-core рендерится прямо здесь, по центру карточки. */
+.hero-card .ai-core {
+  margin: 0 auto;
 }
 
 .hero-card h1 {
@@ -471,6 +455,9 @@ AI ANALYZER
 }
 
 .style-tags span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   padding: 10px 15px;
   border-radius: 25px;
   background: #fff0f7;
@@ -501,8 +488,10 @@ AI OUTFIT GENERATOR
   height: 52px;
   border: none;
   border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background: linear-gradient(135deg, #ffe0ed, #ddd2ff);
-  font-size: 22px;
   box-shadow: 0 15px 35px rgba(220, 170, 220, .35);
   animation: magicPulse 3s infinite;
 }
@@ -764,6 +753,9 @@ PROFILE
 }
 
 .premium-box li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
   list-style: none;
   margin: 12px 0;
   color: #f6eee8;
@@ -1000,7 +992,9 @@ AI CHAT
   height: 48px;
   border: none;
   border-radius: 50%;
-  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   shrink: 0;
   flex-shrink: 0;
 }
@@ -1085,33 +1079,22 @@ AI CHAT
   animation: shimmer 5s ease infinite;
 }
 
-/* AI Core — вращающаяся сфера с матовым центром, замена простого кольца в hero-блоке. */
-@keyframes core-rotate {
-  100% { transform: rotate(360deg); }
-}
-
+/* AI Core — светящийся вращающийся шар, главный AI-элемент бренда вместо
+   emoji ✨. Раньше был другой вариант с матовым центром-кольцом, но нигде не
+   применялся — PART 11 заменяет его на финальную версию и реально включает
+   в HeroStats (замена .ai-orb/.orb-inner с эмодзи внутри). */
 .ai-core {
-  width: 144px;
-  height: 144px;
+  width: 110px;
+  height: 110px;
   border-radius: 50%;
-  padding: 4px;
-  background: conic-gradient(var(--color-lavender), var(--color-blue), var(--color-pink-light), var(--color-lavender));
-  animation: core-rotate 12s linear infinite;
-  box-shadow: 0 0 50px rgba(255, 255, 255, 0.35);
+  background: conic-gradient(var(--color-pink), var(--color-lavender), var(--color-champagne-light), var(--color-pink));
+  animation: rotateAI 8s linear infinite;
+  box-shadow: 0 0 60px rgba(220, 170, 220, .6);
   flex-shrink: 0;
 }
 
-.ai-core-inner {
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.22);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+@keyframes rotateAI {
+  100% { transform: rotate(360deg); }
 }
 
 /* Появление карточек по очереди — для списков (Шопинг/Гардероб). */
@@ -1139,8 +1122,10 @@ AI SHOPPING
   height: 52px;
   border: none;
   border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background: linear-gradient(135deg, #ffdbe8, #ddd2ff);
-  font-size: 22px;
   box-shadow: 0 15px 30px rgba(220, 170, 220, .25);
 }
 
@@ -1284,9 +1269,11 @@ LIQUID GLASS
 
 /* Универсальный класс стекла — добавляется поверх карточки, чтобы дать ей
    премиальный "жидкий" фон вместо плоского. Сама карточка по-прежнему
-   отвечает за отступы/border-radius, .liquid перекрывает только фон/тень
-   (объявлен позже в каскаде — специально, чтобы всегда выигрывать). */
-.liquid {
+   отвечает за отступы/border-radius, .liquid-card перекрывает только
+   фон/тень (объявлен позже в каскаде — специально, чтобы всегда выигрывать).
+   Раньше назывался .liquid — переименован в PART 11 в единственное каноничное
+   имя, чтобы не плодить два почти одинаковых класса. */
+.liquid-card {
   position: relative;
   overflow: hidden;
   background: linear-gradient(180deg, rgba(255, 255, 255, .52), rgba(255, 255, 255, .28));
@@ -1294,10 +1281,11 @@ LIQUID GLASS
   -webkit-backdrop-filter: blur(32px) saturate(180%);
   border: 1px solid rgba(255, 255, 255, .72);
   box-shadow: var(--glass-shadow);
+  transition: .5s cubic-bezier(.2, .8, .2, 1);
 }
 
 /* Живой блик — главный эффект. */
-.liquid::before {
+.liquid-card::before {
   content: "";
   position: absolute;
   left: -120%;
@@ -1305,16 +1293,18 @@ LIQUID GLASS
   width: 70%;
   height: 100%;
   background: linear-gradient(110deg, transparent, rgba(255, 255, 255, .75), transparent);
-  animation: liquidLight 8s linear infinite;
+  animation: glassShine 7s infinite;
   pointer-events: none;
 }
 
-@keyframes liquidLight {
-  100% { left: 220%; }
+@keyframes glassShine {
+  0% { left: -120%; }
+  40% { left: 160%; }
+  100% { left: 160%; }
 }
 
 /* Внутреннее свечение. */
-.liquid::after {
+.liquid-card::after {
   content: "";
   position: absolute;
   inset: 0;
@@ -1323,7 +1313,15 @@ LIQUID GLASS
   pointer-events: none;
 }
 
-/* Эффект глубины при наведении. */
+/* Наклон при касании — ощущение 3D на тапе (мобильный аналог :hover). */
+.liquid-card:active {
+  transform: scale(.97) translateY(5px);
+  box-shadow: 0 10px 30px rgba(180, 140, 160, .25);
+}
+
+/* Эффект глубины при наведении — отдельный опциональный модификатор,
+   комбинируется с .liquid-card на карточках, где уместен ещё и hover-наклон
+   (курсор/десктоп-превью; на тач-устройствах :hover не срабатывает). */
 .depth {
   transform-style: preserve-3d;
   transition: .5s cubic-bezier(.2, .8, .2, 1);
@@ -1333,9 +1331,9 @@ LIQUID GLASS
   transform: translateY(-10px) rotateX(5deg) scale(1.02);
 }
 
-/* Цветные блики — кладутся первыми детьми внутри .liquid-карточки (нужен
-   position:relative от родителя, .liquid его уже даёт), негативные отступы
-   прижимают их к углам, overflow:hidden родителя обрезает лишнее. */
+/* Цветные блики — кладутся первыми детьми внутри .liquid-card (нужен
+   position:relative от родителя, .liquid-card его уже даёт), негативные
+   отступы прижимают их к углам, overflow:hidden родителя обрезает лишнее. */
 .glow-pink {
   position: absolute;
   width: 180px;

@@ -1,6 +1,6 @@
 import { NavLink } from 'react-router-dom';
 import type { ComponentType } from 'react';
-import { HomeIcon, WardrobeIcon, StylistIcon, ShoppingIcon, ProfileIcon } from './icons';
+import { HomeIcon, WardrobeIcon, StylistIcon, ShoppingIcon, ProfileIcon, ChatIcon } from './icons';
 
 interface Tab {
   to: string;
@@ -42,7 +42,9 @@ export function TabBar() {
       ))}
 
       <NavLink to="/chat" className="nav-item ai-nav" aria-label="AI-стилист">
-        <span className="nav-icon">✦</span>
+        <span className="nav-icon">
+          <ChatIcon className="w-6 h-6" />
+        </span>
       </NavLink>
 
       {rightTabs.map((t) => (

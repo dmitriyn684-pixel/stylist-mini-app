@@ -8,8 +8,8 @@ import { generateOutfitFromWardrobe } from '../../utils/outfitGenerator';
 import { useAvatarStore } from '../../store/useAvatarStore';
 import { useColorAnalysis } from '../../hooks/useColorAnalysis';
 import { useWardrobeStore } from '../../store/useWardrobeStore';
+import { SparkleIcon } from '../ui/icons';
 import type { CapsuleStyle } from '../../types/capsule';
-import type { WardrobeCategory } from '../../types/wardrobe';
 import type { MannequinHighlight } from '../avatar/ParametricMannequin';
 
 type OutfitCategory = 'business' | 'date' | 'travel' | 'evening' | 'sport' | 'luxury';
@@ -31,14 +31,6 @@ const CATALOG_STYLE: Partial<Record<OutfitCategory, CapsuleStyle>> = {
   business: 'work',
   date: 'casual',
   evening: 'evening',
-};
-
-const CATEGORY_EMOJI: Record<WardrobeCategory, string> = {
-  Верх: '🤍',
-  Низ: '👖',
-  Платья: '👗',
-  Обувь: '👠',
-  Аксессуары: '👜',
 };
 
 function dayIndex(): number {
@@ -103,7 +95,7 @@ export function AiOutfitSection() {
           <p>AI создаёт образы под тебя</p>
         </div>
         <button type="button" className="magic-btn" onClick={handleShuffle} aria-label="Другой лук">
-          ✨
+          <SparkleIcon className="w-6 h-6" />
         </button>
       </div>
 
@@ -150,9 +142,7 @@ export function AiOutfitSection() {
 
             <div className="items">
               {items.map((item) => (
-                <span key={item.id}>
-                  {CATEGORY_EMOJI[item.category] ?? '✨'} {'name' in item ? item.name : item.brand || item.category}
-                </span>
+                <span key={item.id}>{'name' in item ? item.name : item.brand || item.category}</span>
               ))}
             </div>
 

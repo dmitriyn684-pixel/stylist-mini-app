@@ -1,3 +1,5 @@
+import { ProfileIcon } from '../ui/icons';
+
 interface HeroStatsProps {
   name: string;
   totalItems: number;
@@ -26,16 +28,16 @@ export function HeroStats({
         </div>
 
         <button onClick={onProfileClick} className="profile-glow" aria-label={`Профиль — ${name}`}>
-          <div className="profile-avatar">✦</div>
+          <div className="profile-avatar">
+            <ProfileIcon className="w-6 h-6" />
+          </div>
         </button>
       </header>
 
       <section className="hero-card fade-card">
         <div className="shine" />
 
-        <div className="ai-orb">
-          <div className="orb-inner">✨</div>
-        </div>
+        <div className="ai-core" />
 
         <h1>
           Твой персональный

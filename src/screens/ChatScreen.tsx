@@ -8,12 +8,13 @@ import { useTelegram } from '../hooks/useTelegram';
 import { useAdminChatAccess } from '../hooks/useAdminChatAccess';
 import { useAvatarStore } from '../store/useAvatarStore';
 import { useWardrobeStore } from '../store/useWardrobeStore';
+import { SparkleIcon, PaletteIcon } from '../components/ui/icons';
 import type { ChatProfile } from '../types/chat';
 
 const QUICK_ACTIONS = [
-  { label: '🌸 Весенний образ', prompt: 'Помоги подобрать весенний образ' },
-  { label: '💼 На работу', prompt: 'Помоги подобрать образ на работу' },
-  { label: '❤️ Свидание', prompt: 'Помоги подобрать образ на свидание' },
+  { label: 'Весенний образ', prompt: 'Помоги подобрать весенний образ' },
+  { label: 'На работу', prompt: 'Помоги подобрать образ на работу' },
+  { label: 'Свидание', prompt: 'Помоги подобрать образ на свидание' },
 ];
 
 export function ChatScreen() {
@@ -72,7 +73,9 @@ export function ChatScreen() {
       </button>
 
       <div className="chat-header shrink-0">
-        <div className="stylist-avatar">✦</div>
+        <div className="stylist-avatar">
+          <SparkleIcon className="w-6 h-6" />
+        </div>
         <div>
           <h2>DimkoFF AI</h2>
           <p>
@@ -90,7 +93,7 @@ export function ChatScreen() {
         <div className="chat-window">
           {messages.length === 0 && (
             <div className="message ai-message">
-              Привет 👋 Я твой AI стилист. Спроси меня про образ, гардероб или что надеть — я знаю твой цветотип,
+              Привет! Я твой AI стилист. Спроси меня про образ, гардероб или что надеть — я знаю твой цветотип,
               тип фигуры и вещи в шкафу.
             </div>
           )}
@@ -117,7 +120,7 @@ export function ChatScreen() {
             onClick={() => addPaletteMessage(colorResult.palette)}
             className="text-[12px] font-semibold text-lavender flex items-center gap-1"
           >
-            🎨 Показать мою палитру
+            <PaletteIcon className="w-3.5 h-3.5" /> Показать мою палитру
           </button>
         </div>
       )}

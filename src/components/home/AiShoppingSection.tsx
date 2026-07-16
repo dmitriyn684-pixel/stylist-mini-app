@@ -3,6 +3,7 @@ import { useColorAnalysis } from '../../hooks/useColorAnalysis';
 import { CAPSULE_ITEMS } from '../../utils/capsuleData';
 import { wildberriesSearchUrl, lamodaSearchUrl } from '../../utils/marketplaceLinks';
 import { colorDistance, computeOutfitMatch } from '../../utils/outfitMatch';
+import { ShoppingIcon } from '../ui/icons';
 import type { CapsuleItem } from '../../types/capsule';
 import type { ColorSwatch } from '../../types/analysis';
 
@@ -81,7 +82,7 @@ export function AiShoppingSection() {
           onClick={() => setVariant((v) => v + 1)}
           aria-label="Другая подборка"
         >
-          🛍
+          <ShoppingIcon className="w-6 h-6" />
         </button>
       </div>
 

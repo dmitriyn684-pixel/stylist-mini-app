@@ -32,7 +32,7 @@ export function PremiumScreen() {
         </p>
       </div>
 
-      <div className="bg-card rounded-2xl shadow-card p-5 mb-6">
+      <div className="liquid-card p-5 mb-6">
         <p className="text-[13px] font-bold text-ink mb-3">Что даёт Premium</p>
         <div className="flex flex-col gap-2">
           {benefits.map((b) => (
@@ -45,11 +45,11 @@ export function PremiumScreen() {
       </div>
 
       <div className="grid grid-cols-2 gap-3 mb-6">
-        <div className="bg-card rounded-2xl shadow-card p-4 text-center">
+        <div className="liquid-card p-4 text-center">
           <p className="text-[12px] text-olive mb-1">Месяц</p>
           <p className="text-[20px] font-bold text-ink">299 ₽</p>
         </div>
-        <div className="bg-card rounded-2xl shadow-card p-4 text-center border-2 border-pink">
+        <div className="liquid-card p-4 text-center">
           <p className="text-[12px] text-pink font-semibold mb-1">Год · выгоднее</p>
           <p className="text-[20px] font-bold text-ink">1990 ₽</p>
         </div>
