@@ -26,7 +26,6 @@ export function HomeScreen() {
   const { profile, hasProfile } = useUserProfile();
   const { result: colorResult } = useColorAnalysis();
   const items = useWardrobeStore((s) => s.items);
-  const outfits = useWardrobeStore((s) => s.outfits);
 
   const name = profile?.name || user.first_name || 'Гость';
 
@@ -45,9 +44,6 @@ export function HomeScreen() {
   }
 
   const totalItems = items.length;
-  const totalOutfits = outfits.length;
-  const readyPercent =
-    totalItems > 0 ? Math.round((items.filter((i) => i.timesWorn > 0).length / totalItems) * 100) : 0;
 
   const categoryBars = (['Верх', 'Низ', 'Обувь'] as const).map((label) => ({
     label,
@@ -70,11 +66,8 @@ export function HomeScreen() {
     <div className="app">
       <HeroStats
         name={name}
-        totalItems={totalItems}
-        totalOutfits={totalOutfits}
-        readyPercent={readyPercent}
         onProfileClick={() => navigate('/profile')}
-        onOpenStylist={() => navigate('/stylist')}
+        onCreateLook={() => navigate('/wardrobe/outfits/create')}
       />
 
       <AiAnalyzerSection />

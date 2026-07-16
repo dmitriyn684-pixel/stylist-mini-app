@@ -4,8 +4,8 @@
 @theme {
   /* Тёплый белый, нежная "girly" палитра — лаванда/розовый/голубой вместо
      зелёно-коралловой спортивной Lifesum-темы */
-  /* Luxury Pastel — зафиксированное направление (см. PART 11): молочный/
-     пудрово-розовый/лавандовый + шампань/золото вместо голубого акцента. */
+  /* Luxury Pastel — зафиксированное направление: молочный/пудрово-розовый/
+     лавандовый + шампань/золото вместо голубого акцента. */
   --color-cream: #FFF9F7;
   --color-cream-dark: #F6ECF1;
   --color-ink: #2B2118;
@@ -156,8 +156,8 @@ body:after {
 }
 
 /* ======================================
-PART 2
-HEADER
+PART 2 / PART 11
+HOME HERO — Liquid Glass
 ====================================== */
 
 .app {
@@ -166,32 +166,26 @@ HEADER
   padding-bottom: calc(120px + env(safe-area-inset-bottom));
 }
 
-.premium-header {
-  padding: calc(25px + env(safe-area-inset-top)) 22px 15px;
+.home-screen {
+  padding: calc(20px + env(safe-area-inset-top)) 20px 0;
+}
+
+.welcome {
+  padding: 15px 5px 20px;
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
 }
 
-.brand-name {
-  font-size: 26px;
-  font-weight: 700;
-  letter-spacing: -1px;
+.welcome p {
+  font-size: 14px;
+  color: #998990;
 }
 
-.brand-name span {
-  background: linear-gradient(90deg, #d99ab8, #aa91ff);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-
-.brand-sub {
+.welcome h1 {
+  font-size: 38px;
+  letter-spacing: -2px;
   margin-top: 5px;
-  font-size: 12px;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: #A89692;
 }
 
 .profile-glow {
@@ -199,6 +193,7 @@ HEADER
   height: 54px;
   border-radius: 50%;
   padding: 3px;
+  flex-shrink: 0;
   background: linear-gradient(135deg, #ffd5e7, #d8c9ff);
   animation: pulseGlow 4s infinite;
 }
@@ -211,7 +206,7 @@ HEADER
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 25px;
+  color: var(--color-ink);
 }
 
 @keyframes pulseGlow {
@@ -220,95 +215,162 @@ HEADER
   }
 }
 
-.hero-card {
-  margin: 15px 20px;
-  border-radius: 38px;
+/* Главная Liquid-карточка — "Твой AI Stylist". .liquid-card в разметке даёт
+   стекло/блик/внутреннее свечение (см. PART 10), здесь — только своя форма. */
+.hero-ai {
+  margin: 0 0 20px;
   padding: 35px 25px;
   text-align: center;
-  position: relative;
-  overflow: hidden;
-  background: linear-gradient(145deg, rgba(255, 255, 255, .85), rgba(255, 240, 248, .65));
-  box-shadow: var(--shadow);
-  border: 1px solid rgba(255, 255, 255, .8);
+  min-height: 430px;
 }
 
-.shine {
+.floating-light {
   position: absolute;
-  width: 180px;
-  height: 500px;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .8), transparent);
-  transform: rotate(35deg);
-  top: -200px;
-  left: -250px;
-  animation: shineMove 7s infinite;
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 220, 235, .5), transparent 70%);
+  filter: blur(50px);
+  top: -60px;
+  left: 50%;
+  transform: translateX(-50%);
+  animation: floatLight 10s ease-in-out infinite;
+  pointer-events: none;
 }
 
-@keyframes shineMove {
-  50% {
-    left: 500px;
-  }
+@keyframes floatLight {
+  50% { transform: translate(-50%, 25px) scale(1.15); }
 }
 
-/* Место старого .ai-orb/.orb-inner (эмодзи ✨ в белом кружке) — теперь
-   .ai-core рендерится прямо здесь, по центру карточки. */
-.hero-card .ai-core {
-  margin: 0 auto;
+.ai-core {
+  width: 130px;
+  height: 130px;
+  margin: auto;
+  border-radius: 50%;
+  padding: 5px;
+  background: conic-gradient(var(--color-pink), var(--color-lavender), var(--color-champagne-light), var(--color-pink));
+  animation: coreRotate 10s linear infinite;
+  box-shadow: 0 0 80px rgba(230, 170, 220, .6);
+  flex-shrink: 0;
 }
 
-.hero-card h1 {
-  margin-top: 25px;
+.core-inner {
+  height: 100%;
+  width: 100%;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, .75);
+  font-size: 32px;
+  font-weight: 700;
+  color: #9c7a90;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  /* .ai-core вращает весь круг вместе с надписью — встречная анимация той же
+     длительности держит текст "AI" неподвижным, крутится только градиентное
+     кольцо снаружи. */
+  animation: coreRotateCounter 10s linear infinite;
+}
+
+@keyframes coreRotateCounter {
+  100% { transform: rotate(-360deg); }
+}
+
+@keyframes coreRotate {
+  100% { transform: rotate(360deg); }
+}
+
+.hero-ai h2 {
+  margin-top: 30px;
   font-size: 30px;
-  line-height: 1.15;
   letter-spacing: -1px;
 }
 
-.hero-card p {
-  margin-top: 15px;
-  font-size: 15px;
-  color: #887A82;
+.hero-ai p {
+  margin-top: 10px;
+  color: #91838a;
   line-height: 1.6;
 }
 
-.stats {
+.style-score {
+  margin-top: 30px;
   display: flex;
   justify-content: space-around;
-  margin-top: 30px;
 }
 
-.stats div {
+.style-score div {
   display: flex;
   flex-direction: column;
 }
 
-.stats b {
-  font-size: 22px;
+.style-score b {
+  font-size: 24px;
 }
 
-.stats span {
+.style-score span {
   margin-top: 5px;
   font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 1px;
-  color: #A895A0;
+  color: #a999a0;
 }
 
-.lux-button {
-  margin-top: 30px;
+.create-look {
+  margin-top: 35px;
   width: 100%;
-  height: 58px;
+  height: 60px;
   border: none;
-  border-radius: 30px;
-  background: linear-gradient(90deg, #33241d, #6d5545);
-  color: white;
+  border-radius: 35px;
+  background: linear-gradient(135deg, var(--color-champagne), var(--color-pink), var(--color-lavender));
+  background-size: 200%;
+  animation: buttonFlow 6s infinite;
   font-size: 16px;
-  font-weight: 600;
-  box-shadow: 0 20px 35px rgba(60, 40, 30, .25);
-  transition: .4s;
+  font-weight: 700;
+  color: #49382e;
+  box-shadow: 0 20px 45px rgba(220, 170, 180, .35);
+  transition: .35s;
 }
 
-.lux-button:hover {
-  transform: translateY(-3px);
+.create-look:active {
+  transform: scale(.97);
 }
+
+@keyframes buttonFlow {
+  50% { background-position: 100%; }
+}
+
+/* Блок "Сегодня для тебя". */
+.today-card {
+  margin-top: 0;
+  padding: 25px;
+}
+
+.today-card h3 {
+  font-size: 20px;
+  margin-bottom: 20px;
+}
+
+.today-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 15px;
+  font-size: 14px;
+}
+
+.gold-dot,
+.pink-dot,
+.lavender-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.gold-dot { background: var(--color-champagne); }
+.pink-dot { background: var(--color-pink); }
+.lavender-dot { background: var(--color-lavender); }
 
 /* =====================================
 WARDROBE STYLE
@@ -1079,24 +1141,6 @@ AI CHAT
   animation: shimmer 5s ease infinite;
 }
 
-/* AI Core — светящийся вращающийся шар, главный AI-элемент бренда вместо
-   emoji ✨. Раньше был другой вариант с матовым центром-кольцом, но нигде не
-   применялся — PART 11 заменяет его на финальную версию и реально включает
-   в HeroStats (замена .ai-orb/.orb-inner с эмодзи внутри). */
-.ai-core {
-  width: 110px;
-  height: 110px;
-  border-radius: 50%;
-  background: conic-gradient(var(--color-pink), var(--color-lavender), var(--color-champagne-light), var(--color-pink));
-  animation: rotateAI 8s linear infinite;
-  box-shadow: 0 0 60px rgba(220, 170, 220, .6);
-  flex-shrink: 0;
-}
-
-@keyframes rotateAI {
-  100% { transform: rotate(360deg); }
-}
-
 /* Появление карточек по очереди — для списков (Шопинг/Гардероб). */
 .fade-stagger {
   opacity: 0;
@@ -1271,8 +1315,8 @@ LIQUID GLASS
    премиальный "жидкий" фон вместо плоского. Сама карточка по-прежнему
    отвечает за отступы/border-radius, .liquid-card перекрывает только
    фон/тень (объявлен позже в каскаде — специально, чтобы всегда выигрывать).
-   Раньше назывался .liquid — переименован в PART 11 в единственное каноничное
-   имя, чтобы не плодить два почти одинаковых класса. */
+   Раньше назывался .liquid — переименован в единственное каноничное имя,
+   чтобы не плодить два почти одинаковых класса. */
 .liquid-card {
   position: relative;
   overflow: hidden;
