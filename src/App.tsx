@@ -30,9 +30,18 @@ function App() {
 
   return (
     <>
-      {/* Третье тёплое пятно живого фона (см. index.css .glow-champagne) —
+      {/* Мерцающие звёздочки на весь фон (см. index.css .bg-particles) —
           рендерится один раз здесь поверх всех экранов, а не в каждом. */}
-      <div className="glow-champagne" />
+      <div className="bg-particles">
+        <span />
+        <span />
+        <span />
+        <span />
+        <span />
+        <span />
+        <span />
+        <span />
+      </div>
       <Routes>
         <Route
           path="/onboarding"
