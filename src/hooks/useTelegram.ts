@@ -94,6 +94,14 @@ export function useTelegram() {
   useEffect(() => {
     webApp?.ready();
     webApp?.expand();
+    // Без этого Telegram красит системные зоны (шапка со статус-баром,
+    // safe-area снизу за жестовой полосой/home indicator) своим цветом по
+    // умолчанию — часто тёмным/чёрным, независимо от темы самого приложения.
+    // Это давало видимую чёрную полосу снизу, никак не связанную с CSS
+    // страницы — просто Telegram никогда не узнавал, что фон у нас кремовый.
+    webApp?.setHeaderColor('#FFF9F7');
+    webApp?.setBackgroundColor('#FFF9F7');
+    webApp?.setBottomBarColor('#FFF9F7');
   }, [webApp]);
 
   const user = useMemo<TelegramUser>(() => webApp?.initDataUnsafe?.user ?? mockUser, [webApp]);

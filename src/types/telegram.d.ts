@@ -18,6 +18,7 @@ export interface TelegramWebApp {
   close: () => void;
   setHeaderColor: (color: string) => void;
   setBackgroundColor: (color: string) => void;
+  setBottomBarColor: (color: string) => void;
   enableClosingConfirmation: () => void;
   BackButton: {
     isVisible: boolean;

@@ -23,7 +23,7 @@ export function HeroStats({ name, onProfileClick, onCreateLook }: HeroStatsProps
 
   return (
     <section className="home-screen">
-      <img src={homeBanner} alt="AI Stylist DimkoFF" className="home-banner" />
+      <img src={homeBanner} alt="AI Stylist DimkoFF" className="page-banner" />
 
       <header className="welcome welcome-compact">
         <button onClick={onProfileClick} className="profile-glow" aria-label={name ? `Профиль — ${name}` : 'Профиль'}>

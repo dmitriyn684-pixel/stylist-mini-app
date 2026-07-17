@@ -5,6 +5,7 @@ import { Button } from '../components/ui/Button';
 import { MoreIcon, PuzzleIcon, HangerIcon } from '../components/ui/icons';
 import { useWardrobeStore } from '../store/useWardrobeStore';
 import type { WardrobeCategory } from '../types/wardrobe';
+import wardrobeBanner from '../assets/wardrobe-banner.png';
 
 const filters: ('Все' | WardrobeCategory)[] = ['Все', 'Верх', 'Низ', 'Платья', 'Обувь', 'Аксессуары'];
 
@@ -17,6 +18,8 @@ export function WardrobeScreen() {
 
   return (
     <div className="px-4 pt-[calc(env(safe-area-inset-top)+16px)] pb-[calc(env(safe-area-inset-bottom)+150px)]">
+      <img src={wardrobeBanner} alt="Гардероб" className="page-banner" />
+
       <div className="flex items-center justify-between px-2 mb-4">
         <h1 className="font-display text-[26px] text-ink">Гардероб</h1>
         <button onClick={() => navigate('/wardrobe/outfits')} className="text-[13px] font-semibold text-lavender flex items-center gap-1">
