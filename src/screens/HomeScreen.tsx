@@ -5,7 +5,6 @@ import { AiOutfitSection } from '../components/home/AiOutfitSection';
 import { AiShoppingSection } from '../components/home/AiShoppingSection';
 import { AiPassportSection } from '../components/home/AiPassportSection';
 import { CategoryBars } from '../components/home/CategoryBars';
-import { DayLookCard } from '../components/home/DayLookCard';
 import { QuickActions } from '../components/home/QuickActions';
 import { ChallengeCard } from '../components/home/ChallengeCard';
 import { useUserProfile } from '../hooks/useUserProfile';
@@ -54,16 +53,6 @@ export function HomeScreen() {
     color: CATEGORY_COLORS[label],
   }));
 
-  const dayLook = colorResult?.seasonalType
-    ? {
-        title: 'Твой цветотип определён',
-        tip: `Твой цветотип — ${colorResult.seasonalType}. Загляни в «Стилист», там палитра и рекомендации.`,
-      }
-    : {
-        title: 'Образ дня',
-        tip: 'Пройди анализ в боте, чтобы получать персональные рекомендации по образам.',
-      };
-
   return (
     <div className="app">
       <HeroStats
@@ -82,7 +71,6 @@ export function HomeScreen() {
 
       <div className="px-6 flex flex-col gap-4">
         <CategoryBars bars={categoryBars} />
-        <DayLookCard {...dayLook} onSeeMore={() => navigate('/stylist')} />
         <QuickActions actions={mockQuickActions} />
         <ChallengeCard {...mockChallenge} />
       </div>
