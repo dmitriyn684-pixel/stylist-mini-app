@@ -5,6 +5,7 @@ import { Layout } from './components/ui/Layout';
 import { OnboardingScreen } from './components/onboarding/OnboardingScreen';
 import { HomeScreen } from './screens/HomeScreen';
 import { WardrobeScreen } from './screens/WardrobeScreen';
+import { WardrobePremiumScreen } from './screens/WardrobePremiumScreen';
 import { StylistScreen } from './screens/StylistScreen';
 import { ColorQuizScreen } from './screens/ColorQuizScreen';
 import { ProfileScreen } from './screens/ProfileScreen';
@@ -50,6 +51,7 @@ function App() {
           <Route element={<Layout />}>
             <Route path="/" element={<HomeScreen />} />
             <Route path="/wardrobe" element={<WardrobeScreen />} />
+            <Route path="/wardrobe-premium" element={<WardrobePremiumScreen />} />
             <Route path="/wardrobe/item/:id" element={<ItemDetailScreen />} />
             <Route path="/wardrobe/outfits" element={<OutfitsListScreen />} />
             <Route path="/wardrobe/outfits/:id" element={<OutfitDetailScreen />} />
