@@ -64,7 +64,7 @@ export function ChatScreen() {
   };
 
   return (
-    <div className="h-full flex flex-col bg-cream">
+    <div className="h-full flex flex-col bg-transparent">
       <button
         onClick={() => navigate(-1)}
         className="shrink-0 text-[13px] font-semibold text-olive px-4 pt-[calc(env(safe-area-inset-top)+16px)] text-left"
