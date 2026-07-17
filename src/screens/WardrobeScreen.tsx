@@ -62,7 +62,7 @@ export function WardrobeScreen() {
         </div>
       )}
 
-      <div className="fixed left-0 right-0 bottom-[86px] px-6 max-w-md mx-auto">
+      <div className="fixed left-0 right-0 bottom-[calc(env(safe-area-inset-bottom)+112px)] px-6 max-w-md mx-auto">
         <Button className="w-full shadow-soft" onClick={() => navigate('/wardrobe/add')}>
           + Добавить вещь
         </Button>
