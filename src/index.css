@@ -1696,3 +1696,271 @@ PREMIUM MOTION & LUXURY INTERACTIONS
   20% { opacity: .8; }
   100% { transform: translateY(-300px) scale(1.4); opacity: 0; }
 }
+
+/*=========================================
+PART 14
+WARDROBE PREMIUM EFFECTS (экран /wardrobe)
+=========================================*/
+
+/* Обёртка вокруг .page-banner только на Гардеробе — сам .page-banner
+   (общий с Home) не трогаем, просто гасим его нижний отступ здесь,
+   чтобы он не проваливался под overflow:hidden обёртки. */
+.wardrobe-hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border-radius: 28px;
+  margin-bottom: 16px;
+}
+
+.wardrobe-hero .page-banner {
+  margin-bottom: 0;
+}
+
+.wardrobe-hero::before {
+  content: '';
+  position: absolute;
+  inset: -35%;
+  z-index: 2;
+  pointer-events: none;
+  background: linear-gradient(115deg, transparent 38%, rgba(255, 255, 255, .34) 48%, transparent 58%);
+  transform: translateX(-52%) rotate(8deg);
+  animation: wardrobeHeroSweep 8s ease-in-out infinite;
+}
+
+.wardrobe-hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  border-radius: inherit;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, .32),
+    inset 0 -30px 80px rgba(255, 255, 255, .10),
+    inset 0 20px 40px rgba(255, 255, 255, .08);
+}
+
+@keyframes wardrobeHeroSweep {
+  0%, 42% { transform: translateX(-52%) rotate(8deg); opacity: 0; }
+  50% { opacity: 1; }
+  100% { transform: translateX(52%) rotate(8deg); opacity: 0; }
+}
+
+.wardrobe-hero-blobs {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.wardrobe-hero-blobs span {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(22px);
+  opacity: .5;
+  mix-blend-mode: screen;
+}
+
+.wardrobe-hero-blobs span:nth-child(1) {
+  width: 120px;
+  height: 120px;
+  left: 8%;
+  top: 14%;
+  background: radial-gradient(circle, rgba(255, 255, 255, .9), transparent 70%);
+  animation: wardrobeBlobA 11s ease-in-out infinite;
+}
+
+.wardrobe-hero-blobs span:nth-child(2) {
+  width: 96px;
+  height: 96px;
+  right: 10%;
+  top: 30%;
+  background: radial-gradient(circle, rgba(247, 201, 216, .85), transparent 70%);
+  animation: wardrobeBlobB 13s ease-in-out infinite;
+}
+
+.wardrobe-hero-blobs span:nth-child(3) {
+  width: 84px;
+  height: 84px;
+  left: 36%;
+  bottom: 8%;
+  background: radial-gradient(circle, rgba(221, 212, 255, .8), transparent 70%);
+  animation: wardrobeBlobC 9.5s ease-in-out infinite;
+}
+
+@keyframes wardrobeBlobA {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(14px, -10px) scale(1.08); }
+}
+
+@keyframes wardrobeBlobB {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-12px, 12px) scale(1.05); }
+}
+
+@keyframes wardrobeBlobC {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(10px, 8px) scale(1.1); }
+}
+
+/* "Мои луки" — стеклянная пилюля с левитацией и light sweep */
+.wardrobe-looks-btn {
+  position: relative;
+  overflow: hidden;
+  height: 40px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #7d6476;
+  background: linear-gradient(135deg, rgba(255, 255, 255, .74), rgba(255, 229, 239, .46), rgba(242, 237, 255, .42));
+  border: 1px solid rgba(255, 255, 255, .82);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  box-shadow: 0 14px 32px rgba(190, 145, 175, .15), inset 0 1px 0 rgba(255, 255, 255, .9);
+  font-size: 13px;
+  font-weight: 700;
+  animation: wardrobeLooksFloat 4.8s ease-in-out infinite;
+  transition:
+    transform .28s cubic-bezier(.22, .8, .2, 1),
+    box-shadow .28s cubic-bezier(.22, .8, .2, 1);
+}
+
+.wardrobe-looks-btn > * {
+  position: relative;
+  z-index: 1;
+}
+
+.wardrobe-looks-btn::before {
+  content: '';
+  position: absolute;
+  inset: -30%;
+  background: linear-gradient(115deg, transparent 40%, rgba(255, 255, 255, .46) 50%, transparent 60%);
+  transform: translateX(-55%) rotate(10deg);
+  animation: wardrobeLooksSweep 6.5s ease-in-out infinite;
+}
+
+.wardrobe-looks-btn:active {
+  transform: translateY(1px) scale(.97);
+  box-shadow: 0 8px 20px rgba(190, 145, 175, .18), inset 0 1px 0 rgba(255, 255, 255, .9);
+}
+
+@keyframes wardrobeLooksFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+
+@keyframes wardrobeLooksSweep {
+  0%, 50% { transform: translateX(-55%) rotate(10deg); opacity: 0; }
+  58% { opacity: 1; }
+  100% { transform: translateX(55%) rotate(10deg); opacity: 0; }
+}
+
+/* "Сегодня AI рекомендует" — aurora-градиент + пульсирующий score */
+.wardrobe-ai-card {
+  position: relative;
+  overflow: hidden;
+  margin: 8px 2px 20px;
+  min-height: 84px;
+  padding: 16px;
+  border-radius: 28px;
+  display: grid;
+  grid-template-columns: 46px 1fr auto;
+  gap: 14px;
+  align-items: center;
+  background: linear-gradient(135deg, rgba(255, 255, 255, .78), rgba(255, 229, 239, .44), rgba(221, 212, 255, .42), rgba(255, 242, 219, .36));
+  background-size: 220% 220%;
+  border: 1px solid rgba(255, 255, 255, .82);
+  backdrop-filter: blur(30px) saturate(180%);
+  -webkit-backdrop-filter: blur(30px) saturate(180%);
+  box-shadow: 0 18px 42px rgba(185, 135, 170, .15), inset 0 1px 0 rgba(255, 255, 255, .88);
+  animation: wardrobeAuroraFlow 10s ease infinite;
+}
+
+.wardrobe-ai-card::before {
+  content: '';
+  position: absolute;
+  inset: -35%;
+  pointer-events: none;
+  background: linear-gradient(115deg, transparent 40%, rgba(255, 255, 255, .22) 50%, transparent 60%);
+  transform: translateX(-52%) rotate(8deg);
+  animation: wardrobeAiSweep 7s ease-in-out infinite;
+}
+
+.wardrobe-ai-icon {
+  position: relative;
+  z-index: 1;
+  width: 46px;
+  height: 46px;
+  border-radius: 18px;
+  display: grid;
+  place-items: center;
+  color: #8d6b7e;
+  background:
+    radial-gradient(circle at 30% 22%, rgba(255, 255, 255, .88), transparent 34%),
+    linear-gradient(135deg, #f7c9d8, #ddd4ff);
+  box-shadow: 0 12px 26px rgba(190, 145, 175, .16), inset 0 1px 0 rgba(255, 255, 255, .9);
+}
+
+.wardrobe-ai-text {
+  position: relative;
+  z-index: 1;
+}
+
+.wardrobe-ai-title {
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: -.15px;
+  color: var(--color-ink);
+}
+
+.wardrobe-ai-subtitle {
+  margin-top: 4px;
+  font-size: 12px;
+  line-height: 1.35;
+  color: var(--color-ink-soft);
+}
+
+.wardrobe-ai-score {
+  position: relative;
+  z-index: 1;
+  min-width: 48px;
+  height: 36px;
+  padding: 0 11px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, rgba(255, 255, 255, .84), rgba(255, 245, 251, .74));
+  border: 1px solid rgba(255, 255, 255, .82);
+  color: #7a6172;
+  font-size: 13px;
+  font-weight: 850;
+  box-shadow: 0 10px 20px rgba(170, 135, 160, .12), inset 0 1px 0 rgba(255, 255, 255, .94);
+  animation: wardrobeScorePulse 2.8s ease-in-out infinite;
+}
+
+@keyframes wardrobeAuroraFlow {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+@keyframes wardrobeAiSweep {
+  0%, 48% { transform: translateX(-52%) rotate(8deg); opacity: 0; }
+  56% { opacity: 1; }
+  100% { transform: translateX(52%) rotate(8deg); opacity: 0; }
+}
+
+@keyframes wardrobeScorePulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 10px 20px rgba(170, 135, 160, .12), inset 0 1px 0 rgba(255, 255, 255, .94);
+  }
+  50% {
+    transform: scale(1.04);
+    box-shadow: 0 16px 30px rgba(190, 145, 175, .18), inset 0 1px 0 rgba(255, 255, 255, .96);
+  }
+}

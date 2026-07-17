@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Chip } from '../components/ui/Chip';
 import { Button } from '../components/ui/Button';
-import { MoreIcon, PuzzleIcon, HangerIcon } from '../components/ui/icons';
+import { MoreIcon, PuzzleIcon, HangerIcon, SparkleIcon } from '../components/ui/icons';
 import { useWardrobeStore } from '../store/useWardrobeStore';
 import type { WardrobeCategory } from '../types/wardrobe';
 import wardrobeBanner from '../assets/wardrobe-banner.png';
@@ -18,12 +18,21 @@ export function WardrobeScreen() {
 
   return (
     <div className="px-4 pt-[calc(env(safe-area-inset-top)+16px)] pb-[calc(env(safe-area-inset-bottom)+150px)]">
-      <img src={wardrobeBanner} alt="Гардероб" className="page-banner" />
+      <div className="wardrobe-hero">
+        <img src={wardrobeBanner} alt="Гардероб" className="page-banner" />
+
+        <div className="wardrobe-hero-blobs">
+          <span />
+          <span />
+          <span />
+        </div>
+      </div>
 
       <div className="flex items-center justify-between px-2 mb-4">
         <h1 className="font-display text-[26px] text-ink">Гардероб</h1>
-        <button onClick={() => navigate('/wardrobe/outfits')} className="text-[13px] font-semibold text-lavender flex items-center gap-1">
-          <PuzzleIcon className="w-4 h-4" /> Мои луки →
+        <button onClick={() => navigate('/wardrobe/outfits')} className="wardrobe-looks-btn">
+          <PuzzleIcon className="w-4 h-4" />
+          <span>Мои луки →</span>
         </button>
       </div>
 
@@ -31,6 +40,19 @@ export function WardrobeScreen() {
         {filters.map((f) => (
           <Chip key={f} label={f} active={f === active} onClick={() => setActive(f)} />
         ))}
+      </div>
+
+      <div className="wardrobe-ai-card">
+        <div className="wardrobe-ai-icon">
+          <SparkleIcon className="w-[22px] h-[22px]" />
+        </div>
+
+        <div className="wardrobe-ai-text">
+          <p className="wardrobe-ai-title">Сегодня AI рекомендует</p>
+          <p className="wardrobe-ai-subtitle">Светлый верх + мягкий акцент в розовом оттенке</p>
+        </div>
+
+        <div className="wardrobe-ai-score">98%</div>
       </div>
 
       {visible.length === 0 ? (
