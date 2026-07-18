@@ -7,8 +7,10 @@ import {
   ArrowRightIcon,
   ChatIcon,
   HangerIcon,
+  ShoppingIcon,
   SparkleIcon,
   StylistIcon,
+  SuitcaseIcon,
   WardrobeIcon,
 } from '../components/ui/icons';
 import styles from './HomeScreen.module.css';
@@ -21,6 +23,13 @@ interface DailyPriority {
   to: string;
 }
 
+const STYLE_CHALLENGES = [
+  'Собери монохромный образ и добавь один охристый акцент.',
+  'Выбери вещь, которую давно не носила, и построй образ вокруг неё.',
+  'Собери образ в эстетике quiet luxury из вещей своего гардероба.',
+  'Оставь спокойную базу и добавь один выразительный аксессуар.',
+];
+
 export function HomeScreen() {
   const navigate = useNavigate();
   const { profile, hasProfile } = useUserProfile();
@@ -30,6 +39,7 @@ export function HomeScreen() {
 
   const name = profile?.name ?? null;
   const isEmpty = !hasProfile && !colorResult && items.length === 0;
+  const styleChallenge = STYLE_CHALLENGES[Math.floor(Date.now() / 86_400_000) % STYLE_CHALLENGES.length];
 
   const dailyPriority: DailyPriority = !colorResult
     ? {
@@ -115,7 +125,61 @@ export function HomeScreen() {
             </span>
             <ArrowRightIcon className={styles.actionArrow} />
           </Link>
+
+          <Link className={`${styles.secondaryAction} ${styles.travelAction}`} to="/wardrobe/suitcase">
+            <span className={styles.actionIcon} aria-hidden="true">
+              <SuitcaseIcon />
+            </span>
+            <span>
+              <b>Собрать чемодан</b>
+              <small>Капсула для поездки</small>
+            </span>
+            <ArrowRightIcon className={styles.actionArrow} />
+          </Link>
+
+          <Link className={styles.secondaryAction} to="/wardrobe/outfits">
+            <span className={styles.actionIcon} aria-hidden="true">
+              <HangerIcon />
+            </span>
+            <span>
+              <b>Мои луки</b>
+              <small>Сохранённые образы</small>
+            </span>
+            <ArrowRightIcon className={styles.actionArrow} />
+          </Link>
         </div>
+      </section>
+
+      <section className={styles.travelCard} aria-labelledby="travel-card-title">
+        <div className={styles.travelAurora} aria-hidden="true" />
+        <div className={styles.cardSweep} aria-hidden="true" />
+        <div className={styles.travelTopline}>
+          <p className={styles.darkEyebrow}>Travel capsule</p>
+          <span>Private edit</span>
+        </div>
+        <div className={styles.travelIcon} aria-hidden="true">
+          <SuitcaseIcon />
+        </div>
+        <h2 id="travel-card-title">Собрать чемодан без лишних вещей</h2>
+        <p>AI подготовит капсулу для поездки с учётом погоды, событий и твоего личного стиля.</p>
+        <Link className={styles.travelButton} to="/wardrobe/suitcase">
+          Собрать чемодан
+          <ArrowRightIcon />
+        </Link>
+      </section>
+
+      <section className={styles.challengeCard} aria-labelledby="challenge-card-title">
+        <div className={styles.challengeShimmer} aria-hidden="true" />
+        <div className={styles.challengeHeader}>
+          <p className={styles.eyebrow}>Style challenge</p>
+          <span className={styles.challengeDot} aria-hidden="true" />
+        </div>
+        <h2 id="challenge-card-title">Челлендж дня</h2>
+        <p>{styleChallenge}</p>
+        <Link className={styles.challengeLink} to="/stylist">
+          Открыть стилиста
+          <ArrowRightIcon />
+        </Link>
       </section>
 
       <nav className={styles.quickNav} aria-label="Быстрые переходы">
@@ -130,6 +194,10 @@ export function HomeScreen() {
         <Link to="/wardrobe/outfits">
           <HangerIcon />
           <span>Мои луки</span>
+        </Link>
+        <Link to="/shopping">
+          <ShoppingIcon />
+          <span>Шопинг</span>
         </Link>
       </nav>
     </main>

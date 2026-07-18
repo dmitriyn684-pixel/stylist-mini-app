@@ -3,7 +3,7 @@
   max-width: 430px;
   min-height: 100vh;
   margin: 0 auto;
-  padding: calc(12px + env(safe-area-inset-top)) 16px calc(124px + env(safe-area-inset-bottom));
+  padding: calc(12px + env(safe-area-inset-top)) 16px calc(132px + env(safe-area-inset-bottom));
   color: var(--color-text, #241f1c);
   background:
     radial-gradient(circle at 92% 8%, rgba(201, 121, 46, 0.12), transparent 28%),
@@ -22,32 +22,63 @@
   overflow: hidden;
   isolation: isolate;
   border-radius: 34px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
   background: var(--color-charcoal, #171717);
-  box-shadow: var(--shadow-editorial, 0 24px 70px rgba(35, 30, 26, 0.12));
+  box-shadow: 0 28px 78px rgba(6, 27, 34, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.12);
 }
 
 .heroMedia img {
   position: absolute;
   inset: 0;
-  z-index: -2;
+  z-index: -3;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: 52% center;
-  filter: saturate(0.88) contrast(1.03);
-  transform: scale(1.01);
+  object-position: 54% center;
+  filter: saturate(0.82) contrast(1.06);
+  transform: scale(1.035);
+  animation: heroImageDrift 18s ease-in-out infinite alternate;
 }
 
 .heroShade {
   position: absolute;
   inset: 0;
-  z-index: -1;
+  z-index: -2;
   background:
-    linear-gradient(180deg, rgba(6, 27, 34, 0.55) 0%, transparent 28%),
-    linear-gradient(0deg, rgba(10, 12, 12, 0.94) 0%, rgba(10, 12, 12, 0.72) 32%, transparent 66%);
+    linear-gradient(90deg, rgba(6, 27, 34, 0.52) 0%, transparent 68%),
+    linear-gradient(180deg, rgba(6, 27, 34, 0.58) 0%, transparent 32%),
+    linear-gradient(0deg, rgba(10, 12, 12, 0.96) 0%, rgba(10, 12, 12, 0.74) 35%, transparent 72%);
+}
+
+.heroAurora {
+  position: absolute;
+  z-index: -1;
+  width: 360px;
+  height: 260px;
+  left: -120px;
+  bottom: -80px;
+  pointer-events: none;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 35% 40%, rgba(38, 75, 75, 0.5), transparent 62%),
+    radial-gradient(circle at 70% 55%, rgba(201, 121, 46, 0.2), transparent 58%);
+  filter: blur(30px);
+  animation: auroraDrift 14s ease-in-out infinite;
+}
+
+.heroSweep {
+  position: absolute;
+  z-index: 1;
+  inset: -35%;
+  pointer-events: none;
+  background: linear-gradient(105deg, transparent 43%, rgba(255, 245, 224, 0.13) 49%, transparent 55%);
+  transform: translateX(-60%) rotate(8deg);
+  animation: heroLightSweep 10s ease-in-out infinite;
 }
 
 .heroTopline {
+  position: relative;
+  z-index: 2;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -85,6 +116,7 @@
   right: 0;
   bottom: 0;
   left: 0;
+  z-index: 2;
   padding: 28px 24px 24px;
   color: white;
 }
@@ -119,6 +151,8 @@
 }
 
 .heroCta {
+  position: relative;
+  overflow: hidden;
   min-height: 50px;
   margin-top: 20px;
   padding: 0 18px;
@@ -135,6 +169,21 @@
   font-size: 13px;
   font-weight: 800;
   transition: transform 180ms ease, background 180ms ease;
+}
+
+.heroCta::after {
+  content: '';
+  position: absolute;
+  inset: -60% -25%;
+  pointer-events: none;
+  background: linear-gradient(105deg, transparent 43%, rgba(255, 255, 255, 0.72) 50%, transparent 57%);
+  transform: translateX(-70%);
+  animation: ctaSweep 9s ease-in-out infinite;
+}
+
+.heroCta > * {
+  position: relative;
+  z-index: 1;
 }
 
 .heroCta svg,
@@ -294,6 +343,8 @@
 
 .primaryAction,
 .secondaryAction {
+  position: relative;
+  overflow: hidden;
   min-height: 82px;
   padding: 15px 17px;
   display: grid;
@@ -313,11 +364,50 @@
   box-shadow: 0 20px 46px rgba(6, 27, 34, 0.2);
 }
 
+.primaryAction::after {
+  content: '';
+  position: absolute;
+  inset: -80% -25%;
+  pointer-events: none;
+  background: linear-gradient(105deg, transparent 44%, rgba(255, 255, 255, 0.15) 50%, transparent 56%);
+  transform: translateX(-70%);
+  animation: ctaSweep 8.5s ease-in-out infinite;
+}
+
+.primaryAction > * {
+  position: relative;
+  z-index: 1;
+}
+
 .secondaryAction {
   border: 1px solid var(--color-border, rgba(38, 38, 38, 0.08));
   color: var(--color-graphite, #262626);
   background: rgba(255, 252, 247, 0.82);
   box-shadow: 0 14px 34px rgba(35, 30, 26, 0.07);
+}
+
+.travelAction {
+  border-color: rgba(201, 121, 46, 0.22);
+  background:
+    linear-gradient(90deg, rgba(232, 215, 185, 0.42), transparent 62%),
+    rgba(255, 252, 247, 0.86);
+}
+
+.travelAction::before {
+  content: '';
+  position: absolute;
+  top: 14px;
+  bottom: 14px;
+  left: 0;
+  width: 3px;
+  border-radius: 0 3px 3px 0;
+  background: var(--color-ochre, #c9792e);
+}
+
+.travelAction .actionIcon {
+  color: var(--color-ochre, #c9792e);
+  background: rgba(201, 121, 46, 0.11);
+  animation: premiumPulse 3.8s ease-in-out infinite;
 }
 
 .actionIcon {
@@ -365,11 +455,222 @@
   color: var(--color-muted, #9a928a);
 }
 
-.quickNav {
+.travelCard,
+.challengeCard {
+  position: relative;
+  overflow: hidden;
+  margin-top: 14px;
+  border-radius: 30px;
+}
+
+.travelCard {
+  isolation: isolate;
+  min-height: 340px;
+  padding: 24px;
+  color: white;
+  background:
+    linear-gradient(145deg, rgba(38, 75, 75, 0.42), transparent 48%),
+    linear-gradient(135deg, var(--color-petrol, #1e3b3c), var(--color-petrol-deep, #061b22) 72%);
+  border: 1px solid rgba(232, 215, 185, 0.2);
+  box-shadow: 0 28px 68px rgba(6, 27, 34, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+.travelCard::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  right: -46px;
+  bottom: -80px;
+  width: 230px;
+  height: 230px;
+  border: 1px solid rgba(232, 215, 185, 0.12);
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 34px rgba(232, 215, 185, 0.035),
+    0 0 0 70px rgba(232, 215, 185, 0.02);
+}
+
+.travelAurora {
+  position: absolute;
+  z-index: -1;
+  top: -110px;
+  right: -80px;
+  width: 310px;
+  height: 260px;
+  border-radius: 50%;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 45% 45%, rgba(201, 121, 46, 0.4), transparent 58%),
+    radial-gradient(circle at 70% 65%, rgba(83, 118, 117, 0.48), transparent 64%);
+  filter: blur(28px);
+  animation: auroraDrift 16s ease-in-out infinite reverse;
+}
+
+.cardSweep {
+  position: absolute;
+  inset: -45%;
+  pointer-events: none;
+  background: linear-gradient(110deg, transparent 44%, rgba(255, 249, 236, 0.1) 50%, transparent 56%);
+  transform: translateX(-60%) rotate(7deg);
+  animation: heroLightSweep 11s ease-in-out infinite;
+}
+
+.travelTopline,
+.challengeHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.darkEyebrow {
+  color: var(--color-champagne-muted, #e8d7b9);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.travelTopline > span {
+  padding: 6px 10px;
+  border: 1px solid rgba(232, 215, 185, 0.22);
+  border-radius: 999px;
+  color: var(--color-champagne-muted, #e8d7b9);
+  background: rgba(255, 255, 255, 0.06);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.travelIcon {
+  width: 52px;
+  height: 52px;
+  margin-top: 34px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(232, 215, 185, 0.3);
+  border-radius: 18px;
+  color: var(--color-champagne-muted, #e8d7b9);
+  background: rgba(255, 255, 255, 0.07);
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.18);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  animation: premiumPulse 3.8s ease-in-out infinite;
+}
+
+.travelIcon svg {
+  width: 22px;
+  height: 22px;
+}
+
+.travelCard h2,
+.challengeCard h2 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  letter-spacing: -0.03em;
+}
+
+.travelCard h2 {
+  max-width: 300px;
+  margin-top: 20px;
+  font-size: 29px;
+  line-height: 1.08;
+}
+
+.travelCard > p {
+  max-width: 310px;
   margin-top: 12px;
+  color: rgba(255, 255, 255, 0.68);
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+.travelButton,
+.challengeLink {
+  width: fit-content;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.travelButton {
+  margin-top: 20px;
+  padding: 0 15px;
+  color: var(--color-charcoal, #171717);
+  background: var(--color-champagne-muted, #e8d7b9);
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.2);
+}
+
+.travelButton svg,
+.challengeLink svg {
+  width: 15px;
+  height: 15px;
+}
+
+.challengeCard {
+  padding: 23px;
+  border: 1px solid rgba(138, 108, 78, 0.16);
+  color: var(--color-graphite, #262626);
+  background:
+    radial-gradient(circle at 100% 0%, rgba(201, 121, 46, 0.12), transparent 32%),
+    linear-gradient(145deg, rgba(250, 247, 242, 0.96), rgba(232, 215, 185, 0.48));
+  box-shadow: 0 20px 48px rgba(35, 30, 26, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.86);
+}
+
+.challengeShimmer {
+  position: absolute;
+  inset: -1px;
+  pointer-events: none;
+  border-radius: inherit;
+  background: linear-gradient(90deg, transparent 30%, rgba(201, 121, 46, 0.32) 48%, rgba(255, 255, 255, 0.58) 52%, transparent 70%);
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  -webkit-mask-composite: xor;
+  padding: 1px;
+  opacity: 0;
+  transform: translateX(-45%);
+  animation: borderShimmer 10s ease-in-out infinite;
+}
+
+.challengeDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--color-ochre, #c9792e);
+  box-shadow: 0 0 0 6px rgba(201, 121, 46, 0.1);
+  animation: premiumPulse 3.6s ease-in-out infinite;
+}
+
+.challengeCard h2 {
+  margin-top: 24px;
+  font-size: 26px;
+}
+
+.challengeCard > p {
+  max-width: 320px;
+  margin-top: 9px;
+  color: var(--color-text-soft, #6f6862);
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.challengeLink {
+  margin-top: 17px;
+  color: var(--color-petrol, #1e3b3c);
+}
+
+.quickNav {
+  margin-top: 14px;
   padding: 7px;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 5px;
   border: 1px solid rgba(38, 38, 38, 0.06);
   border-radius: 24px;
@@ -385,7 +686,7 @@
   gap: 7px;
   border-radius: 18px;
   color: var(--color-text-soft, #6f6862);
-  font-size: 10px;
+  font-size: 9px;
   font-weight: 700;
   text-decoration: none;
   transition: transform 180ms ease, background 180ms ease;
@@ -399,6 +700,88 @@
 .quickNav svg {
   width: 19px;
   height: 19px;
+}
+
+@keyframes heroLightSweep {
+  0%, 42% {
+    transform: translateX(-60%) rotate(8deg);
+    opacity: 0;
+  }
+
+  52% {
+    opacity: 0.38;
+  }
+
+  100% {
+    transform: translateX(60%) rotate(8deg);
+    opacity: 0;
+  }
+}
+
+@keyframes auroraDrift {
+  0%, 100% {
+    transform: translate3d(-2%, 0, 0) scale(1);
+    opacity: 0.38;
+  }
+
+  50% {
+    transform: translate3d(3%, -2%, 0) scale(1.08);
+    opacity: 0.58;
+  }
+}
+
+@keyframes premiumPulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.78;
+  }
+
+  50% {
+    transform: scale(1.055);
+    opacity: 1;
+  }
+}
+
+@keyframes borderShimmer {
+  0%, 45% {
+    opacity: 0;
+    transform: translateX(-45%);
+  }
+
+  55% {
+    opacity: 0.48;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateX(45%);
+  }
+}
+
+@keyframes ctaSweep {
+  0%, 50% {
+    transform: translateX(-70%) rotate(5deg);
+    opacity: 0;
+  }
+
+  60% {
+    opacity: 0.55;
+  }
+
+  88%, 100% {
+    transform: translateX(70%) rotate(5deg);
+    opacity: 0;
+  }
+}
+
+@keyframes heroImageDrift {
+  0% {
+    transform: scale(1.035) translate3d(0, 0, 0);
+  }
+
+  100% {
+    transform: scale(1.065) translate3d(-0.5%, -0.35%, 0);
+  }
 }
 
 @media (max-width: 360px) {
@@ -419,6 +802,19 @@
 
   .heroTopline > span {
     max-width: 170px;
+  }
+
+  .travelCard {
+    min-height: 330px;
+    padding: 21px;
+  }
+
+  .quickNav {
+    gap: 2px;
+  }
+
+  .quickNav a {
+    font-size: 8px;
   }
 }
 

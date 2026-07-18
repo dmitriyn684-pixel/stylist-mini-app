@@ -1,6 +1,6 @@
 import { useColorAnalysis } from '../../hooks/useColorAnalysis';
 import { useWardrobeStore } from '../../store/useWardrobeStore';
-import homeEditorial from '../../assets/home-editorial.jpg';
+import homeEditorial from '../../assets/editorial/home-editorial.jpg';
 import { ArrowRightIcon, ProfileIcon } from '../ui/icons';
 import styles from '../../screens/HomeScreen.module.css';
 
@@ -9,6 +9,13 @@ interface HeroStatsProps {
   isEmpty: boolean;
   onProfileClick?: () => void;
   onCreateLook?: () => void;
+}
+
+function formatCount(count: number, forms: [string, string, string]): string {
+  const remainder100 = count % 100;
+  const remainder10 = count % 10;
+  const form = remainder100 >= 11 && remainder100 <= 14 ? forms[2] : remainder10 === 1 ? forms[0] : remainder10 >= 2 && remainder10 <= 4 ? forms[1] : forms[2];
+  return `${count} ${form}`;
 }
 
 export function HeroStats({ name, isEmpty, onProfileClick, onCreateLook }: HeroStatsProps) {
@@ -22,8 +29,10 @@ export function HeroStats({ name, isEmpty, onProfileClick, onCreateLook }: HeroS
   return (
     <section className={styles.heroSection} aria-labelledby="home-hero-title">
       <div className={styles.heroMedia}>
-        <img src={homeEditorial} alt="Женщина в кабинете персонального стилиста" />
+        <img src={homeEditorial} alt="Private fashion concierge" />
         <div className={styles.heroShade} />
+        <div className={styles.heroAurora} aria-hidden="true" />
+        <div className={styles.heroSweep} aria-hidden="true" />
 
         <div className={styles.heroTopline}>
           <span>Private fashion concierge</span>
@@ -61,14 +70,12 @@ export function HeroStats({ name, isEmpty, onProfileClick, onCreateLook }: HeroS
           </span>
           <span>
             <small>Гардероб</small>
-            <b>{items.length > 0 ? `${items.length} вещей` : 'Ждёт вещей'}</b>
+            <b>{items.length > 0 ? formatCount(items.length, ['вещь', 'вещи', 'вещей']) : 'Ждёт вещей'}</b>
           </span>
-          {outfits.length > 0 && (
-            <span>
-              <small>Образы</small>
-              <b>{outfits.length}</b>
-            </span>
-          )}
+          <span>
+            <small>Образы</small>
+            <b>{formatCount(outfits.length, ['лук', 'лука', 'луков'])}</b>
+          </span>
         </div>
       </div>
     </section>
