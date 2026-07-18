@@ -7,10 +7,7 @@ import {
   ArrowRightIcon,
   ChatIcon,
   HangerIcon,
-  ShoppingIcon,
-  StylistIcon,
   SuitcaseIcon,
-  WardrobeIcon,
 } from '../components/ui/icons';
 import styles from './HomeScreen.module.css';
 
@@ -181,24 +178,6 @@ export function HomeScreen() {
         </Link>
       </section>
 
-      <nav className={styles.quickNav} aria-label="Быстрые переходы">
-        <Link to="/wardrobe">
-          <WardrobeIcon />
-          <span>Гардероб</span>
-        </Link>
-        <Link to="/stylist">
-          <StylistIcon />
-          <span>Стилист</span>
-        </Link>
-        <Link to="/wardrobe/outfits">
-          <HangerIcon />
-          <span>Мои луки</span>
-        </Link>
-        <Link to="/shopping">
-          <ShoppingIcon />
-          <span>Шопинг</span>
-        </Link>
-      </nav>
     </main>
   );
 }
