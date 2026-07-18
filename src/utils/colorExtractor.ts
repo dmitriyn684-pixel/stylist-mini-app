@@ -1,17 +1,25 @@
+export interface ColorGuess {
+  hex: string;
+  /** Доля пикселей, попавших в победивший бакет, от всех учтённых — честная
+   *  мера того, насколько вещь однотонная на фото (не выдуманная оценка). */
+  confidence: number;
+}
+
 /**
  * Определение доминантного цвета вещи по фото — честный автоматический анализ
  * пикселей (не заглушка), но без сегментации объекта: если на фото светлый
  * однотонный фон (частый случай для товарных фото), почти белые пиксели
  * исключаются из подсчёта, чтобы не спутать фон с самой вещью.
  */
-export function extractDominantColor(canvas: HTMLCanvasElement): string {
+export function extractDominantColor(canvas: HTMLCanvasElement): ColorGuess {
   const ctx = canvas.getContext('2d');
-  if (!ctx) return '#C9BFAE';
+  if (!ctx) return { hex: '#C9BFAE', confidence: 0 };
 
   const { data } = ctx.getImageData(0, 0, canvas.width, canvas.height);
   const buckets = new Map<string, { count: number; r: number; g: number; b: number }>();
   const STEP = 4; // шаг сэмплирования пикселей — не читаем каждый, для скорости
   const QUANT = 24; // размер бакета квантования по каждому каналу
+  let totalSamples = 0;
 
   for (let i = 0; i < data.length; i += 4 * STEP) {
     const r = data[i];
@@ -22,6 +30,7 @@ export function extractDominantColor(canvas: HTMLCanvasElement): string {
     // Похоже на белый/светло-серый фон товарного фото — пропускаем
     if (r > 235 && g > 235 && b > 235) continue;
 
+    totalSamples++;
     const key = `${Math.round(r / QUANT)}_${Math.round(g / QUANT)}_${Math.round(b / QUANT)}`;
     const bucket = buckets.get(key);
     if (bucket) {
@@ -34,7 +43,7 @@ export function extractDominantColor(canvas: HTMLCanvasElement): string {
     }
   }
 
-  if (buckets.size === 0) return '#C9BFAE';
+  if (buckets.size === 0 || totalSamples === 0) return { hex: '#C9BFAE', confidence: 0 };
 
   let best = { count: 0, r: 0, g: 0, b: 0 };
   for (const bucket of buckets.values()) {
@@ -44,7 +53,8 @@ export function extractDominantColor(canvas: HTMLCanvasElement): string {
   const r = Math.round(best.r / best.count);
   const g = Math.round(best.g / best.count);
   const b = Math.round(best.b / best.count);
-  return rgbToHex(r, g, b);
+  const confidence = Math.round((best.count / totalSamples) * 100);
+  return { hex: rgbToHex(r, g, b), confidence };
 }
 
 function rgbToHex(r: number, g: number, b: number): string {

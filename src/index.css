@@ -1964,3 +1964,131 @@ WARDROBE PREMIUM EFFECTS (экран /wardrobe)
     box-shadow: 0 16px 30px rgba(190, 145, 175, .18), inset 0 1px 0 rgba(255, 255, 255, .96);
   }
 }
+
+/*=========================================
+PART 15
+ADD ITEM PREMIUM POLISH (экран подтверждения вещи /wardrobe/add)
+=========================================*/
+
+/* Фото-карточка сверху формы — премиальная рамка + edge glow + лёгкий sweep */
+.additem-photo-card {
+  position: relative;
+  height: 208px;
+  border-radius: 28px;
+  overflow: hidden;
+  isolation: isolate;
+  background: #fff;
+  box-shadow:
+    0 24px 60px rgba(150, 105, 135, .16),
+    inset 0 1px 0 rgba(255, 255, 255, .9);
+}
+
+.additem-photo-image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.additem-photo-card::before {
+  content: '';
+  position: absolute;
+  inset: -35%;
+  z-index: 2;
+  pointer-events: none;
+  background: linear-gradient(115deg, transparent 40%, rgba(255, 255, 255, .30) 50%, transparent 60%);
+  transform: translateX(-52%) rotate(8deg);
+  animation: additemPhotoSweep 8s ease-in-out infinite;
+}
+
+.additem-photo-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  border-radius: inherit;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, .30),
+    inset 0 -24px 60px rgba(255, 255, 255, .08);
+}
+
+@keyframes additemPhotoSweep {
+  0%, 42% { transform: translateX(-52%) rotate(8deg); opacity: 0; }
+  50% { opacity: 1; }
+  100% { transform: translateX(52%) rotate(8deg); opacity: 0; }
+}
+
+/* Glass-блок "AI-анализ" под фото */
+.additem-ai-card {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  border-radius: 22px;
+  padding: 14px 16px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, .76), rgba(255, 229, 239, .36), rgba(221, 212, 255, .30));
+  border: 1px solid rgba(255, 255, 255, .78);
+  backdrop-filter: blur(22px) saturate(180%);
+  -webkit-backdrop-filter: blur(22px) saturate(180%);
+  box-shadow:
+    0 16px 36px rgba(185, 135, 170, .14),
+    inset 0 1px 0 rgba(255, 255, 255, .85);
+}
+
+.additem-ai-card-icon {
+  flex: 0 0 auto;
+  width: 30px;
+  height: 30px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  color: #8d6b7e;
+  background:
+    radial-gradient(circle at 30% 22%, rgba(255, 255, 255, .9), transparent 34%),
+    linear-gradient(135deg, #f7c9d8, #ddd4ff);
+  box-shadow: 0 8px 18px rgba(190, 145, 175, .16), inset 0 1px 0 rgba(255, 255, 255, .9);
+}
+
+.additem-ai-card-icon svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* Micro-badges — лёгкое стекло поверх плоского фона тона */
+.additem-badge {
+  border: 1px solid rgba(255, 255, 255, .6);
+  box-shadow: 0 4px 10px rgba(150, 105, 135, .10), inset 0 1px 0 rgba(255, 255, 255, .5);
+}
+
+/* Поля формы — легче, чище, с фокус-свечением вместо жёсткой рамки */
+.additem-field {
+  background: rgba(255, 255, 255, .7);
+  border: 1px solid rgba(255, 255, 255, .7);
+  box-shadow: 0 6px 18px rgba(150, 105, 135, .06), inset 0 1px 0 rgba(255, 255, 255, .6);
+  transition: box-shadow .2s ease, border-color .2s ease;
+}
+
+.additem-field:focus-within,
+.additem-field:focus {
+  border-color: rgba(221, 212, 255, .9);
+  box-shadow:
+    0 8px 22px rgba(150, 105, 135, .12),
+    0 0 0 3px rgba(221, 212, 255, .35),
+    inset 0 1px 0 rgba(255, 255, 255, .7);
+  outline: none;
+}
+
+/* Кнопка "Сохранить в гардероб" — premium depth поверх обычного Button */
+.additem-save-btn {
+  box-shadow:
+    0 22px 50px rgba(43, 33, 24, .22),
+    inset 0 1px 0 rgba(255, 255, 255, .10);
+}
+
+.additem-save-btn:active {
+  box-shadow:
+    0 12px 28px rgba(43, 33, 24, .18),
+    inset 0 1px 0 rgba(255, 255, 255, .10);
+}

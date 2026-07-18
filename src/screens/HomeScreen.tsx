@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+import homeEmptyHero from '../assets/home-empty-hero.jpg';
 import { HeroStats } from '../components/home/HeroStats';
 import { AiAnalyzerSection } from '../components/home/AiAnalyzerSection';
 import { AiOutfitSection } from '../components/home/AiOutfitSection';
@@ -34,12 +35,27 @@ export function HomeScreen() {
   // demo-цифр (47 вещей и т.п.), которые раньше показывались всегда.
   if (!hasProfile && !colorResult && items.length === 0) {
     return (
-      <div className="px-6 pt-[calc(env(safe-area-inset-top)+60px)] pb-[calc(env(safe-area-inset-bottom)+110px)] flex flex-col items-center text-center gap-4">
-        <h1 className="font-display text-[22px] text-ink">{name ? `Привет, ${name}!` : 'Привет!'}</h1>
-        <p className="text-[14px] text-ink-soft leading-relaxed max-w-[280px]">
-          Пройди анализ в боте @StylistDimkoFF, чтобы увидеть здесь свой цветотип, тип фигуры и персональные
-          рекомендации.
-        </p>
+      <div className="relative min-h-screen overflow-hidden">
+        <img src={homeEmptyHero} alt="" className="absolute inset-0 w-full h-full object-cover" />
+        {/* Тёмный градиент снизу — фото остаётся ярким сверху, текст читаем снизу,
+            тот же паттерн, что в OnboardingScreen.tsx. */}
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              'linear-gradient(180deg, rgba(20,15,12,.15) 0%, rgba(20,15,12,.05) 25%, rgba(20,15,12,.55) 65%, rgba(20,15,12,.88) 100%)',
+          }}
+        />
+
+        <div className="relative px-6 pt-[calc(env(safe-area-inset-top)+60px)] pb-[calc(env(safe-area-inset-bottom)+110px)] flex flex-col items-center text-center gap-4">
+          <h1 className="font-display text-[22px] text-white drop-shadow-sm">
+            {name ? `Привет, ${name}!` : 'Привет!'}
+          </h1>
+          <p className="text-[14px] text-white/90 leading-relaxed max-w-[280px]">
+            Пройди анализ в боте @StylistDimkoFF, чтобы увидеть здесь свой цветотип, тип фигуры и персональные
+            рекомендации.
+          </p>
+        </div>
       </div>
     );
   }
