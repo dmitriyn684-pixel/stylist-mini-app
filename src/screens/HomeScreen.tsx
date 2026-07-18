@@ -8,7 +8,6 @@ import {
   ChatIcon,
   HangerIcon,
   ShoppingIcon,
-  SparkleIcon,
   StylistIcon,
   SuitcaseIcon,
   WardrobeIcon,
@@ -84,7 +83,7 @@ export function HomeScreen() {
 
       <section className={styles.priorityCard} aria-labelledby="daily-priority-title">
         <div className={styles.priorityIcon} aria-hidden="true">
-          <SparkleIcon />
+          <HangerIcon />
         </div>
         <div className={styles.priorityCopy}>
           <p className={styles.eyebrow}>{dailyPriority.eyebrow}</p>
