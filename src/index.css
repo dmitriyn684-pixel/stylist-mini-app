@@ -4,8 +4,9 @@
 @theme {
   /* Тёплый белый, нежная "girly" палитра — лаванда/розовый/голубой вместо
      зелёно-коралловой спортивной Lifesum-темы */
-  /* Luxury Pastel — зафиксированное направление: молочный/пудрово-розовый/
-     лавандовый + шампань/золото вместо голубого акцента. */
+  /* Luxury Pastel — ПРЕЖНЕЕ направление (всё ещё используется на уже
+     отполированных экранах, например /wardrobe — их этими токенами не ломаем).
+     Новые/переполировываемые экраны используют направление ниже. */
   --color-cream: #FFF9F7;
   --color-cream-dark: #F6ECF1;
   --color-ink: #2B2118;
@@ -25,6 +26,59 @@
   --color-error: #E8607D;
 
   --color-card: #FFFFFF;
+
+  /* Fashion Editorial + Liquid Glass — НОВОЕ зафиксированное направление
+     (взрослая платежеспособная ЦА, private-stylist/wardrobe-concierge
+     ощущение, а не sweet pastel beauty-app). Референс — рейл одежды: глубокий
+     petrol green, graphite/charcoal, тёплый серый, ivory, beige/champagne,
+     ochre/burnt-orange как акцент, muted red — очень редко. --color-ink уже
+     вписывается в это направление и переиспользуется как есть для CTA.
+     Внедряем ПОСТЕПЕННО, экран за экраном — не трогаем уже сделанные
+     Luxury Pastel экраны (например /wardrobe) задним числом.
+
+     Названия --color-champagne(-light) и --shadow-soft НЕ переопределяем —
+     это старые токены, уже используются в шаблоне (wardrobe gold-line,
+     AI-карточки, review-бейджи). Их эквиваленты в новой палитре здесь
+     называются --color-champagne-muted(-light) и --shadow-editorial. */
+  --color-bg: #F7F3ED;
+  --color-surface: rgba(255, 252, 247, 0.78);
+  --color-surface-strong: rgba(255, 255, 255, 0.9);
+
+  --color-text: #241F1C;
+  --color-text-soft: #6F6862;
+  --color-muted: #9A928A;
+
+  --color-graphite: #262626;
+  --color-charcoal: #171717;
+  --color-warm-grey: #8A8580;
+  --color-light-grey: #D8D3CC;
+
+  --color-petrol: #1E3B3C;
+  --color-petrol-deep: #061B22;
+  --color-petrol-soft: #264B4B;
+  --color-petrol-muted: #537675;
+
+  --color-ivory: #FAF7F2;
+  --color-ivory-dark: #EFE7D8;
+  --color-beige: #D7C2A8;
+  --color-beige-light: #F0E6D4;
+  --color-champagne-muted: #E8D7B9;
+  --color-champagne-muted-light: #F4EADB;
+  --color-warm-brown: #8A6C4E;
+
+  --color-ochre: #C9792E;
+  --color-burnt-orange: #B76328;
+  --color-muted-red: #8B2E25;
+
+  --color-cta: #2F241D;
+  --color-cta-hover: #3D2F26;
+
+  --glass-bg: rgba(255, 255, 255, 0.62);
+  --glass-border: rgba(255, 255, 255, 0.78);
+  --glass-blur: blur(24px) saturate(160%);
+
+  --color-border: rgba(38, 38, 38, 0.08);
+  --shadow-editorial: 0 24px 70px rgba(35, 30, 26, 0.12);
 
   --font-display: 'Fraunces', serif;
   --font-sans: 'Manrope', sans-serif;

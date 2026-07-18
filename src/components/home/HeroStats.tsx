@@ -1,73 +1,75 @@
-import { ProfileIcon } from '../ui/icons';
 import { useColorAnalysis } from '../../hooks/useColorAnalysis';
 import { useWardrobeStore } from '../../store/useWardrobeStore';
-import { computeOutfitMatch } from '../../utils/outfitMatch';
-import homeBanner from '../../assets/home-banner.png';
+import homeEditorial from '../../assets/home-editorial.jpg';
+import { ArrowRightIcon, ProfileIcon } from '../ui/icons';
+import styles from '../../screens/HomeScreen.module.css';
 
 interface HeroStatsProps {
   name: string | null;
+  isEmpty: boolean;
   onProfileClick?: () => void;
   onCreateLook?: () => void;
 }
 
-export function HeroStats({ name, onProfileClick, onCreateLook }: HeroStatsProps) {
+export function HeroStats({ name, isEmpty, onProfileClick, onCreateLook }: HeroStatsProps) {
   const { result: colorResult } = useColorAnalysis();
-  const items = useWardrobeStore((s) => s.items);
-  const outfits = useWardrobeStore((s) => s.outfits);
+  const items = useWardrobeStore((state) => state.items);
+  const outfits = useWardrobeStore((state) => state.outfits);
 
-  const palette = colorResult?.palette ?? null;
-
-  // Реальный % совпадения гардероба с палитрой (та же функция, что и для
-  // луков/шопинга) — не выдумываем "98% совпадение" из макета.
-  const styleMatch = items.length > 0 ? computeOutfitMatch(items, palette) : null;
+  const colorType = colorResult?.seasonalType ?? null;
+  const greeting = name ? `Добро пожаловать, ${name}` : 'Добро пожаловать';
 
   return (
-    <section className="home-screen">
-      <img src={homeBanner} alt="AI Stylist DimkoFF" className="page-banner" />
+    <section className={styles.heroSection} aria-labelledby="home-hero-title">
+      <div className={styles.heroMedia}>
+        <img src={homeEditorial} alt="Женщина в кабинете персонального стилиста" />
+        <div className={styles.heroShade} />
 
-      <header className="welcome welcome-compact">
-        <button onClick={onProfileClick} className="profile-glow" aria-label={name ? `Профиль — ${name}` : 'Профиль'}>
-          <div className="profile-avatar">
-            <ProfileIcon className="w-6 h-6" />
-          </div>
-        </button>
-      </header>
-
-      <div className="liquid-card hero-ai hero-ai-compact fade-card">
-        <div className="floating-light" />
-        <div className="particles">
-          <span />
-          <span />
-          <span />
-          <span />
-          <span />
+        <div className={styles.heroTopline}>
+          <span>Private fashion concierge</span>
+          <button type="button" onClick={onProfileClick} aria-label="Открыть профиль">
+            <ProfileIcon />
+          </button>
         </div>
 
-        <div className="ai-core">
-          <div className="core-inner">AI</div>
+        <div className={styles.heroContent}>
+          <p>{greeting}</p>
+          <h1 id="home-hero-title">
+            {isEmpty ? 'Начнём с твоего личного стиля' : 'Твой стиль — в точных деталях'}
+          </h1>
+          <span>
+            {isEmpty
+              ? 'Создадим персональную основу: палитру, гардероб и образы под твой ритм жизни.'
+              : 'Спокойные решения для гардероба, образов и покупок — каждый день.'}
+          </span>
+          <button type="button" className={styles.heroCta} onClick={onCreateLook}>
+            {isEmpty ? 'Начать персонализацию' : 'Собрать новый образ'}
+            <ArrowRightIcon />
+          </button>
         </div>
+      </div>
 
-        <h2>Твой AI Stylist</h2>
-        <p>Персональные образы, созданные специально для тебя</p>
-
-        <div className="style-score">
-          <div>
-            <b>{styleMatch !== null ? `${styleMatch}%` : '—'}</b>
-            <span>Style Match</span>
-          </div>
-          <div>
-            <b>{outfits.length}</b>
-            <span>New Looks</span>
-          </div>
-          <div>
-            <b>{items.length}</b>
-            <span>Items</span>
-          </div>
+      <div className={styles.summaryCard}>
+        <div>
+          <p className={styles.eyebrow}>Персональная сводка</p>
+          <h2>{isEmpty ? 'Профиль готов к настройке' : 'Основа твоего стиля'}</h2>
         </div>
-
-        <button className="create-look" onClick={onCreateLook}>
-          Создать образ
-        </button>
+        <div className={styles.summaryChips}>
+          <span>
+            <small>Палитра</small>
+            <b>{colorType ?? 'Не определена'}</b>
+          </span>
+          <span>
+            <small>Гардероб</small>
+            <b>{items.length > 0 ? `${items.length} вещей` : 'Ждёт вещей'}</b>
+          </span>
+          {outfits.length > 0 && (
+            <span>
+              <small>Образы</small>
+              <b>{outfits.length}</b>
+            </span>
+          )}
+        </div>
       </div>
     </section>
   );

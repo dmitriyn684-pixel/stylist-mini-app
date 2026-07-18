@@ -1,95 +1,137 @@
-import { useNavigate } from 'react-router-dom';
-import homeEmptyHero from '../assets/home-empty-hero.jpg';
+import { Link, useNavigate } from 'react-router-dom';
 import { HeroStats } from '../components/home/HeroStats';
-import { AiAnalyzerSection } from '../components/home/AiAnalyzerSection';
-import { AiOutfitSection } from '../components/home/AiOutfitSection';
-import { AiShoppingSection } from '../components/home/AiShoppingSection';
-import { AiPassportSection } from '../components/home/AiPassportSection';
-import { CategoryBars } from '../components/home/CategoryBars';
-import { QuickActions } from '../components/home/QuickActions';
-import { ChallengeCard } from '../components/home/ChallengeCard';
 import { useUserProfile } from '../hooks/useUserProfile';
 import { useColorAnalysis } from '../hooks/useColorAnalysis';
 import { useWardrobeStore } from '../store/useWardrobeStore';
-import { mockChallenge, mockQuickActions } from '../utils/mockData';
+import {
+  ArrowRightIcon,
+  ChatIcon,
+  HangerIcon,
+  SparkleIcon,
+  StylistIcon,
+  WardrobeIcon,
+} from '../components/ui/icons';
+import styles from './HomeScreen.module.css';
 
-const CATEGORY_COLORS: Record<string, string> = {
-  Верх: 'var(--color-lavender)',
-  Низ: 'var(--color-blue)',
-  Обувь: 'var(--color-pink)',
-};
+interface DailyPriority {
+  eyebrow: string;
+  title: string;
+  description: string;
+  action: string;
+  to: string;
+}
 
 export function HomeScreen() {
   const navigate = useNavigate();
   const { profile, hasProfile } = useUserProfile();
   const { result: colorResult } = useColorAnalysis();
-  const items = useWardrobeStore((s) => s.items);
+  const items = useWardrobeStore((state) => state.items);
+  const outfits = useWardrobeStore((state) => state.outfits);
 
-  // Имя показываем только если пользователь реально указал его в анкете
-  // бота — никаких Telegram first_name или заглушек вроде "Гость": в браузере
-  // вне Telegram first_name — это моковое "Аня" (см. useTelegram.ts), и
-  // показывать его как будто мы знаем имя пользователя нечестно.
   const name = profile?.name ?? null;
+  const isEmpty = !hasProfile && !colorResult && items.length === 0;
 
-  // Ничего не пришло из бота и гардероб пуст — честный empty-state вместо
-  // demo-цифр (47 вещей и т.п.), которые раньше показывались всегда.
-  if (!hasProfile && !colorResult && items.length === 0) {
-    return (
-      <div className="relative min-h-screen overflow-hidden">
-        <img src={homeEmptyHero} alt="" className="absolute inset-0 w-full h-full object-cover" />
-        {/* Тёмный градиент снизу — фото остаётся ярким сверху, текст читаем снизу,
-            тот же паттерн, что в OnboardingScreen.tsx. */}
-        <div
-          className="absolute inset-0"
-          style={{
-            background:
-              'linear-gradient(180deg, rgba(20,15,12,.15) 0%, rgba(20,15,12,.05) 25%, rgba(20,15,12,.55) 65%, rgba(20,15,12,.88) 100%)',
-          }}
-        />
-
-        <div className="relative px-6 pt-[calc(env(safe-area-inset-top)+60px)] pb-[calc(env(safe-area-inset-bottom)+110px)] flex flex-col items-center text-center gap-4">
-          <h1 className="font-display text-[22px] text-white drop-shadow-sm">
-            {name ? `Привет, ${name}!` : 'Привет!'}
-          </h1>
-          <p className="text-[14px] text-white/90 leading-relaxed max-w-[280px]">
-            Пройди анализ в боте @StylistDimkoFF, чтобы увидеть здесь свой цветотип, тип фигуры и персональные
-            рекомендации.
-          </p>
-        </div>
-      </div>
-    );
-  }
-
-  const totalItems = items.length;
-
-  const categoryBars = (['Верх', 'Низ', 'Обувь'] as const).map((label) => ({
-    label,
-    value: items.filter((it) => it.category === label).length,
-    max: Math.max(totalItems, 1),
-    color: CATEGORY_COLORS[label],
-  }));
+  const dailyPriority: DailyPriority = !colorResult
+    ? {
+        eyebrow: 'Первый шаг',
+        title: 'Определи свою палитру',
+        description: 'Короткий анализ поможет точнее подбирать оттенки, вещи и готовые образы.',
+        action: 'Пройти анализ стиля',
+        to: '/analysis/color-type',
+      }
+    : items.length === 0
+      ? {
+          eyebrow: 'Сегодня важно',
+          title: 'Добавь первую вещь',
+          description: 'Начни с любимой вещи — так рекомендации сразу станут персональными.',
+          action: 'Открыть гардероб',
+          to: '/wardrobe',
+        }
+      : outfits.length === 0
+        ? {
+            eyebrow: 'Сегодня важно',
+            title: 'Собери первый образ',
+            description: 'AI уже может предложить сочетание из вещей твоего гардероба.',
+            action: 'Собрать образ',
+            to: '/wardrobe/outfits/generate',
+          }
+        : {
+            eyebrow: 'Твой фокус сегодня',
+            title: 'Освежи один из образов',
+            description: 'Посмотри сохранённые луки или попроси стилиста предложить новую комбинацию.',
+            action: 'Открыть мои луки',
+            to: '/wardrobe/outfits',
+          };
 
   return (
-    <div className="app">
+    <main className={styles.page}>
       <HeroStats
         name={name}
+        isEmpty={isEmpty}
         onProfileClick={() => navigate('/profile')}
-        onCreateLook={() => navigate('/wardrobe/outfits/generate')}
+        onCreateLook={() => navigate(isEmpty ? '/analysis/color-type' : '/wardrobe/outfits/generate')}
       />
 
-      <AiAnalyzerSection />
+      <section className={styles.priorityCard} aria-labelledby="daily-priority-title">
+        <div className={styles.priorityIcon} aria-hidden="true">
+          <SparkleIcon />
+        </div>
+        <div className={styles.priorityCopy}>
+          <p className={styles.eyebrow}>{dailyPriority.eyebrow}</p>
+          <h2 id="daily-priority-title">{dailyPriority.title}</h2>
+          <p>{dailyPriority.description}</p>
+        </div>
+        <Link className={styles.priorityLink} to={dailyPriority.to}>
+          {dailyPriority.action}
+          <ArrowRightIcon />
+        </Link>
+      </section>
 
-      <AiOutfitSection />
+      <section className={styles.conciergeSection} aria-labelledby="concierge-title">
+        <div className={styles.sectionHeading}>
+          <p className={styles.eyebrow}>Fashion concierge</p>
+          <h2 id="concierge-title">Что сделаем сегодня?</h2>
+        </div>
 
-      <AiShoppingSection />
+        <div className={styles.primaryActions}>
+          <Link className={styles.primaryAction} to="/wardrobe/outfits/generate">
+            <span className={styles.actionIcon} aria-hidden="true">
+              <HangerIcon />
+            </span>
+            <span>
+              <b>Собрать образ</b>
+              <small>Из твоего гардероба</small>
+            </span>
+            <ArrowRightIcon className={styles.actionArrow} />
+          </Link>
 
-      <AiPassportSection />
+          <Link className={styles.secondaryAction} to="/chat">
+            <span className={styles.actionIcon} aria-hidden="true">
+              <ChatIcon />
+            </span>
+            <span>
+              <b>Спросить стилиста</b>
+              <small>Персональный совет</small>
+            </span>
+            <ArrowRightIcon className={styles.actionArrow} />
+          </Link>
+        </div>
+      </section>
 
-      <div className="px-6 flex flex-col gap-4">
-        <CategoryBars bars={categoryBars} />
-        <QuickActions actions={mockQuickActions} />
-        <ChallengeCard {...mockChallenge} />
-      </div>
-    </div>
+      <nav className={styles.quickNav} aria-label="Быстрые переходы">
+        <Link to="/wardrobe">
+          <WardrobeIcon />
+          <span>Гардероб</span>
+        </Link>
+        <Link to="/stylist">
+          <StylistIcon />
+          <span>Стилист</span>
+        </Link>
+        <Link to="/wardrobe/outfits">
+          <HangerIcon />
+          <span>Мои луки</span>
+        </Link>
+      </nav>
+    </main>
   );
 }
