@@ -9,6 +9,7 @@ interface AvatarViewerProps {
   measurements: BodyMeasurements;
   highlights?: MannequinHighlight[];
   heightClassName?: string;
+  className?: string;
 }
 
 interface ModelErrorBoundaryProps {
@@ -70,12 +71,13 @@ export function AvatarViewer({
   measurements,
   highlights,
   heightClassName = 'h-[440px]',
+  className = '',
 }: AvatarViewerProps) {
   const fallback = <FallbackModel measurements={measurements} highlights={highlights} />;
 
   return (
     <div
-      className={`relative w-full ${heightClassName} overflow-hidden`}
+      className={`relative w-full ${heightClassName} overflow-hidden ${className}`}
       style={{
         borderRadius: 28,
         border: '1px solid rgba(255, 255, 255, 0.72)',
@@ -114,12 +116,6 @@ export function AvatarViewer({
         />
       </Canvas>
 
-      <div
-        className="pointer-events-none absolute inset-x-0 bottom-3 text-center text-[11px] font-medium tracking-[0.14em]"
-        style={{ color: 'rgba(74, 55, 40, 0.62)', textTransform: 'uppercase' }}
-      >
-        Поверните манекен
-      </div>
     </div>
   );
 }

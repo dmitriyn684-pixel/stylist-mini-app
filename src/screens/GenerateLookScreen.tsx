@@ -13,6 +13,7 @@ import { CheckIcon } from '../components/ui/icons';
 import type { WardrobeItem } from '../types/wardrobe';
 import type { CapsuleItem } from '../types/capsule';
 import type { MannequinHighlight } from '../components/avatar/ParametricMannequin';
+import styles from './GenerateLookScreen.module.css';
 
 type Slot =
   | { source: 'wardrobe'; items: WardrobeItem[]; match: number | null }
@@ -109,38 +110,39 @@ export function GenerateLookScreen() {
   };
 
   return (
-    <div className="px-6 pt-[calc(env(safe-area-inset-top)+20px)] pb-[calc(env(safe-area-inset-bottom)+32px)]">
-      <button onClick={() => navigate(-1)} className="text-[13px] font-semibold text-olive mb-4">
+    <main className={styles.page}>
+      <button type="button" onClick={() => navigate(-1)} className={styles.backButton}>
         ← Назад
       </button>
 
       {phase === 'generating' ? (
         <>
-          <div className="generate-header">
+          <header className={styles.generateHeader}>
+            <span className={styles.eyebrow}>Private edit</span>
             <h2>Создание образа</h2>
             <p>AI анализирует гардероб, сезон и цветотип</p>
-          </div>
+          </header>
 
-          <div className="liquid-card generator-card">
-            <div className="particles">
+          <section className={styles.generatorCard}>
+            <div className={styles.particles} aria-hidden="true">
               <span />
               <span />
               <span />
               <span />
               <span />
             </div>
-            <div className="ai-generator">
-              <div className="generator-ring" />
-              <div className="generator-center">
-                <div className="pulse-core" />
+            <div className={styles.aiGenerator} aria-hidden="true">
+              <div className={styles.generatorRing} />
+              <div className={styles.generatorCenter}>
+                <div className={styles.pulseCore} />
               </div>
             </div>
 
-            <div className="generator-status">
+            <div className={styles.generatorStatus}>
               {STATUS_STEPS.map((step, i) => (
                 <div
                   key={step.label}
-                  className="status-line fade-stagger"
+                  className={styles.statusLine}
                   style={{ animationDelay: `${i * 0.35}s` }}
                 >
                   <span>{step.label}</span>
@@ -148,47 +150,55 @@ export function GenerateLookScreen() {
                 </div>
               ))}
             </div>
-          </div>
+          </section>
         </>
       ) : (
         <>
-          <div className="generate-header">
+          <header className={styles.resultsHeader}>
+            <span className={styles.eyebrow}>Looks ready · Private edit</span>
             <h2>Твои образы готовы</h2>
             <p>AI подобрал {slots.length} образа под твой стиль</p>
-          </div>
+          </header>
 
-          <div className="flex flex-col gap-4">
+          <div className={styles.resultsList}>
             {slots.map((slot, i) => {
               const key = itemKey(slot.items.map((it) => it.id));
               const saved = slot.source === 'wardrobe' && savedKeys.includes(key);
 
               return (
-                <div key={key || i} className="outfit-card liquid-card fade-card">
-                  <div className="outfit-image">
+                <article
+                  key={key || i}
+                  className={styles.outfitCard}
+                  style={{ animationDelay: `${i * 120}ms` }}
+                >
+                  <div className={styles.mannequinPreview}>
+                    <div className={styles.previewSweep} aria-hidden="true" />
                     {measurements ? (
-                      <AvatarViewer measurements={measurements} highlights={highlightsFor(slot.items)} />
+                      <AvatarViewer
+                        measurements={measurements}
+                        highlights={highlightsFor(slot.items)}
+                        heightClassName="h-full"
+                        className={styles.avatarCanvas}
+                      />
                     ) : (
-                      <div
-                        className="w-full h-full flex items-center justify-center gap-3"
-                        style={{ background: 'linear-gradient(135deg, var(--color-lavender-light), var(--color-pink-light))' }}
-                      >
+                      <div className={styles.colorPreview}>
                         {slot.items.map((it, itemI) => (
                           <span
                             key={itemI}
-                            className="w-10 h-10 rounded-full border border-white/60"
+                            className={styles.colorSwatch}
                             style={{ background: it.color }}
                           />
                         ))}
                       </div>
                     )}
-                    {slot.match !== null && <div className="match">{slot.match}% Match</div>}
+                    {slot.match !== null && <div className={styles.matchBadge}>{slot.match}% Match</div>}
                   </div>
 
-                  <div className="outfit-info">
+                  <div className={styles.outfitInfo}>
                     <h3>{slot.source === 'wardrobe' ? `Образ ${i + 1}` : slot.lookName}</h3>
                     <p>{slot.source === 'wardrobe' ? 'Из твоего гардероба' : 'Из капсульного гардероба'}</p>
 
-                    <div className="items">
+                    <div className={styles.itemChips}>
                       {slot.items.map((it, itemI) => (
                         <span key={itemI}>{itemLabel(it)}</span>
                       ))}
@@ -196,10 +206,15 @@ export function GenerateLookScreen() {
 
                     {slot.source === 'wardrobe' ? (
                       <>
-                        <button type="button" className="try-button" onClick={() => handleSave(slot)} disabled={saved}>
+                        <button
+                          type="button"
+                          className={styles.primaryButton}
+                          onClick={() => handleSave(slot)}
+                          disabled={saved}
+                        >
                           {saved ? (
-                            <span className="inline-flex items-center gap-1.5 justify-center">
-                              <CheckIcon className="w-4 h-4" /> Сохранено
+                            <span className={styles.savedLabel}>
+                              <CheckIcon /> Сохранено
                             </span>
                           ) : (
                             'Сохранить'
@@ -207,7 +222,7 @@ export function GenerateLookScreen() {
                         </button>
                         <button
                           type="button"
-                          className="text-link"
+                          className={styles.secondaryLink}
                           onClick={() => navigate(`/avatar/tryon/${slot.items[0].id}`)}
                         >
                           Примерить
@@ -216,25 +231,29 @@ export function GenerateLookScreen() {
                     ) : (
                       <>
                         <a
-                          className="buy-btn block w-full text-center"
+                          className={styles.primaryButton}
                           href={wildberriesSearchUrl(slot.items[0]?.name ?? slot.lookName)}
                           target="_blank"
                           rel="noreferrer"
                         >
                           Купить
                         </a>
-                        <button type="button" className="text-link" onClick={() => navigate('/stylist/capsule')}>
+                        <button
+                          type="button"
+                          className={styles.secondaryLink}
+                          onClick={() => navigate('/stylist/capsule')}
+                        >
                           Смотреть в капсульном гардеробе
                         </button>
                       </>
                     )}
                   </div>
-                </div>
+                </article>
               );
             })}
           </div>
         </>
       )}
-    </div>
+    </main>
   );
 }

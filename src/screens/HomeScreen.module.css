@@ -3,7 +3,7 @@
   max-width: 430px;
   min-height: 100vh;
   margin: 0 auto;
-  padding: calc(12px + env(safe-area-inset-top)) 16px calc(132px + env(safe-area-inset-bottom));
+  padding: 0 16px calc(132px + env(safe-area-inset-bottom));
   position: relative;
   isolation: isolate;
   color: var(--color-ivory, #faf7f2);
@@ -30,8 +30,8 @@
   margin-left: -16px;
   overflow: hidden;
   isolation: isolate;
-  border-radius: 18px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 0;
+  border: 0;
   background: var(--color-charcoal, #171717);
   box-shadow: 0 28px 78px rgba(6, 27, 34, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.12);
 }
@@ -1108,7 +1108,7 @@
   .heroMedia {
     width: calc(100% + 24px);
     margin-left: -12px;
-    border-radius: 16px;
+    border-radius: 0;
   }
 
   .heroContent {
