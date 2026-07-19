@@ -18,7 +18,7 @@ const leftTabs: Tab[] = [
 ];
 
 const rightTabs: Tab[] = [
-  { to: '/stylist', label: 'Стилист', Icon: StylistIcon, end: false },
+  { to: '/stylist', label: 'AI Стилист', Icon: StylistIcon, end: false },
   { to: '/shopping', label: 'Шопинг', Icon: ShoppingIcon, end: false },
   { to: '/profile', label: 'Профиль', Icon: ProfileIcon, end: false },
 ];
