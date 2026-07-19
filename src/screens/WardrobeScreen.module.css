@@ -23,7 +23,7 @@
   position: relative;
   isolation: isolate;
   overflow: hidden;
-  height: 286px;
+  aspect-ratio: 8 / 5;
   border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: 34px;
   background: var(--color-charcoal, #171717);
@@ -39,9 +39,9 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center 52%;
+  object-position: center center;
   filter: brightness(0.98) contrast(1.055) saturate(0.84);
-  transform: scale(1.025);
+  transform: scale(1.005);
   animation: heroImageDrift 14s ease-in-out infinite alternate;
 }
 
@@ -440,8 +440,9 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center 32%;
   filter: brightness(0.94) contrast(1.06) saturate(0.82);
-  transform: scale(1.015);
+  transform: scale(1.003);
 }
 
 .moreButton {
@@ -453,15 +454,21 @@
   height: 34px;
   display: grid;
   place-items: center;
-  border: 1px solid rgba(255, 255, 255, 0.42);
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.72);
   border-radius: 50%;
-  color: var(--color-graphite, #262626);
-  background: rgba(250, 247, 242, 0.68);
-  box-shadow:
-    0 10px 22px rgba(6, 27, 34, 0.18),
-    inset 0 1px 0 rgba(255, 255, 255, 0.84);
-  backdrop-filter: blur(18px) saturate(135%);
-  -webkit-backdrop-filter: blur(18px) saturate(135%);
+  color: #5f5a55;
+  background: rgba(255, 252, 247, 0.76);
+  background-clip: padding-box;
+  box-shadow: 0 8px 20px rgba(35, 30, 26, 0.14);
+  backdrop-filter: blur(16px) saturate(160%);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+}
+
+.moreButton::before,
+.moreButton::after {
+  content: none;
+  display: none;
 }
 
 .moreButton svg {
@@ -712,11 +719,11 @@
 
 @keyframes heroImageDrift {
   from {
-    transform: scale(1.025) translate3d(0, 0, 0);
+    transform: scale(1.005) translate3d(0, 0, 0);
   }
 
   to {
-    transform: scale(1.055) translate3d(-0.4%, -0.3%, 0);
+    transform: scale(1.018) translate3d(0, -0.12%, 0);
   }
 }
 
@@ -745,7 +752,6 @@
   }
 
   .heroCard {
-    height: 252px;
     border-radius: 29px;
   }
 
