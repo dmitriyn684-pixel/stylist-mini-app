@@ -23,9 +23,11 @@
   position: relative;
   isolation: isolate;
   overflow: hidden;
-  aspect-ratio: 8 / 5;
+  width: calc(100% + 32px);
+  height: clamp(520px, 68vh, 560px);
+  margin-left: -16px;
   border: 1px solid rgba(255, 255, 255, 0.14);
-  border-radius: 34px;
+  border-radius: 18px;
   background: var(--color-charcoal, #171717);
   box-shadow:
     0 28px 74px rgba(6, 27, 34, 0.28),
@@ -109,7 +111,7 @@
 }
 
 .titleSection {
-  margin: 28px 4px 0;
+  margin: 32px 4px 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -752,7 +754,9 @@
   }
 
   .heroCard {
-    border-radius: 29px;
+    width: calc(100% + 24px);
+    margin-left: -12px;
+    border-radius: 16px;
   }
 
   .titleSection {

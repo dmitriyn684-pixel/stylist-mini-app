@@ -25,10 +25,12 @@
 
 .heroMedia {
   position: relative;
-  min-height: 520px;
+  width: calc(100% + 32px);
+  height: clamp(520px, 68vh, 560px);
+  margin-left: -16px;
   overflow: hidden;
   isolation: isolate;
-  border-radius: 34px;
+  border-radius: 18px;
   border: 1px solid rgba(255, 255, 255, 0.12);
   background: var(--color-charcoal, #171717);
   box-shadow: 0 28px 78px rgba(6, 27, 34, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.12);
@@ -43,7 +45,7 @@
   object-fit: cover;
   object-position: 58% center;
   filter: brightness(1.1) saturate(0.9) contrast(1.04);
-  transform: scale(1.035);
+  transform: scale(1.012);
   animation: heroImageDrift 14s ease-in-out infinite alternate;
 }
 
@@ -1126,11 +1128,11 @@
 
 @keyframes heroImageDrift {
   0% {
-    transform: scale(1.035) translate3d(0, 0, 0);
+    transform: scale(1.012) translate3d(0, 0, 0);
   }
 
   100% {
-    transform: scale(1.065) translate3d(-0.5%, -0.35%, 0);
+    transform: scale(1.026) translate3d(-0.2%, -0.14%, 0);
   }
 }
 
@@ -1167,8 +1169,9 @@
   }
 
   .heroMedia {
-    min-height: 500px;
-    border-radius: 29px;
+    width: calc(100% + 24px);
+    margin-left: -12px;
+    border-radius: 16px;
   }
 
   .heroContent {
