@@ -23,7 +23,7 @@
 
 .hero {
   width: 100%;
-  height: clamp(190px, 28dvh, 230px);
+  height: clamp(220px, 32dvh, 260px);
   margin: 0;
   padding: 0;
   position: relative;
@@ -68,7 +68,7 @@
 }
 
 .content {
-  height: calc(100dvh - clamp(190px, 28dvh, 230px));
+  height: calc(100dvh - clamp(220px, 32dvh, 260px));
   padding: 0 16px;
   display: flex;
   flex-direction: column;
@@ -77,14 +77,22 @@
 
 .backButton {
   min-height: 38px;
-  margin: 7px 0 4px;
-  padding: 0 5px;
+  margin: 0;
+  padding: 0 14px;
+  position: absolute;
+  z-index: 4;
+  left: 16px;
+  bottom: 16px;
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  border: 0;
-  color: rgba(251, 248, 243, 0.88);
-  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.34);
+  border-radius: 999px;
+  color: #fff8ef;
+  background: rgba(31, 55, 59, 0.46);
+  box-shadow: 0 10px 24px rgba(14, 29, 32, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.16);
+  backdrop-filter: blur(14px) saturate(125%);
+  -webkit-backdrop-filter: blur(14px) saturate(125%);
   font-size: 12px;
   font-weight: 760;
   letter-spacing: 0.025em;
@@ -92,150 +100,19 @@
 }
 
 .backButton span {
-  color: #e0a45f;
+  color: #f1bd82;
   font-size: 18px;
   line-height: 1;
 }
 
 .backButton:active {
-  color: #e0a45f;
-  transform: translateX(-2px);
-}
-
-.conciergeCard {
-  position: relative;
-  overflow: hidden;
-  height: 82px;
-  min-height: 82px;
-  padding: 12px 14px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.68);
-  border-radius: 22px;
-  color: #1e2326;
-  background:
-    radial-gradient(circle at 12% 10%, rgba(224, 164, 95, 0.12), transparent 34%),
-    linear-gradient(145deg, rgba(251, 248, 243, 0.97), rgba(243, 238, 230, 0.92));
-  box-shadow: 0 16px 36px rgba(17, 35, 38, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.9);
-}
-
-.conciergeCard::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  border-radius: inherit;
-  padding: 1px;
-  background: linear-gradient(120deg, transparent 18%, rgba(224, 164, 95, 0.42), transparent 48%);
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  animation: borderGlow 8.8s ease-in-out infinite;
-}
-
-.conciergeSheen {
-  position: absolute;
-  top: -70%;
-  bottom: -70%;
-  left: -65%;
-  width: 42%;
-  pointer-events: none;
-  background: linear-gradient(105deg, transparent, rgba(255, 255, 255, 0.5), transparent);
-  transform: rotate(8deg);
-  animation: cardSweep 9.5s ease-in-out infinite;
-}
-
-.stylistAvatar {
-  width: 48px;
-  height: 48px;
-  flex: 0 0 48px;
-  position: relative;
-  display: grid;
-  place-items: center;
-  border: 1px solid rgba(255, 255, 255, 0.82);
-  border-radius: 17px;
-  color: #9b5e26;
-  background: linear-gradient(145deg, rgba(255, 252, 247, 0.98), rgba(224, 164, 95, 0.2));
-  box-shadow: 0 10px 22px rgba(130, 77, 32, 0.12), 0 0 20px rgba(224, 164, 95, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.95);
-}
-
-.avatarPulse {
-  position: absolute;
-  inset: 6px;
-  border: 1px solid rgba(201, 130, 50, 0.34);
-  border-radius: 12px;
-  animation: avatarDoublePulse 4s ease-in-out infinite;
-}
-
-.avatarPulse::after {
-  content: '';
-  position: absolute;
-  inset: 5px;
-  border-radius: 9px;
-  box-shadow: 0 0 18px rgba(201, 130, 50, 0.2);
-  animation: avatarDoublePulse 4s 0.45s ease-in-out infinite;
-}
-
-.avatarIcon {
-  width: 24px;
-  height: 24px;
-  position: relative;
-  z-index: 1;
-  transform-origin: center center;
-  transform-box: fill-box;
-  backface-visibility: visible;
-  animation: hangerSpinSelf 8s linear infinite;
-}
-
-.conciergeCopy {
-  min-width: 0;
-  position: relative;
-  z-index: 1;
-}
-
-.conciergeKicker {
-  display: block;
-  margin-bottom: 1px;
-  color: #b56e2a;
-  font-size: 9px;
-  font-weight: 850;
-  letter-spacing: 0.13em;
-  text-transform: uppercase;
-}
-
-.conciergeCopy h1 {
-  color: #1e2326;
-  font-family: var(--font-display);
-  font-size: 22px;
-  font-weight: 550;
-  line-height: 1.05;
-  letter-spacing: -0.025em;
-}
-
-.conciergeCopy p {
-  margin-top: 2px;
-  color: rgba(30, 35, 38, 0.62);
-  font-size: 11px;
-  line-height: 1.35;
-}
-
-.onlineDot {
-  width: 11px;
-  height: 11px;
-  margin-left: auto;
-  position: relative;
-  z-index: 1;
-  flex: 0 0 11px;
-  border: 2px solid rgba(251, 248, 243, 0.95);
-  border-radius: 50%;
-  background: #54a87b;
-  box-shadow: 0 0 0 4px rgba(84, 168, 123, 0.1), 0 0 16px rgba(84, 168, 123, 0.34);
+  color: #f1bd82;
+  transform: translateY(1px);
 }
 
 .chatSection {
   min-height: 0;
-  margin-top: 9px;
+  margin-top: 7px;
   padding-bottom: calc(12px + env(safe-area-inset-bottom));
   display: flex;
   flex: 1;
@@ -286,27 +163,6 @@
   86%, 100% { transform: translateX(380%) rotate(7deg); opacity: 0; }
 }
 
-@keyframes borderGlow {
-  0%, 45%, 100% { opacity: 0.15; filter: hue-rotate(0deg); }
-  62% { opacity: 0.72; filter: hue-rotate(-8deg); }
-}
-
-@keyframes cardSweep {
-  0%, 52% { left: -65%; opacity: 0; }
-  62% { opacity: 0.52; }
-  88%, 100% { left: 130%; opacity: 0; }
-}
-
-@keyframes avatarDoublePulse {
-  0%, 100% { opacity: 0.54; transform: scale(0.96); }
-  50% { opacity: 0.94; transform: scale(1.045); }
-}
-
-@keyframes hangerSpinSelf {
-  from { transform: rotateY(0deg); }
-  to { transform: rotateY(-360deg); }
-}
-
 @keyframes messageShow {
   from { opacity: 0; transform: translateY(12px); }
   to { opacity: 1; transform: translateY(0); }
@@ -318,14 +174,8 @@
     padding-left: 12px;
   }
 
-  .conciergeCard {
-    padding: 11px 13px;
-  }
-
-  .stylistAvatar {
-    width: 46px;
-    height: 46px;
-    flex-basis: 46px;
+  .backButton {
+    left: 12px;
   }
 }
 

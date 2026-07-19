@@ -8,7 +8,6 @@ import { useTelegram } from '../hooks/useTelegram';
 import { useAdminChatAccess } from '../hooks/useAdminChatAccess';
 import { useAvatarStore } from '../store/useAvatarStore';
 import { useWardrobeStore } from '../store/useWardrobeStore';
-import { HangerIcon } from '../components/ui/icons';
 import type { ChatProfile } from '../types/chat';
 import stylistChatHero from '../assets/editorial/stylist-chat-hero.jpg';
 import styles from './ChatScreen.module.css';
@@ -20,8 +19,6 @@ export function ChatScreen() {
   const sendMessage = useChatStore((s) => s.sendMessage);
   const addNote = useChatStore((s) => s.addNote);
   const remaining = useChatStore((s) => s.remaining());
-  const isUnlimitedAdmin = useChatStore((s) => s.isUnlimited);
-
   const { user } = useTelegram();
   useAdminChatAccess(user.id);
 
@@ -63,34 +60,13 @@ export function ChatScreen() {
         <img src={stylistChatHero} alt="Fashion mannequins in an editorial display" className={styles.heroImage} />
         <div className={styles.heroWash} aria-hidden="true" />
         <div className={styles.heroSweep} aria-hidden="true" />
-      </section>
-
-      <div className={styles.content}>
         <button type="button" onClick={() => navigate(-1)} className={styles.backButton}>
           <span aria-hidden="true">←</span>
           Назад
         </button>
+      </section>
 
-        <section className={styles.conciergeCard} aria-label="AI-стилист DimkoFF">
-          <div className={styles.conciergeSheen} aria-hidden="true" />
-          <div className={styles.stylistAvatar}>
-            <span className={styles.avatarPulse} aria-hidden="true" />
-            <HangerIcon className={styles.avatarIcon} />
-          </div>
-          <div className={styles.conciergeCopy}>
-            <span className={styles.conciergeKicker}>Private stylist · online</span>
-            <h1>DimkoFF AI</h1>
-            <p>
-              {Number.isFinite(remaining)
-                ? `Осталось сегодня: ${remaining}`
-                : isUnlimitedAdmin
-                  ? 'Безлимит · Admin'
-                  : 'Безлимит · Premium'}
-            </p>
-          </div>
-          <span className={styles.onlineDot} aria-label="В сети" />
-        </section>
-
+      <div className={styles.content}>
         <section className={styles.chatSection} aria-label="Диалог со стилистом">
           <div ref={scrollRef} className={styles.messageScroller}>
             <div className={styles.chatWindow}>
