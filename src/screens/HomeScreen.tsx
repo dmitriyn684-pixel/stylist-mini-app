@@ -3,6 +3,7 @@ import { HeroStats } from '../components/home/HeroStats';
 import { useUserProfile } from '../hooks/useUserProfile';
 import { useColorAnalysis } from '../hooks/useColorAnalysis';
 import { useWardrobeStore } from '../store/useWardrobeStore';
+import travelCapsuleImage from '../assets/editorial/travel-capsule.jpg';
 import {
   ArrowRightIcon,
   ChatIcon,
@@ -147,6 +148,7 @@ export function HomeScreen() {
       </section>
 
       <section className={styles.travelCard} aria-labelledby="travel-card-title">
+        <img className={styles.travelImage} src={travelCapsuleImage} alt="Женщина с чемоданом в путешествии" />
         <div className={styles.travelAurora} aria-hidden="true" />
         <div className={styles.cardSweep} aria-hidden="true" />
         <div className={styles.travelTopline}>
