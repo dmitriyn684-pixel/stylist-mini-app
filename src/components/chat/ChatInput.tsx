@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { ArrowRightIcon, MoonIcon, CameraIcon } from '../ui/icons';
+import styles from './ChatInput.module.css';
 
 interface ChatInputProps {
   onSend: (text: string) => void;
@@ -19,35 +20,41 @@ export function ChatInput({ onSend, onPhotoClick, disabled, limitReached }: Chat
 
   if (limitReached) {
     return (
-      <div className="shrink-0 px-4 pb-[calc(env(safe-area-inset-bottom)+16px)] pt-2 text-center flex flex-col items-center gap-1.5">
-        <MoonIcon className="w-5 h-5 text-lavender" />
-        <p className="text-[13px] text-olive">Бесплатные сообщения на сегодня закончились — возвращайся завтра</p>
+      <div className={styles.limitNotice}>
+        <MoonIcon className={styles.limitIcon} />
+        <p>Бесплатные сообщения на сегодня закончились — возвращайся завтра</p>
       </div>
     );
   }
 
   return (
-    <div className="shrink-0 pb-[calc(env(safe-area-inset-bottom)+16px)] pt-2">
-      <div className="chat-input">
-        <button type="button" className="photo-btn" onClick={onPhotoClick} disabled={disabled} aria-label="Прикрепить фото">
-          <CameraIcon className="w-5 h-5" />
+    <div className={styles.composerArea}>
+      <div className={styles.composer}>
+        <button
+          type="button"
+          className={styles.photoButton}
+          onClick={onPhotoClick}
+          disabled={disabled}
+          aria-label="Прикрепить фото"
+        >
+          <CameraIcon className={styles.cameraIcon} />
         </button>
         <input
           value={text}
-          onChange={(e) => setText(e.target.value)}
-          onKeyDown={(e) => e.key === 'Enter' && submit()}
+          onChange={(event) => setText(event.target.value)}
+          onKeyDown={(event) => event.key === 'Enter' && submit()}
           placeholder="Написать стилисту..."
           disabled={disabled}
-          className="input-box"
+          className={styles.input}
         />
         <button
           type="button"
-          className="send-btn"
+          className={styles.sendButton}
           onClick={submit}
           disabled={disabled || !text.trim()}
           aria-label="Отправить"
         >
-          <ArrowRightIcon className="w-4 h-4 mx-auto" />
+          <ArrowRightIcon className={styles.sendIcon} />
         </button>
       </div>
     </div>

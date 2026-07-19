@@ -1,0 +1,47 @@
+.palette {
+  width: 100%;
+  min-width: 220px;
+  display: grid;
+  gap: 16px;
+}
+
+.group h3 {
+  margin: 0 0 8px;
+  color: #9b5e26;
+  font-size: 10px;
+  font-weight: 850;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.swatchList {
+  display: grid;
+  gap: 7px;
+}
+
+.swatchRow {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.swatch {
+  width: 25px;
+  height: 25px;
+  flex: 0 0 25px;
+  border: 1px solid rgba(30, 35, 38, 0.1);
+  border-radius: 50%;
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.4), 0 4px 10px rgba(17, 24, 26, 0.08);
+}
+
+.swatchName {
+  color: #293033;
+  font-size: 12px;
+}
+
+.swatchHex {
+  margin-left: auto;
+  color: #737c7b;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 10px;
+}

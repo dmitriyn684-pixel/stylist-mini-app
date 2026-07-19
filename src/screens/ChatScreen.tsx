@@ -10,6 +10,8 @@ import { useAvatarStore } from '../store/useAvatarStore';
 import { useWardrobeStore } from '../store/useWardrobeStore';
 import { SparkleIcon, PaletteIcon } from '../components/ui/icons';
 import type { ChatProfile } from '../types/chat';
+import stylistChatHero from '../assets/editorial/stylist-chat-hero.jpg';
+import styles from './ChatScreen.module.css';
 
 const QUICK_ACTIONS = [
   { label: 'Весенний образ', prompt: 'Помоги подобрать весенний образ' },
@@ -55,8 +57,7 @@ export function ChatScreen() {
   }, [messages]);
 
   // В чате нет реального анализа фото (бэкенд чата — только текст, DeepSeek
-  // без vision) — вместо того чтобы делать вид, что фото учтено, честно
-  // подсказываем, где оно реально работает (Часть 4, сканер на Главной).
+  // без vision), поэтому честно направляем пользователя к рабочему AI-сканеру.
   const handlePhotoClick = () => fileInputRef.current?.click();
   const handlePhotoSelected = () => {
     if (fileInputRef.current) fileInputRef.current.value = '';
@@ -64,75 +65,94 @@ export function ChatScreen() {
   };
 
   return (
-    <div className="h-full flex flex-col bg-cream">
-      <button
-        onClick={() => navigate(-1)}
-        className="shrink-0 text-[13px] font-semibold text-olive px-4 pt-[calc(env(safe-area-inset-top)+16px)] text-left"
-      >
-        ← Назад
-      </button>
+    <main className={styles.page}>
+      <section className={styles.hero} aria-label="Private fashion concierge">
+        <img src={stylistChatHero} alt="Fashion mannequins in an editorial display" className={styles.heroImage} />
+        <div className={styles.heroWash} aria-hidden="true" />
+        <div className={styles.heroSweep} aria-hidden="true" />
+      </section>
 
-      <div className="chat-header shrink-0">
-        <div className="stylist-avatar">
-          <SparkleIcon className="w-6 h-6" />
-        </div>
-        <div>
-          <h2>DimkoFF AI</h2>
-          <p>
-            {Number.isFinite(remaining)
-              ? `Осталось сегодня: ${remaining}`
-              : isUnlimitedAdmin
-                ? 'Безлимит · Admin'
-                : 'Безлимит · Premium'}
-          </p>
-        </div>
-        <div className="online-dot" />
-      </div>
+      <div className={styles.content}>
+        <button type="button" onClick={() => navigate(-1)} className={styles.backButton}>
+          <span aria-hidden="true">←</span>
+          Назад
+        </button>
 
-      <div ref={scrollRef} className="flex-1 overflow-y-auto">
-        <div className="chat-window">
-          {messages.length === 0 && (
-            <div className="message ai-message">
-              Привет! Я твой AI стилист. Спроси меня про образ, гардероб или что надеть — я знаю твой цветотип,
-              тип фигуры и вещи в шкафу.
+        <section className={styles.conciergeCard} aria-label="AI-стилист DimkoFF">
+          <div className={styles.conciergeSheen} aria-hidden="true" />
+          <div className={styles.stylistAvatar}>
+            <span className={styles.avatarPulse} aria-hidden="true" />
+            <SparkleIcon className={styles.avatarIcon} />
+          </div>
+          <div className={styles.conciergeCopy}>
+            <span className={styles.conciergeKicker}>Private stylist · online</span>
+            <h1>DimkoFF AI</h1>
+            <p>
+              {Number.isFinite(remaining)
+                ? `Осталось сегодня: ${remaining}`
+                : isUnlimitedAdmin
+                  ? 'Безлимит · Admin'
+                  : 'Безлимит · Premium'}
+            </p>
+          </div>
+          <span className={styles.onlineDot} aria-label="В сети" />
+        </section>
+
+        <section className={styles.chatSection} aria-label="Диалог со стилистом">
+          <div ref={scrollRef} className={styles.messageScroller}>
+            <div className={styles.chatWindow}>
+              {messages.length === 0 && (
+                <div className={styles.welcomeMessage}>
+                  Привет! Я твой AI-стилист. Спроси меня про образ, гардероб или что надеть — я знаю твой цветотип,
+                  тип фигуры и вещи в шкафу.
+                </div>
+              )}
+              <MessageList messages={messages} />
             </div>
+          </div>
+
+          <div className={styles.quickActions} aria-label="Быстрые вопросы">
+            {QUICK_ACTIONS.map((action) => (
+              <button
+                key={action.label}
+                type="button"
+                disabled={disabled}
+                onClick={() => sendMessage(action.prompt, profile)}
+              >
+                {action.label}
+              </button>
+            ))}
+          </div>
+
+          {colorResult?.palette && (
+            <button
+              type="button"
+              onClick={() => addPaletteMessage(colorResult.palette)}
+              disabled={disabled}
+              className={styles.paletteAction}
+            >
+              <PaletteIcon className={styles.paletteIcon} />
+              Показать мою палитру
+              <span aria-hidden="true">→</span>
+            </button>
           )}
-          <MessageList messages={messages} />
-        </div>
-      </div>
 
-      <div className="quick-actions shrink-0">
-        {QUICK_ACTIONS.map((a) => (
-          <button
-            key={a.label}
-            type="button"
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            onChange={handlePhotoSelected}
+            className={styles.hiddenInput}
+          />
+
+          <ChatInput
+            onSend={(text) => sendMessage(text, profile)}
+            onPhotoClick={handlePhotoClick}
             disabled={disabled}
-            onClick={() => sendMessage(a.prompt, profile)}
-          >
-            {a.label}
-          </button>
-        ))}
+            limitReached={remaining <= 0}
+          />
+        </section>
       </div>
-
-      {colorResult?.palette && (
-        <div className="px-6 pb-2 shrink-0">
-          <button
-            onClick={() => addPaletteMessage(colorResult.palette)}
-            className="text-[12px] font-semibold text-lavender flex items-center gap-1"
-          >
-            <PaletteIcon className="w-3.5 h-3.5" /> Показать мою палитру
-          </button>
-        </div>
-      )}
-
-      <input ref={fileInputRef} type="file" accept="image/*" onChange={handlePhotoSelected} className="hidden" />
-
-      <ChatInput
-        onSend={(text) => sendMessage(text, profile)}
-        onPhotoClick={handlePhotoClick}
-        disabled={disabled}
-        limitReached={remaining <= 0}
-      />
-    </div>
+    </main>
   );
 }

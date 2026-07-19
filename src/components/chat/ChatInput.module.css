@@ -1,0 +1,131 @@
+.composerArea {
+  padding: 7px 0 0;
+}
+
+.composer {
+  width: 100%;
+  min-height: 68px;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.64);
+  border-radius: 28px;
+  background: linear-gradient(145deg, rgba(251, 248, 243, 0.93), rgba(239, 233, 224, 0.84));
+  box-shadow: 0 20px 42px rgba(17, 24, 26, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(22px) saturate(135%);
+  -webkit-backdrop-filter: blur(22px) saturate(135%);
+}
+
+.photoButton,
+.sendButton {
+  width: 50px;
+  height: 50px;
+  display: grid;
+  place-items: center;
+  flex: 0 0 50px;
+  border-radius: 20px;
+  transition: transform 160ms ease, box-shadow 160ms ease, opacity 160ms ease;
+}
+
+.photoButton {
+  border: 1px solid rgba(255, 255, 255, 0.82);
+  color: #536164;
+  background: linear-gradient(145deg, rgba(255, 253, 249, 0.94), rgba(226, 221, 211, 0.72));
+  box-shadow: 0 8px 18px rgba(17, 24, 26, 0.09), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+.sendButton {
+  position: relative;
+  overflow: hidden;
+  border: 0;
+  color: #fffaf2;
+  background: linear-gradient(135deg, #4a2e1f 0%, #6d4631 55%, #8b5e44 100%);
+  box-shadow: 0 11px 25px rgba(74, 46, 31, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.14);
+}
+
+.sendButton::before {
+  content: '';
+  position: absolute;
+  inset: -80% -55%;
+  background: linear-gradient(105deg, transparent 43%, rgba(255, 248, 239, 0.38) 50%, transparent 57%);
+  transform: translateX(-60%) rotate(8deg);
+  animation: sendSheen 7.8s ease-in-out infinite;
+}
+
+.photoButton:active,
+.sendButton:active {
+  transform: translateY(2px) scale(0.96);
+}
+
+.photoButton:disabled,
+.sendButton:disabled,
+.input:disabled {
+  opacity: 0.5;
+}
+
+.input {
+  width: 100%;
+  min-width: 0;
+  height: 48px;
+  padding: 0 4px;
+  border: 0;
+  outline: 0;
+  color: #2c3436;
+  background: transparent;
+  font: inherit;
+  font-size: 13px;
+}
+
+.input::placeholder {
+  color: #737c7b;
+  opacity: 1;
+}
+
+.cameraIcon {
+  width: 20px;
+  height: 20px;
+}
+
+.sendIcon {
+  width: 18px;
+  height: 18px;
+  position: relative;
+  z-index: 1;
+}
+
+.limitNotice {
+  padding: 14px 12px 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+  color: rgba(243, 238, 230, 0.76);
+  text-align: center;
+}
+
+.limitNotice p {
+  max-width: 290px;
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.limitIcon {
+  width: 19px;
+  height: 19px;
+  color: #e0a45f;
+}
+
+@keyframes sendSheen {
+  0%, 55% { transform: translateX(-60%) rotate(8deg); opacity: 0; }
+  65% { opacity: 0.5; }
+  90%, 100% { transform: translateX(60%) rotate(8deg); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sendButton::before {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
