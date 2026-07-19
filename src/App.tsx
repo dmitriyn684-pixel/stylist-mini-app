@@ -45,7 +45,7 @@ function App() {
           <Route path="/wardrobe/add" element={<AddItemScreen />} />
           <Route path="/wardrobe/outfits/create" element={<OutfitCreatorScreen />} />
           <Route path="/wardrobe/outfits/generate" element={<GenerateLookScreen />} />
-          <Route path="/chat" element={<ChatScreen />} />
+          <Route path="/chat" element={<Navigate to="/stylist" replace />} />
           <Route path="/premium" element={<PremiumScreen />} />
           <Route element={<Layout />}>
             <Route path="/" element={<HomeScreen />} />
@@ -55,7 +55,7 @@ function App() {
             <Route path="/wardrobe/outfits" element={<OutfitsListScreen />} />
             <Route path="/wardrobe/outfits/:id" element={<OutfitDetailScreen />} />
             <Route path="/wardrobe/suitcase" element={<PlaceholderScreen icon={SuitcaseIcon} title="Собрать чемодан" note="Появится в v2" />} />
-            <Route path="/stylist" element={<ChatScreen withTabBar />} />
+            <Route path="/stylist" element={<ChatScreen />} />
             <Route path="/stylist/capsule" element={<CapsuleWardrobeScreen />} />
             <Route path="/shopping" element={<ShoppingScreen />} />
             <Route path="/profile" element={<ProfileScreen />} />
