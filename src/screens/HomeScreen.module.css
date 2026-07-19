@@ -214,51 +214,12 @@
   line-height: 1.55;
 }
 
-.heroCta {
-  position: relative;
-  overflow: hidden;
-  min-height: 50px;
-  margin-top: 20px;
-  padding: 0 18px;
-  display: inline-flex;
-  align-items: center;
-  gap: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.36);
-  border-radius: 999px;
-  color: var(--color-charcoal, #171717);
-  background: rgba(250, 247, 242, 0.9);
-  box-shadow: 0 14px 38px rgba(0, 0, 0, 0.22);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
-  font-size: 13px;
-  font-weight: 800;
-  transition: transform 180ms ease, background 180ms ease;
-}
-
-.heroCta::after {
-  content: '';
-  position: absolute;
-  inset: -60% -25%;
-  pointer-events: none;
-  background: linear-gradient(105deg, transparent 43%, rgba(255, 255, 255, 0.72) 50%, transparent 57%);
-  transform: translateX(-70%);
-  animation: ctaSweep 9s ease-in-out infinite;
-}
-
-.heroCta > * {
-  position: relative;
-  z-index: 1;
-}
-
-.heroCta svg,
 .priorityLink svg,
 .actionArrow {
   width: 16px;
   height: 16px;
 }
 
-.heroCta:active,
-.primaryAction:active,
 .secondaryAction:active {
   transform: scale(0.98);
 }
@@ -505,14 +466,16 @@
     0 12px 26px rgba(6, 27, 34, 0.2),
     0 0 24px rgba(38, 75, 75, 0.16),
     inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  perspective: 240px;
 }
 
 .priorityIcon svg {
+  display: block;
   width: 19px;
   height: 19px;
   transform-box: fill-box;
-  transform-origin: 50% 50%;
-  animation: hangerSpinSelf 12s linear infinite;
+  transform-origin: center center;
+  animation: hangerSpinSelf 6s linear infinite;
 }
 
 .priorityCopy h2 {
@@ -567,7 +530,6 @@
   gap: 10px;
 }
 
-.primaryAction,
 .secondaryAction {
   --action-accent-rgb: 30, 59, 60;
   --pulse-rgb: var(--action-accent-rgb);
@@ -604,18 +566,13 @@
 }
 
 .primaryActions > a:nth-child(2) {
-  --action-accent-rgb: 138, 108, 78;
+  --action-accent-rgb: 201, 121, 46;
   --pulse-delay: 0.7s;
 }
 
 .primaryActions > a:nth-child(3) {
-  --action-accent-rgb: 201, 121, 46;
-  --pulse-delay: 1.4s;
-}
-
-.primaryActions > a:nth-child(4) {
   --action-accent-rgb: 62, 60, 58;
-  --pulse-delay: 2.1s;
+  --pulse-delay: 1.4s;
 }
 
 .travelAction {
@@ -677,25 +634,21 @@
   height: 20px;
 }
 
-.primaryAction:active .actionIcon,
 .secondaryAction:active .actionIcon {
   animation: iconPressDepth 420ms ease-out both;
 }
 
-.primaryAction span:nth-child(2),
 .secondaryAction span:nth-child(2) {
   display: flex;
   flex-direction: column;
   gap: 4px;
 }
 
-.primaryAction b,
 .secondaryAction b {
   font-size: 14px;
   font-weight: 800;
 }
 
-.primaryAction small,
 .secondaryAction small {
   color: var(--color-muted, #8f877f);
   font-size: 11px;
@@ -1110,22 +1063,6 @@
   }
 }
 
-@keyframes ctaSweep {
-  0%, 50% {
-    transform: translateX(-70%) rotate(5deg);
-    opacity: 0;
-  }
-
-  60% {
-    opacity: 0.55;
-  }
-
-  88%, 100% {
-    transform: translateX(70%) rotate(5deg);
-    opacity: 0;
-  }
-}
-
 @keyframes heroImageDrift {
   0% {
     transform: scale(1.012) translate3d(0, 0, 0);
@@ -1154,11 +1091,11 @@
 
 @keyframes hangerSpinSelf {
   from {
-    transform: rotate(0deg);
+    transform: rotateY(0deg);
   }
 
   to {
-    transform: rotate(-360deg);
+    transform: rotateY(360deg);
   }
 }
 

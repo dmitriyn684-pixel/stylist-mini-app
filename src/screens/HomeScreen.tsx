@@ -113,14 +113,6 @@ export function HomeScreen() {
                 ? 'Создадим персональную основу: палитру, гардероб и образы под твой ритм жизни.'
                 : 'Спокойные решения для гардероба, образов и покупок — каждый день.'}
             </span>
-            <button
-              type="button"
-              className={styles.heroCta}
-              onClick={() => navigate(isEmpty ? '/analysis/color-type' : '/wardrobe/outfits/generate')}
-            >
-              {isEmpty ? 'Начать персонализацию' : 'Собрать новый образ'}
-              <ArrowRightIcon />
-            </button>
           </div>
         </div>
 
@@ -182,17 +174,6 @@ export function HomeScreen() {
         </div>
 
         <div className={styles.primaryActions}>
-          <Link className={styles.primaryAction} to="/wardrobe/outfits/generate">
-            <span className={styles.actionIcon} aria-hidden="true">
-              <HangerIcon />
-            </span>
-            <span>
-              <b>Собрать образ</b>
-              <small>Из твоего гардероба</small>
-            </span>
-            <ArrowRightIcon className={styles.actionArrow} />
-          </Link>
-
           <Link className={styles.secondaryAction} to="/chat">
             <span className={styles.actionIcon} aria-hidden="true">
               <ChatIcon />
