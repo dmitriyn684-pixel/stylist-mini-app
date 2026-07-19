@@ -1,11 +1,10 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Chip } from '../components/ui/Chip';
-import { Button } from '../components/ui/Button';
 import { MoreIcon, PuzzleIcon, HangerIcon, SparkleIcon } from '../components/ui/icons';
 import { useWardrobeStore } from '../store/useWardrobeStore';
 import type { WardrobeCategory } from '../types/wardrobe';
-import wardrobeBanner from '../assets/wardrobe-banner.png';
+import wardrobeEditorial from '../assets/editorial/wardrobe-editorial.jpg';
+import styles from './WardrobeScreen.module.css';
 
 const filters: ('Все' | WardrobeCategory)[] = ['Все', 'Верх', 'Низ', 'Платья', 'Обувь', 'Аксессуары'];
 
@@ -17,78 +16,86 @@ export function WardrobeScreen() {
   const visible = active === 'Все' ? items : items.filter((i) => i.category === active);
 
   return (
-    <div className="px-4 pt-[calc(env(safe-area-inset-top)+16px)] pb-[calc(env(safe-area-inset-bottom)+150px)]">
-      <div className="wardrobe-hero">
-        <img src={wardrobeBanner} alt="Гардероб" className="page-banner" />
+    <main className={styles.page}>
+      <section className={styles.heroCard} aria-label="Private wardrobe editorial">
+        <img src={wardrobeEditorial} alt="Гардеробная с вечерними платьями" className={styles.heroImage} />
+        <div className={styles.heroShade} aria-hidden="true" />
+        <div className={styles.heroAurora} aria-hidden="true" />
+        <div className={styles.heroSweep} aria-hidden="true" />
+      </section>
 
-        <div className="wardrobe-hero-blobs">
-          <span />
-          <span />
-          <span />
-        </div>
-      </div>
-
-      <div className="flex items-center justify-between px-2 mb-4">
-        <h1 className="font-display text-[26px] text-ink">Гардероб</h1>
-        <button onClick={() => navigate('/wardrobe/outfits')} className="wardrobe-looks-btn">
-          <PuzzleIcon className="w-4 h-4" />
-          <span>Мои луки →</span>
+      <header className={styles.titleSection}>
+        <h1>Гардероб</h1>
+        <button type="button" onClick={() => navigate('/wardrobe/outfits')} className={styles.looksButton}>
+          <PuzzleIcon />
+          <span>Мои луки</span>
+          <span aria-hidden="true">→</span>
         </button>
-      </div>
+      </header>
 
-      <div className="flex gap-4 overflow-x-auto px-2 mb-4 -mx-2">
-        {filters.map((f) => (
-          <Chip key={f} label={f} active={f === active} onClick={() => setActive(f)} />
-        ))}
-      </div>
-
-      <div className="wardrobe-ai-card">
-        <div className="wardrobe-ai-icon">
-          <SparkleIcon className="w-[22px] h-[22px]" />
-        </div>
-
-        <div className="wardrobe-ai-text">
-          <p className="wardrobe-ai-title">Сегодня AI рекомендует</p>
-          <p className="wardrobe-ai-subtitle">Светлый верх + мягкий акцент в розовом оттенке</p>
-        </div>
-
-        <div className="wardrobe-ai-score">98%</div>
-      </div>
-
-      {visible.length === 0 ? (
-        <div className="flex flex-col items-center text-center gap-3 py-16 px-4">
-          <div
-            className="w-16 h-16 rounded-full flex items-center justify-center"
-            style={{ background: 'linear-gradient(135deg, var(--color-lavender-light), var(--color-pink-light))' }}
-          >
-            <HangerIcon className="w-7 h-7 text-white" />
-          </div>
-          <p className="text-[13px] text-olive">
-            {items.length === 0 ? 'Гардероб пока пуст — добавь первую вещь' : 'В этой категории пока пусто'}
-          </p>
-        </div>
-      ) : (
-        <div className="columns-2 gap-3 px-2 [&>*]:mb-3">
-          {visible.map((item) => (
+      <section className={styles.tabsViewport} aria-label="Категории гардероба">
+        <div className={styles.tabs}>
+          {filters.map((f) => (
             <button
-              key={item.id}
-              onClick={() => navigate(`/wardrobe/item/${item.id}`)}
-              className="relative rounded-2xl overflow-hidden border border-ink/10 block w-full break-inside-avoid"
+              key={f}
+              type="button"
+              className={`${styles.tab} ${f === active ? styles.tabActive : ''}`}
+              aria-pressed={f === active}
+              onClick={() => setActive(f)}
             >
-              <img src={item.imageUrl} alt={item.category} className="w-full h-auto block" />
-              <span className="absolute top-2 right-2 w-7 h-7 rounded-full bg-white/70 backdrop-blur flex items-center justify-center text-ink">
-                <MoreIcon className="w-4 h-4" />
-              </span>
+              {f}
             </button>
           ))}
         </div>
+      </section>
+
+      <section className={styles.aiCard} aria-labelledby="wardrobe-ai-title">
+        <div className={styles.aiIcon} aria-hidden="true">
+          <SparkleIcon />
+        </div>
+
+        <div className={styles.aiText}>
+          <p id="wardrobe-ai-title" className={styles.aiTitle}>
+            Сегодня AI рекомендует
+          </p>
+          <p className={styles.aiSubtitle}>Светлый верх + мягкий акцент в розовом оттенке</p>
+        </div>
+
+        <div className={styles.aiScore}>98%</div>
+      </section>
+
+      {visible.length === 0 ? (
+        <section className={styles.emptyState}>
+          <div className={styles.emptyIcon} aria-hidden="true">
+            <HangerIcon />
+          </div>
+          <p>
+            {items.length === 0 ? 'Гардероб пока пуст — добавь первую вещь' : 'В этой категории пока пусто'}
+          </p>
+        </section>
+      ) : (
+        <section className={styles.itemsGrid} aria-label="Вещи в гардеробе">
+          {visible.map((item) => (
+            <button
+              key={item.id}
+              type="button"
+              onClick={() => navigate(`/wardrobe/item/${item.id}`)}
+              className={styles.itemCard}
+            >
+              <img src={item.imageUrl} alt={item.category} className={styles.itemImage} />
+              <span className={styles.moreButton} aria-hidden="true">
+                <MoreIcon />
+              </span>
+            </button>
+          ))}
+        </section>
       )}
 
-      <div className="fixed left-0 right-0 bottom-[calc(env(safe-area-inset-bottom)+112px)] px-6 max-w-md mx-auto">
-        <Button className="w-full shadow-soft" onClick={() => navigate('/wardrobe/add')}>
-          + Добавить вещь
-        </Button>
+      <div className={styles.addDock}>
+        <button type="button" className={styles.addButton} onClick={() => navigate('/wardrobe/add')}>
+          <span>+ Добавить вещь</span>
+        </button>
       </div>
-    </div>
+    </main>
   );
 }
