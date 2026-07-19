@@ -6,7 +6,6 @@ import { OnboardingScreen } from './components/onboarding/OnboardingScreen';
 import { HomeScreen } from './screens/HomeScreen';
 import { WardrobeScreen } from './screens/WardrobeScreen';
 import { WardrobePremiumScreen } from './screens/WardrobePremiumScreen';
-import { StylistScreen } from './screens/StylistScreen';
 import { ColorQuizScreen } from './screens/ColorQuizScreen';
 import { ProfileScreen } from './screens/ProfileScreen';
 import { AvatarCreatorScreen } from './screens/AvatarCreatorScreen';
@@ -56,7 +55,7 @@ function App() {
             <Route path="/wardrobe/outfits" element={<OutfitsListScreen />} />
             <Route path="/wardrobe/outfits/:id" element={<OutfitDetailScreen />} />
             <Route path="/wardrobe/suitcase" element={<PlaceholderScreen icon={SuitcaseIcon} title="Собрать чемодан" note="Появится в v2" />} />
-            <Route path="/stylist" element={<StylistScreen />} />
+            <Route path="/stylist" element={<ChatScreen withTabBar />} />
             <Route path="/stylist/capsule" element={<CapsuleWardrobeScreen />} />
             <Route path="/shopping" element={<ShoppingScreen />} />
             <Route path="/profile" element={<ProfileScreen />} />

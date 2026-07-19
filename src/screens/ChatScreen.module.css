@@ -215,6 +215,10 @@
   flex-direction: column;
 }
 
+.pageWithTabBar .chatSection {
+  padding-bottom: calc(110px + env(safe-area-inset-bottom));
+}
+
 .messageScroller {
   min-height: 0;
   overflow-y: auto;

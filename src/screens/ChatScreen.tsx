@@ -54,7 +54,11 @@ const STYLISTS: StylistPersona[] = [
   },
 ];
 
-export function ChatScreen() {
+interface ChatScreenProps {
+  withTabBar?: boolean;
+}
+
+export function ChatScreen({ withTabBar = false }: ChatScreenProps) {
   const navigate = useNavigate();
   const messages = useChatStore((state) => state.messages);
   const isTyping = useChatStore((state) => state.isTyping);
@@ -113,7 +117,7 @@ export function ChatScreen() {
   };
 
   return (
-    <main className={styles.page}>
+    <main className={`${styles.page} ${withTabBar ? styles.pageWithTabBar : ''}`}>
       <section className={styles.hero} aria-label="Private fashion concierge">
         <img src={stylistChatHero} alt="Fashion mannequins in an editorial display" className={styles.heroImage} />
         <div className={styles.heroWash} aria-hidden="true" />
