@@ -68,12 +68,16 @@
 }
 
 .content {
+  height: calc(100dvh - clamp(190px, 28dvh, 230px));
   padding: 0 16px;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
 }
 
 .backButton {
-  min-height: 44px;
-  margin: 8px 0 5px;
+  min-height: 38px;
+  margin: 7px 0 4px;
   padding: 0 5px;
   display: inline-flex;
   align-items: center;
@@ -101,11 +105,12 @@
 .conciergeCard {
   position: relative;
   overflow: hidden;
-  min-height: 86px;
-  padding: 13px 16px;
+  height: 82px;
+  min-height: 82px;
+  padding: 12px 14px;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   border: 1px solid rgba(255, 255, 255, 0.68);
   border-radius: 22px;
   color: #1e2326;
@@ -142,9 +147,9 @@
 }
 
 .stylistAvatar {
-  width: 50px;
-  height: 50px;
-  flex: 0 0 50px;
+  width: 48px;
+  height: 48px;
+  flex: 0 0 48px;
   position: relative;
   display: grid;
   place-items: center;
@@ -191,7 +196,7 @@
 
 .conciergeKicker {
   display: block;
-  margin-bottom: 2px;
+  margin-bottom: 1px;
   color: #b56e2a;
   font-size: 9px;
   font-weight: 850;
@@ -202,14 +207,14 @@
 .conciergeCopy h1 {
   color: #1e2326;
   font-family: var(--font-display);
-  font-size: 23px;
+  font-size: 22px;
   font-weight: 550;
   line-height: 1.05;
   letter-spacing: -0.025em;
 }
 
 .conciergeCopy p {
-  margin-top: 3px;
+  margin-top: 2px;
   color: rgba(30, 35, 38, 0.62);
   font-size: 11px;
   line-height: 1.35;
@@ -229,14 +234,18 @@
 }
 
 .chatSection {
-  margin-top: 11px;
-  padding-bottom: calc(16px + env(safe-area-inset-bottom));
+  min-height: 0;
+  margin-top: 9px;
+  padding-bottom: calc(12px + env(safe-area-inset-bottom));
+  display: flex;
+  flex: 1;
+  flex-direction: column;
 }
 
 .messageScroller {
-  min-height: clamp(220px, 36dvh, 380px);
-  max-height: min(70dvh, 720px);
+  min-height: 0;
   overflow-y: auto;
+  flex: 1;
   overscroll-behavior: contain;
   scrollbar-width: none;
 }
@@ -247,7 +256,7 @@
 
 .chatWindow {
   min-height: 124px;
-  padding: 3px 1px 8px;
+  padding: 3px 1px 12px;
   display: flex;
   flex-direction: column;
   gap: 13px;
@@ -265,87 +274,6 @@
   font-size: 14px;
   line-height: 1.62;
   animation: messageShow 560ms cubic-bezier(0.22, 0.8, 0.2, 1) both;
-}
-
-.quickActions {
-  margin: 11px -16px 0;
-  padding: 10px 16px 12px;
-  display: flex;
-  gap: 9px;
-  overflow-x: auto;
-  scrollbar-width: none;
-}
-
-.quickActions::-webkit-scrollbar {
-  display: none;
-}
-
-.quickActions button {
-  min-height: 40px;
-  padding: 0 16px;
-  position: relative;
-  overflow: hidden;
-  flex: 0 0 auto;
-  border: 1px solid rgba(255, 255, 255, 0.56);
-  border-radius: 999px;
-  color: #31383a;
-  background: linear-gradient(145deg, rgba(251, 248, 243, 0.92), rgba(239, 233, 224, 0.78));
-  box-shadow: 0 10px 22px rgba(17, 24, 26, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(16px) saturate(125%);
-  -webkit-backdrop-filter: blur(16px) saturate(125%);
-  font-size: 12px;
-  font-weight: 720;
-  white-space: nowrap;
-  transition: transform 160ms ease, color 160ms ease, border-color 160ms ease;
-}
-
-.quickActions button::after {
-  content: '';
-  position: absolute;
-  inset: -80% -45%;
-  pointer-events: none;
-  background: linear-gradient(105deg, transparent 44%, rgba(255, 255, 255, 0.56) 50%, transparent 56%);
-  transform: translateX(-60%) rotate(6deg);
-  animation: chipSheen 9s ease-in-out infinite;
-}
-
-.quickActions button:active {
-  color: #9b5e26;
-  border-color: rgba(224, 164, 95, 0.5);
-  transform: translateY(2px) scale(0.985);
-}
-
-.quickActions button:disabled,
-.paletteAction:disabled {
-  opacity: 0.5;
-}
-
-.paletteAction {
-  width: 100%;
-  min-height: 42px;
-  margin: 0 0 7px;
-  padding: 8px 10px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  border: 0;
-  color: #f1bd82;
-  background: transparent;
-  font-size: 11px;
-  font-weight: 780;
-  letter-spacing: 0.015em;
-  text-align: left;
-}
-
-.paletteAction span {
-  margin-left: auto;
-  color: rgba(251, 248, 243, 0.72);
-  font-size: 17px;
-}
-
-.paletteIcon {
-  width: 17px;
-  height: 17px;
 }
 
 .hiddenInput {
@@ -379,12 +307,6 @@
   to { transform: rotateY(-360deg); }
 }
 
-@keyframes chipSheen {
-  0%, 60% { transform: translateX(-60%) rotate(6deg); opacity: 0; }
-  68% { opacity: 0.44; }
-  90%, 100% { transform: translateX(60%) rotate(6deg); opacity: 0; }
-}
-
 @keyframes messageShow {
   from { opacity: 0; transform: translateY(12px); }
   to { opacity: 1; transform: translateY(0); }
@@ -396,21 +318,14 @@
     padding-left: 12px;
   }
 
-  .quickActions {
-    margin-right: -12px;
-    margin-left: -12px;
-    padding-right: 12px;
-    padding-left: 12px;
-  }
-
   .conciergeCard {
-    padding: 12px 14px;
+    padding: 11px 13px;
   }
 
   .stylistAvatar {
-    width: 48px;
-    height: 48px;
-    flex-basis: 48px;
+    width: 46px;
+    height: 46px;
+    flex-basis: 46px;
   }
 }
 

@@ -8,23 +8,16 @@ import { useTelegram } from '../hooks/useTelegram';
 import { useAdminChatAccess } from '../hooks/useAdminChatAccess';
 import { useAvatarStore } from '../store/useAvatarStore';
 import { useWardrobeStore } from '../store/useWardrobeStore';
-import { HangerIcon, PaletteIcon } from '../components/ui/icons';
+import { HangerIcon } from '../components/ui/icons';
 import type { ChatProfile } from '../types/chat';
 import stylistChatHero from '../assets/editorial/stylist-chat-hero.jpg';
 import styles from './ChatScreen.module.css';
-
-const QUICK_ACTIONS = [
-  { label: 'Весенний образ', prompt: 'Помоги подобрать весенний образ' },
-  { label: 'На работу', prompt: 'Помоги подобрать образ на работу' },
-  { label: 'Свидание', prompt: 'Помоги подобрать образ на свидание' },
-];
 
 export function ChatScreen() {
   const navigate = useNavigate();
   const messages = useChatStore((s) => s.messages);
   const isTyping = useChatStore((s) => s.isTyping);
   const sendMessage = useChatStore((s) => s.sendMessage);
-  const addPaletteMessage = useChatStore((s) => s.addPaletteMessage);
   const addNote = useChatStore((s) => s.addNote);
   const remaining = useChatStore((s) => s.remaining());
   const isUnlimitedAdmin = useChatStore((s) => s.isUnlimited);
@@ -110,32 +103,6 @@ export function ChatScreen() {
               <MessageList messages={messages} />
             </div>
           </div>
-
-          <div className={styles.quickActions} aria-label="Быстрые вопросы">
-            {QUICK_ACTIONS.map((action) => (
-              <button
-                key={action.label}
-                type="button"
-                disabled={disabled}
-                onClick={() => sendMessage(action.prompt, profile)}
-              >
-                {action.label}
-              </button>
-            ))}
-          </div>
-
-          {colorResult?.palette && (
-            <button
-              type="button"
-              onClick={() => addPaletteMessage(colorResult.palette)}
-              disabled={disabled}
-              className={styles.paletteAction}
-            >
-              <PaletteIcon className={styles.paletteIcon} />
-              Показать мою палитру
-              <span aria-hidden="true">→</span>
-            </button>
-          )}
 
           <input
             ref={fileInputRef}
