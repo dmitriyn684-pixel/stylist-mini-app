@@ -23,35 +23,22 @@
 
 .hero {
   width: 100%;
-  height: clamp(190px, 48vw, 216px);
+  height: clamp(190px, 28dvh, 230px);
+  margin: 0;
+  padding: 0;
   position: relative;
   isolation: isolate;
   overflow: hidden;
+  border-radius: 0;
   background: #294e54;
 }
 
-.heroImage,
-.heroBackdrop {
+.heroImage {
   width: 100%;
   height: 100%;
   display: block;
-  position: absolute;
-  inset: 0;
-}
-
-.heroBackdrop {
-  z-index: 0;
   object-fit: cover;
-  object-position: center;
-  filter: blur(13px) saturate(0.65) brightness(0.55);
-  opacity: 0.58;
-  transform: scale(1.1);
-}
-
-.heroImage {
-  z-index: 1;
-  object-fit: contain;
-  object-position: center;
+  object-position: center 44%;
   filter: saturate(0.8) contrast(1.04) brightness(0.94);
 }
 
@@ -404,10 +391,6 @@
 }
 
 @media (max-width: 360px) {
-  .hero {
-    height: 188px;
-  }
-
   .content {
     padding-right: 12px;
     padding-left: 12px;

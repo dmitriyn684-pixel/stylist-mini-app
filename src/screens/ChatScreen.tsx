@@ -67,7 +67,6 @@ export function ChatScreen() {
   return (
     <main className={styles.page}>
       <section className={styles.hero} aria-label="Private fashion concierge">
-        <img src={stylistChatHero} alt="" className={styles.heroBackdrop} aria-hidden="true" />
         <img src={stylistChatHero} alt="Fashion mannequins in an editorial display" className={styles.heroImage} />
         <div className={styles.heroWash} aria-hidden="true" />
         <div className={styles.heroSweep} aria-hidden="true" />
