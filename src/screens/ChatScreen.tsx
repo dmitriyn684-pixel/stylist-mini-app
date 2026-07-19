@@ -8,7 +8,7 @@ import { useTelegram } from '../hooks/useTelegram';
 import { useAdminChatAccess } from '../hooks/useAdminChatAccess';
 import { useAvatarStore } from '../store/useAvatarStore';
 import { useWardrobeStore } from '../store/useWardrobeStore';
-import { SparkleIcon, PaletteIcon } from '../components/ui/icons';
+import { HangerIcon, PaletteIcon } from '../components/ui/icons';
 import type { ChatProfile } from '../types/chat';
 import stylistChatHero from '../assets/editorial/stylist-chat-hero.jpg';
 import styles from './ChatScreen.module.css';
@@ -67,6 +67,7 @@ export function ChatScreen() {
   return (
     <main className={styles.page}>
       <section className={styles.hero} aria-label="Private fashion concierge">
+        <img src={stylistChatHero} alt="" className={styles.heroBackdrop} aria-hidden="true" />
         <img src={stylistChatHero} alt="Fashion mannequins in an editorial display" className={styles.heroImage} />
         <div className={styles.heroWash} aria-hidden="true" />
         <div className={styles.heroSweep} aria-hidden="true" />
@@ -82,7 +83,7 @@ export function ChatScreen() {
           <div className={styles.conciergeSheen} aria-hidden="true" />
           <div className={styles.stylistAvatar}>
             <span className={styles.avatarPulse} aria-hidden="true" />
-            <SparkleIcon className={styles.avatarIcon} />
+            <HangerIcon className={styles.avatarIcon} />
           </div>
           <div className={styles.conciergeCopy}>
             <span className={styles.conciergeKicker}>Private stylist · online</span>

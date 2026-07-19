@@ -185,17 +185,6 @@ export function HomeScreen() {
             <ArrowRightIcon className={styles.actionArrow} />
           </Link>
 
-          <Link className={`${styles.secondaryAction} ${styles.travelAction}`} to="/wardrobe/suitcase">
-            <span className={styles.actionIcon} aria-hidden="true">
-              <SuitcaseIcon />
-            </span>
-            <span>
-              <b>Собрать чемодан</b>
-              <small>Капсула для поездки</small>
-            </span>
-            <ArrowRightIcon className={styles.actionArrow} />
-          </Link>
-
           <Link className={styles.secondaryAction} to="/wardrobe/outfits">
             <span className={styles.actionIcon} aria-hidden="true">
               <HangerIcon />

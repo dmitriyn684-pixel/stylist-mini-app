@@ -7,10 +7,7 @@
   isolation: isolate;
   overflow-x: hidden;
   color: #f3eee6;
-  background:
-    radial-gradient(ellipse at 10% 34%, rgba(83, 118, 117, 0.28), transparent 38%),
-    radial-gradient(ellipse at 92% 72%, rgba(201, 130, 50, 0.09), transparent 40%),
-    linear-gradient(180deg, #3d464b 0%, #495257 45%, #576166 100%);
+  background: linear-gradient(180deg, #315a60 0%, #335d63 54%, #30585f 100%);
   font-family: var(--font-sans);
 }
 
@@ -20,29 +17,42 @@
   z-index: -1;
   inset: 0;
   pointer-events: none;
-  background-image: radial-gradient(rgba(255, 255, 255, 0.18) 0.45px, transparent 0.65px);
-  background-size: 4px 4px;
-  opacity: 0.065;
-  mix-blend-mode: soft-light;
+  background: radial-gradient(ellipse at 50% 12%, rgba(115, 160, 161, 0.13), transparent 42%);
+  opacity: 0.7;
 }
 
 .hero {
   width: 100%;
-  height: clamp(410px, 56dvh, 520px);
+  height: clamp(190px, 48vw, 216px);
   position: relative;
   isolation: isolate;
   overflow: hidden;
-  background: #24373b;
+  background: #294e54;
 }
 
-.heroImage {
+.heroImage,
+.heroBackdrop {
   width: 100%;
   height: 100%;
   display: block;
+  position: absolute;
+  inset: 0;
+}
+
+.heroBackdrop {
+  z-index: 0;
   object-fit: cover;
-  object-position: 50% center;
-  filter: saturate(0.78) contrast(1.07) brightness(0.9);
-  transform: scale(1.012);
+  object-position: center;
+  filter: blur(13px) saturate(0.65) brightness(0.55);
+  opacity: 0.58;
+  transform: scale(1.1);
+}
+
+.heroImage {
+  z-index: 1;
+  object-fit: contain;
+  object-position: center;
+  filter: saturate(0.8) contrast(1.04) brightness(0.94);
 }
 
 .heroWash,
@@ -53,15 +63,15 @@
 }
 
 .heroWash {
-  z-index: 1;
+  z-index: 2;
   background:
-    linear-gradient(180deg, rgba(20, 31, 34, 0.02) 0%, rgba(20, 31, 34, 0.12) 56%, rgba(35, 48, 52, 0.58) 100%),
-    linear-gradient(108deg, rgba(18, 42, 44, 0.15), transparent 52%, rgba(196, 126, 53, 0.08));
-  box-shadow: inset 0 -70px 80px rgba(29, 42, 45, 0.18);
+    linear-gradient(180deg, rgba(25, 49, 53, 0.02), rgba(25, 49, 53, 0.13)),
+    linear-gradient(108deg, rgba(20, 56, 59, 0.08), transparent 58%, rgba(196, 126, 53, 0.06));
+  box-shadow: inset 0 -28px 36px rgba(25, 49, 53, 0.12);
 }
 
 .heroSweep {
-  z-index: 2;
+  z-index: 3;
   inset: -38% -75%;
   width: 52%;
   background: linear-gradient(105deg, transparent 36%, rgba(255, 245, 229, 0.2) 50%, transparent 64%);
@@ -76,7 +86,7 @@
 
 .backButton {
   min-height: 44px;
-  margin: 15px 0 10px;
+  margin: 8px 0 5px;
   padding: 0 5px;
   display: inline-flex;
   align-items: center;
@@ -104,18 +114,18 @@
 .conciergeCard {
   position: relative;
   overflow: hidden;
-  min-height: 116px;
-  padding: 22px 21px;
+  min-height: 86px;
+  padding: 13px 16px;
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 12px;
   border: 1px solid rgba(255, 255, 255, 0.68);
-  border-radius: 28px;
+  border-radius: 22px;
   color: #1e2326;
   background:
     radial-gradient(circle at 12% 10%, rgba(224, 164, 95, 0.12), transparent 34%),
     linear-gradient(145deg, rgba(251, 248, 243, 0.97), rgba(243, 238, 230, 0.92));
-  box-shadow: 0 22px 52px rgba(17, 24, 26, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  box-shadow: 0 16px 36px rgba(17, 35, 38, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.9);
 }
 
 .conciergeCard::before {
@@ -145,24 +155,24 @@
 }
 
 .stylistAvatar {
-  width: 62px;
-  height: 62px;
-  flex: 0 0 62px;
+  width: 50px;
+  height: 50px;
+  flex: 0 0 50px;
   position: relative;
   display: grid;
   place-items: center;
   border: 1px solid rgba(255, 255, 255, 0.82);
-  border-radius: 21px;
+  border-radius: 17px;
   color: #9b5e26;
   background: linear-gradient(145deg, rgba(255, 252, 247, 0.98), rgba(224, 164, 95, 0.2));
-  box-shadow: 0 13px 28px rgba(130, 77, 32, 0.13), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+  box-shadow: 0 10px 22px rgba(130, 77, 32, 0.12), 0 0 20px rgba(224, 164, 95, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.95);
 }
 
 .avatarPulse {
   position: absolute;
   inset: 6px;
   border: 1px solid rgba(201, 130, 50, 0.34);
-  border-radius: 16px;
+  border-radius: 12px;
   animation: avatarDoublePulse 4s ease-in-out infinite;
 }
 
@@ -170,16 +180,20 @@
   content: '';
   position: absolute;
   inset: 5px;
-  border-radius: 12px;
+  border-radius: 9px;
   box-shadow: 0 0 18px rgba(201, 130, 50, 0.2);
   animation: avatarDoublePulse 4s 0.45s ease-in-out infinite;
 }
 
 .avatarIcon {
-  width: 25px;
-  height: 25px;
+  width: 24px;
+  height: 24px;
   position: relative;
   z-index: 1;
+  transform-origin: center center;
+  transform-box: fill-box;
+  backface-visibility: visible;
+  animation: hangerSpinSelf 8s linear infinite;
 }
 
 .conciergeCopy {
@@ -190,7 +204,7 @@
 
 .conciergeKicker {
   display: block;
-  margin-bottom: 4px;
+  margin-bottom: 2px;
   color: #b56e2a;
   font-size: 9px;
   font-weight: 850;
@@ -201,14 +215,14 @@
 .conciergeCopy h1 {
   color: #1e2326;
   font-family: var(--font-display);
-  font-size: 27px;
+  font-size: 23px;
   font-weight: 550;
   line-height: 1.05;
   letter-spacing: -0.025em;
 }
 
 .conciergeCopy p {
-  margin-top: 5px;
+  margin-top: 3px;
   color: rgba(30, 35, 38, 0.62);
   font-size: 11px;
   line-height: 1.35;
@@ -228,12 +242,13 @@
 }
 
 .chatSection {
-  margin-top: 17px;
+  margin-top: 11px;
   padding-bottom: calc(16px + env(safe-area-inset-bottom));
 }
 
 .messageScroller {
-  max-height: min(62dvh, 660px);
+  min-height: clamp(220px, 36dvh, 380px);
+  max-height: min(70dvh, 720px);
   overflow-y: auto;
   overscroll-behavior: contain;
   scrollbar-width: none;
@@ -372,6 +387,11 @@
   50% { opacity: 0.94; transform: scale(1.045); }
 }
 
+@keyframes hangerSpinSelf {
+  from { transform: rotateY(0deg); }
+  to { transform: rotateY(-360deg); }
+}
+
 @keyframes chipSheen {
   0%, 60% { transform: translateX(-60%) rotate(6deg); opacity: 0; }
   68% { opacity: 0.44; }
@@ -385,7 +405,7 @@
 
 @media (max-width: 360px) {
   .hero {
-    height: 395px;
+    height: 188px;
   }
 
   .content {
@@ -401,13 +421,13 @@
   }
 
   .conciergeCard {
-    padding: 20px 17px;
+    padding: 12px 14px;
   }
 
   .stylistAvatar {
-    width: 56px;
-    height: 56px;
-    flex-basis: 56px;
+    width: 48px;
+    height: 48px;
+    flex-basis: 48px;
   }
 }
 

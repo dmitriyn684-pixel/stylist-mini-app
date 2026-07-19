@@ -18,11 +18,11 @@
 
 .userMessage {
   align-self: flex-end;
-  border-color: rgba(208, 227, 222, 0.22);
+  border-color: rgba(216, 237, 233, 0.28);
   border-bottom-right-radius: 8px;
   color: #f8f3eb;
-  background: linear-gradient(145deg, rgba(38, 71, 72, 0.98), rgba(56, 78, 80, 0.94));
-  box-shadow: 0 14px 30px rgba(17, 24, 26, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  background: linear-gradient(145deg, #315a60, #2b5056);
+  box-shadow: 0 14px 30px rgba(17, 40, 43, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
 .errorMessage {
