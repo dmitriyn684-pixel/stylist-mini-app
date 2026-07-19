@@ -1,13 +1,14 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { HeroStats } from '../components/home/HeroStats';
 import { useUserProfile } from '../hooks/useUserProfile';
 import { useColorAnalysis } from '../hooks/useColorAnalysis';
 import { useWardrobeStore } from '../store/useWardrobeStore';
+import homeEditorialImage from '../assets/editorial/home-wardrobe-editorial.jpg';
 import travelCapsuleImage from '../assets/editorial/travel-capsule.jpg';
 import {
   ArrowRightIcon,
   ChatIcon,
   HangerIcon,
+  ProfileIcon,
   SuitcaseIcon,
 } from '../components/ui/icons';
 import styles from './HomeScreen.module.css';
@@ -27,6 +28,20 @@ const STYLE_CHALLENGES = [
   'Оставь спокойную базу и добавь один выразительный аксессуар.',
 ];
 
+function formatCount(count: number, forms: [string, string, string]): string {
+  const remainder100 = count % 100;
+  const remainder10 = count % 10;
+  const form = remainder100 >= 11 && remainder100 <= 14
+    ? forms[2]
+    : remainder10 === 1
+      ? forms[0]
+      : remainder10 >= 2 && remainder10 <= 4
+        ? forms[1]
+        : forms[2];
+
+  return `${count} ${form}`;
+}
+
 export function HomeScreen() {
   const navigate = useNavigate();
   const { profile, hasProfile } = useUserProfile();
@@ -36,6 +51,8 @@ export function HomeScreen() {
 
   const name = profile?.name ?? null;
   const isEmpty = !hasProfile && !colorResult && items.length === 0;
+  const colorType = colorResult?.seasonalType ?? null;
+  const greeting = name ? `Добро пожаловать, ${name}` : 'Добро пожаловать';
   const styleChallenge = STYLE_CHALLENGES[Math.floor(Date.now() / 86_400_000) % STYLE_CHALLENGES.length];
 
   const dailyPriority: DailyPriority = !colorResult
@@ -72,12 +89,76 @@ export function HomeScreen() {
 
   return (
     <main className={styles.page}>
-      <HeroStats
-        name={name}
-        isEmpty={isEmpty}
-        onProfileClick={() => navigate('/profile')}
-        onCreateLook={() => navigate(isEmpty ? '/analysis/color-type' : '/wardrobe/outfits/generate')}
-      />
+      <section className={styles.heroSection} aria-labelledby="home-hero-title">
+        <div className={styles.heroMedia}>
+          <img src={homeEditorialImage} alt="Рейл с одеждой в частном гардеробе" />
+          <div className={styles.heroShade} />
+          <div className={styles.heroAurora} aria-hidden="true" />
+          <div className={styles.heroSweep} aria-hidden="true" />
+
+          <div className={styles.heroTopline}>
+            <span>Private fashion concierge</span>
+            <button type="button" onClick={() => navigate('/profile')} aria-label="Открыть профиль">
+              <ProfileIcon />
+            </button>
+          </div>
+
+          <div className={styles.heroContent}>
+            <p>{greeting}</p>
+            <h1 id="home-hero-title">
+              {isEmpty ? 'Начнём с твоего личного стиля' : 'Твой стиль — в точных деталях'}
+            </h1>
+            <span>
+              {isEmpty
+                ? 'Создадим персональную основу: палитру, гардероб и образы под твой ритм жизни.'
+                : 'Спокойные решения для гардероба, образов и покупок — каждый день.'}
+            </span>
+            <button
+              type="button"
+              className={styles.heroCta}
+              onClick={() => navigate(isEmpty ? '/analysis/color-type' : '/wardrobe/outfits/generate')}
+            >
+              {isEmpty ? 'Начать персонализацию' : 'Собрать новый образ'}
+              <ArrowRightIcon />
+            </button>
+          </div>
+        </div>
+
+        <section className={styles.styleSignal} aria-labelledby="style-signal-title">
+          <div className={styles.styleSignalSweep} aria-hidden="true" />
+          <div className={styles.styleSignalPalette} aria-hidden="true">
+            <span />
+            <span />
+            <span />
+          </div>
+          <div className={styles.styleSignalCopy}>
+            <p id="style-signal-title">Сегодня ваш стиль:</p>
+            <strong>petrol + ivory + тёплый акцент</strong>
+            <small>AI подобрал настроение дня по вашему гардеробу.</small>
+          </div>
+        </section>
+
+        <div className={styles.summaryCard}>
+          <div>
+            <p className={styles.eyebrow}>Персональная сводка</p>
+            <h2>{isEmpty ? 'Профиль готов к настройке' : 'Основа твоего стиля'}</h2>
+          </div>
+          <div className={styles.summaryChips}>
+            <span>
+              <small>Палитра</small>
+              <b>{colorType ?? 'Не определена'}</b>
+            </span>
+            <span>
+              <small>Гардероб</small>
+              <b>{items.length > 0 ? formatCount(items.length, ['вещь', 'вещи', 'вещей']) : 'Ждёт вещей'}</b>
+            </span>
+            <span>
+              <small>Образы</small>
+              <b>{formatCount(outfits.length, ['лук', 'лука', 'луков'])}</b>
+            </span>
+          </div>
+        </div>
+      </section>
 
       <section className={styles.priorityCard} aria-labelledby="daily-priority-title">
         <div className={styles.priorityIcon} aria-hidden="true">
