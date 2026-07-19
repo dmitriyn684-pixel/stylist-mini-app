@@ -1,132 +1,97 @@
 import { useMemo } from 'react';
+import { Vector2 } from 'three';
 import type { BodyMeasurements } from '../../types/avatar';
 
-const CM_TO_UNITS = 0.01; // 1 юнит Three.js = 1 метр
-const SKIN = '#e8d5c4';
+const IVORY_TEXTILE = '#F1E6DA';
+const DARK_WOOD = '#4A3728';
+
+const clamp = (value: number, min: number, max: number) =>
+  Math.min(Math.max(value, min), max);
 
 export interface MannequinHighlight {
   zone: 'torso' | 'legs' | 'full';
   color: string;
 }
 
-/**
- * Реальная вертикальная раскладка манекена — от стоп (y=0) до макушки.
- * Сумма inseam + waistToHip + shoulderToWaist (мерки от фото) не обязана
- * совпадать с measurements.height (мерка роста через отдельную формулу
- * с эмпирической поправкой в measurementsUtils.ts) — раньше камера в
- * AvatarViewer считала высоту кадра по measurements.height напрямую, а
- * сама геометрия строилась по этой сумме сегментов. При расхождении голова
- * уезжала выше кадра камеры. Экспортируем расчёт, чтобы оба места (меш и
- * камера) всегда были согласованы по построению, а не «в среднем сходились».
- */
-export function computeMannequinLayout(measurements: BodyMeasurements) {
-  const height = measurements.height * CM_TO_UNITS;
-  const shoulderRadius = (measurements.shoulderWidth / 2) * CM_TO_UNITS;
-  const waistRadius = (measurements.waistCircumference / (2 * Math.PI)) * CM_TO_UNITS;
-  const hipRadius = (measurements.hipCircumference / (2 * Math.PI)) * CM_TO_UNITS;
-  const torsoLength = measurements.shoulderToWaist * CM_TO_UNITS;
-  const hipLength = measurements.waistToHip * CM_TO_UNITS;
-  const legLength = measurements.inseam * CM_TO_UNITS;
-  const armLength = height * 0.44;
-  const headRadius = height / 15;
-
-  const hipY = legLength;
-  const waistY = hipY + hipLength;
-  const shoulderY = waistY + torsoLength;
-  const headCenterY = shoulderY + headRadius * 2.3;
-  const topY = headCenterY + headRadius; // макушка — реальная верхняя точка модели
+function computeMannequinLayout(measurements: BodyMeasurements) {
+  const heightScale = clamp(measurements.height / 165, 0.92, 1.1);
+  const shoulderWidth = measurements.shoulderWidth;
+  const hipWidth = measurements.hipCircumference / Math.PI;
+  const waistWidth = measurements.waistCircumference / Math.PI;
+  const silhouetteScale = clamp(
+    (shoulderWidth / 38 + hipWidth / 34 + waistWidth / 28) / 3,
+    0.94,
+    1.08,
+  );
 
   return {
-    shoulderRadius,
-    waistRadius,
-    hipRadius,
-    legLength,
-    armLength,
-    headRadius,
-    hipY,
-    waistY,
-    shoulderY,
-    headCenterY,
-    topY,
+    heightScale,
+    silhouetteScale,
+    topY: 1.42 * heightScale,
   };
 }
 
 interface MannequinProps {
   measurements: BodyMeasurements;
-  highlights?: MannequinHighlight[]; // несколько зон сразу (например верх+низ для лука)
-}
-
-function LimbMesh({
-  position,
-  radius,
-  taperRadius,
-  length,
-  color = SKIN,
-}: {
-  position: [number, number, number];
-  radius: number;
-  taperRadius: number;
-  length: number;
-  color?: string;
-}) {
-  return (
-    <mesh position={[position[0], position[1] - length / 2, position[2]]}>
-      <cylinderGeometry args={[taperRadius, radius, length, 16]} />
-      <meshStandardMaterial color={color} />
-    </mesh>
-  );
+  highlights?: MannequinHighlight[];
 }
 
 export function ParametricMannequin({ measurements, highlights = [] }: MannequinProps) {
-  const full = highlights.find((h) => h.zone === 'full');
-  const torsoColor = full?.color ?? highlights.find((h) => h.zone === 'torso')?.color ?? SKIN;
-  const legsColor = full?.color ?? highlights.find((h) => h.zone === 'legs')?.color ?? SKIN;
-  const hipColor = full?.color ?? SKIN;
-  const p = useMemo(() => computeMannequinLayout(measurements), [measurements]);
+  const { heightScale, silhouetteScale } = useMemo(
+    () => computeMannequinLayout(measurements),
+    [measurements],
+  );
+  const fullHighlight = highlights.find((highlight) => highlight.zone === 'full');
+  const torsoHighlight = highlights.find((highlight) => highlight.zone === 'torso');
+  const textileColor = fullHighlight?.color ?? torsoHighlight?.color ?? IVORY_TEXTILE;
+
+  const torsoProfile = useMemo(
+    () => [
+      new Vector2(0.27, 0),
+      new Vector2(0.31, 0.08),
+      new Vector2(0.33, 0.22),
+      new Vector2(0.28, 0.36),
+      new Vector2(0.2, 0.53),
+      new Vector2(0.23, 0.7),
+      new Vector2(0.34, 0.9),
+      new Vector2(0.38, 1.04),
+      new Vector2(0.17, 1.13),
+      new Vector2(0.105, 1.2),
+      new Vector2(0.095, 1.28),
+    ],
+    [],
+  );
+
+  const standProfile = useMemo(
+    () => [
+      new Vector2(0.24, 0),
+      new Vector2(0.26, 0.025),
+      new Vector2(0.19, 0.06),
+      new Vector2(0.055, 0.1),
+      new Vector2(0.035, 0.16),
+      new Vector2(0.035, 0.54),
+      new Vector2(0.06, 0.58),
+    ],
+    [],
+  );
 
   return (
-    <group>
-      {/* Голова */}
-      <mesh position={[0, p.shoulderY + p.headRadius * 2.3, 0]}>
-        <sphereGeometry args={[p.headRadius, 32, 32]} />
-        <meshStandardMaterial color={SKIN} />
+    <group scale={[silhouetteScale, heightScale, silhouetteScale]}>
+      <mesh position={[0, 0.14, 0]}>
+        <latheGeometry args={[torsoProfile, 40]} />
+        <meshPhysicalMaterial
+          color={textileColor}
+          roughness={0.72}
+          metalness={0.02}
+          clearcoat={0.08}
+          clearcoatRoughness={0.45}
+        />
       </mesh>
 
-      {/* Шея */}
-      <mesh position={[0, p.shoulderY + p.headRadius * 0.7, 0]}>
-        <cylinderGeometry args={[p.headRadius * 0.4, p.headRadius * 0.46, p.headRadius * 1.2, 20]} />
-        <meshStandardMaterial color={SKIN} />
+      <mesh position={[0, -0.36, 0]}>
+        <latheGeometry args={[standProfile, 32]} />
+        <meshPhysicalMaterial color={DARK_WOOD} roughness={0.35} metalness={0.1} />
       </mesh>
-
-      {/* Торс: плечи (верх) → талия (низ) */}
-      <mesh position={[0, (p.shoulderY + p.waistY) / 2, 0]}>
-        <cylinderGeometry args={[p.shoulderRadius, p.waistRadius, p.shoulderY - p.waistY, 32]} />
-        <meshStandardMaterial color={torsoColor} />
-      </mesh>
-
-      {/* Таз: талия (верх) → бёдра (низ) */}
-      <mesh position={[0, (p.waistY + p.hipY) / 2, 0]}>
-        <cylinderGeometry args={[p.waistRadius, p.hipRadius, p.waistY - p.hipY, 32]} />
-        <meshStandardMaterial color={hipColor} />
-      </mesh>
-
-      {/* Ноги */}
-      <LimbMesh position={[-p.hipRadius * 0.55, p.hipY, 0]} radius={p.hipRadius * 0.42} taperRadius={p.hipRadius * 0.32} length={p.legLength} color={legsColor} />
-      <LimbMesh position={[p.hipRadius * 0.55, p.hipY, 0]} radius={p.hipRadius * 0.42} taperRadius={p.hipRadius * 0.32} length={p.legLength} color={legsColor} />
-
-      {/* Руки */}
-      <LimbMesh
-        position={[-p.shoulderRadius * 0.95, p.shoulderY - p.shoulderRadius * 0.2, 0]}
-        radius={p.shoulderRadius * 0.3}
-        taperRadius={p.shoulderRadius * 0.2}
-        length={p.armLength}
-      />
-      <LimbMesh
-        position={[p.shoulderRadius * 0.95, p.shoulderY - p.shoulderRadius * 0.2, 0]}
-        radius={p.shoulderRadius * 0.3}
-        taperRadius={p.shoulderRadius * 0.2}
-        length={p.armLength}
-      />
     </group>
   );
 }

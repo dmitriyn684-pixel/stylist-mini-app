@@ -1,51 +1,125 @@
+import { Component, Suspense, type ErrorInfo, type ReactNode } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
-import { ParametricMannequin, computeMannequinLayout, type MannequinHighlight } from './ParametricMannequin';
+import { MannequinModel } from './MannequinModel';
+import { ParametricMannequin, type MannequinHighlight } from './ParametricMannequin';
 import type { BodyMeasurements } from '../../types/avatar';
 
 interface AvatarViewerProps {
   measurements: BodyMeasurements;
   highlights?: MannequinHighlight[];
-  // Компонент раньше жёстко задавал h-[400px] сам себе — вызывающий код,
-  // которому нужна карточка пониже (LookCard), оборачивал его в свой div
-  // с меньшей высотой, но сам Canvas этого не знал и всё равно рендерился
-  // на 400px, вылезая за пределы обёртки (см. обсуждение бага с ценами,
-  // наезжающими на манекен). Теперь высоту задаёт вызывающий код.
   heightClassName?: string;
 }
 
-export function AvatarViewer({ measurements, highlights, heightClassName = 'h-[400px]' }: AvatarViewerProps) {
-  // Кадрируем камеру по РЕАЛЬНОЙ верхней точке построенной модели (topY —
-  // макушка), а не по measurements.height напрямую: сумма сегментов мерок
-  // (inseam + waistToHip + shoulderToWaist) не гарантированно равна росту
-  // из фото (тот считается отдельной формулой с поправкой) — при расхождении
-  // камера кадрировала «на рост», а голова у модели оказывалась выше кадра.
-  const { topY } = computeMannequinLayout(measurements);
-  const modelHeightUnits = topY; // реальная высота модели от стоп до макушки
-  const target: [number, number, number] = [0, modelHeightUnits / 2, 0];
+interface ModelErrorBoundaryProps {
+  children: ReactNode;
+  fallback: ReactNode;
+}
+
+interface ModelErrorBoundaryState {
+  failed: boolean;
+}
+
+class ModelErrorBoundary extends Component<ModelErrorBoundaryProps, ModelErrorBoundaryState> {
+  state: ModelErrorBoundaryState = { failed: false };
+
+  static getDerivedStateFromError(): ModelErrorBoundaryState {
+    return { failed: true };
+  }
+
+  componentDidCatch(error: Error, info: ErrorInfo) {
+    if (import.meta.env.DEV) {
+      console.warn('Mannequin GLB failed to load; using the next fallback.', error, info);
+    }
+  }
+
+  render() {
+    return this.state.failed ? this.props.fallback : this.props.children;
+  }
+}
+
+function ProceduralFallback({
+  measurements,
+  highlights,
+}: Pick<AvatarViewerProps, 'measurements' | 'highlights'>) {
+  return <ParametricMannequin measurements={measurements} highlights={highlights} />;
+}
+
+function FallbackModel({
+  measurements,
+  highlights,
+}: Pick<AvatarViewerProps, 'measurements' | 'highlights'>) {
+  const proceduralFallback = (
+    <ProceduralFallback measurements={measurements} highlights={highlights} />
+  );
 
   return (
-    <div className={`w-full ${heightClassName} rounded-2xl overflow-hidden`} style={{ background: 'var(--color-cream-dark)' }}>
+    <ModelErrorBoundary fallback={proceduralFallback}>
+      <Suspense fallback={proceduralFallback}>
+        <MannequinModel
+          url="/models/mannequin-fallback.glb"
+          measurements={measurements}
+          highlights={highlights}
+        />
+      </Suspense>
+    </ModelErrorBoundary>
+  );
+}
+
+export function AvatarViewer({
+  measurements,
+  highlights,
+  heightClassName = 'h-[440px]',
+}: AvatarViewerProps) {
+  const fallback = <FallbackModel measurements={measurements} highlights={highlights} />;
+
+  return (
+    <div
+      className={`relative w-full ${heightClassName} overflow-hidden`}
+      style={{
+        borderRadius: 28,
+        border: '1px solid rgba(255, 255, 255, 0.72)',
+        background:
+          'radial-gradient(circle at 50% 18%, rgba(255, 248, 240, 0.92), transparent 46%), linear-gradient(180deg, #FBF9F6 0%, #F2EDE5 100%)',
+        boxShadow:
+          '0 4px 24px rgba(0, 0, 0, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.8)',
+      }}
+    >
       <Canvas
         style={{ width: '100%', height: '100%' }}
-        camera={{ position: [0, modelHeightUnits * 0.55, modelHeightUnits * 1.6], fov: 45 }}
+        camera={{ position: [0, 0.85, 2.6], fov: 42 }}
+        gl={{ antialias: true, alpha: true }}
+        dpr={[1, 1.5]}
       >
-        <ambientLight intensity={0.7} />
-        <directionalLight position={[2, 3, 2]} intensity={0.8} />
-        <directionalLight position={[-1, 1, -1]} intensity={0.4} />
-        <ParametricMannequin measurements={measurements} highlights={highlights} />
+        <ambientLight intensity={0.45} color="#FFF8F0" />
+        <directionalLight position={[1.5, 2.5, 2]} intensity={1.2} color="#FFF8F0" />
+        <directionalLight position={[-1.8, 1.2, -1]} intensity={0.45} color="#F0E6FF" />
+        <directionalLight position={[0, 2, -2.5]} intensity={0.5} color="#FFF5EE" />
+
+        <ModelErrorBoundary fallback={fallback}>
+          <Suspense fallback={fallback}>
+            <MannequinModel measurements={measurements} highlights={highlights} />
+          </Suspense>
+        </ModelErrorBoundary>
+
         <OrbitControls
-          target={target}
+          target={[0, 0.55, 0]}
           enablePan={false}
-          autoRotate
-          autoRotateSpeed={1.2}
-          minDistance={modelHeightUnits * 0.8}
-          maxDistance={modelHeightUnits * 3}
-          minPolarAngle={Math.PI / 3}
+          minDistance={1.4}
+          maxDistance={4.5}
+          minPolarAngle={Math.PI / 3.5}
           maxPolarAngle={Math.PI / 1.6}
+          autoRotate
+          autoRotateSpeed={0.45}
         />
-        <gridHelper args={[modelHeightUnits * 2.5, 20, '#C9BFAE', '#C9BFAE']} />
       </Canvas>
+
+      <div
+        className="pointer-events-none absolute inset-x-0 bottom-3 text-center text-[11px] font-medium tracking-[0.14em]"
+        style={{ color: 'rgba(74, 55, 40, 0.62)', textTransform: 'uppercase' }}
+      >
+        Поверните манекен
+      </div>
     </div>
   );
 }
