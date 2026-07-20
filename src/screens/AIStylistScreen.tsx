@@ -23,47 +23,47 @@ export function AIStylistScreen() {
   };
 
   return (
-    <main className={`${styles.page} ${styles.pageWithTabBar}`}>
-      <section className={styles.hero} aria-label="Private fashion concierge">
+    <main className={`${styles.page} ${styles.aiStylistPage}`}>
+      <section className={styles.aiStylistHero} aria-label="Private fashion concierge">
         <img
           src={stylistCollectiveHero}
           alt="AI-стилисты в эстетике Ellie-Jean Royden, Christine Scaman и Rachel Zoe"
-          className={styles.heroImage}
+          className={styles.aiStylistHeroImage}
         />
         <div className={styles.heroWash} aria-hidden="true" />
         <div className={styles.heroSweep} aria-hidden="true" />
-        <button type="button" onClick={() => navigate(-1)} className={styles.backButton}>
+        <button type="button" onClick={() => navigate(-1)} className={styles.aiBackButton}>
           <span aria-hidden="true">←</span>
           Назад
         </button>
-      </section>
 
-      <div className={styles.content}>
-        <div className={styles.stylistSelector} aria-label="Выберите AI-стилиста">
+        <div className={styles.aiStylistSelectorPanel} aria-label="Выберите AI-стилиста">
           {aiStylists.map((stylist) => {
             const isActive = stylist.id === activeStylist;
             return (
               <button
                 key={stylist.id}
                 type="button"
-                className={`${styles.stylistOption} ${isActive ? styles.stylistOptionActive : ''}`}
+                className={`${styles.aiStylistOption} ${isActive ? styles.aiStylistOptionActive : ''}`}
                 onClick={() => handleStylistSelect(stylist.id)}
                 aria-pressed={isActive}
                 aria-label={`Выбрать ${stylist.name}`}
+                title={`${stylist.name} · ${stylist.tag}`}
               >
-                <span className={`${styles.selectorAvatar} ${styles[`avatar_${stylist.id}`]}`}>
+                <span className={`${styles.aiStylistNumber} ${styles[`avatar_${stylist.id}`]}`}>
                   {stylist.number}
                 </span>
-                <strong>{stylist.name}</strong>
-                <small>{stylist.tag}</small>
+                <strong className={styles.aiStylistName}>{stylist.name}</strong>
+                <small className={styles.aiStylistTag}>{stylist.tag}</small>
               </button>
             );
           })}
         </div>
+      </section>
 
-        <section className={styles.chatSection} aria-label="Выбор AI-стилиста">
-          <div className={styles.messageScroller}>
-            <article key={currentStylist.id} className={styles.introCard}>
+      <div className={styles.aiStylistContent}>
+        <section className={styles.aiPreviewSection} aria-label="Выбор AI-стилиста">
+          <article key={currentStylist.id} className={styles.introCard}>
               <span className={styles.introEyebrow}>Private AI stylist</span>
               <div className={styles.introHeader}>
                 <span className={`${styles.introAvatar} ${styles[`avatar_${currentStylist.id}`]}`}>
@@ -101,8 +101,7 @@ export function AIStylistScreen() {
                 Начать диалог
                 <span aria-hidden="true">→</span>
               </button>
-            </article>
-          </div>
+          </article>
         </section>
       </div>
     </main>
