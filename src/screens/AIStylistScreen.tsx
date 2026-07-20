@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import stylistCollectiveHero from '../assets/editorial/stylist-collective-hero.png';
+import stylistCollectiveHero from '../assets/editorial/stylist-collective-hero.webp';
 import { aiStylists, type AIStylistId } from '../data/aiStylists';
 import { useStylistStore } from '../store/useStylistStore';
 import styles from './ChatScreen.module.css';
@@ -28,6 +28,8 @@ export function AIStylistScreen() {
         <img
           src={stylistCollectiveHero}
           alt="AI-стилисты в эстетике Ellie-Jean Royden, Christine Scaman и Rachel Zoe"
+          loading="eager"
+          decoding="async"
           className={styles.aiStylistHeroImage}
         />
         <div className={styles.heroWash} aria-hidden="true" />
