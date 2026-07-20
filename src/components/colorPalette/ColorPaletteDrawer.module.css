@@ -191,33 +191,41 @@
   animation: swatchShow 360ms calc(70ms + var(--swatch-index) * 42ms) ease-out both;
 }
 
-.swatch {
+.swatchPerspective {
   width: 32px;
   height: 32px;
   flex: 0 0 32px;
+  display: block;
+  perspective: 700px;
+}
+
+.swatch {
+  width: 100%;
+  height: 100%;
+  display: block;
   border: 1px solid rgba(30, 35, 38, 0.11);
   border-radius: 50%;
-  background-color: var(--swatch-color);
-  background-image: conic-gradient(
-    from 0deg,
-    var(--swatch-color) 0deg 118deg,
-    color-mix(in srgb, var(--swatch-color) 76%, white) 148deg,
-    var(--swatch-color) 190deg 286deg,
-    color-mix(in srgb, var(--swatch-color) 82%, black) 318deg,
-    var(--swatch-color) 360deg
-  );
-  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.46), 0 5px 12px rgba(17, 24, 26, 0.09);
+  background:
+    radial-gradient(circle at 32% 28%, rgba(255, 255, 255, 0.42), transparent 32%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.2), transparent 46%),
+    var(--swatch-color);
+  box-shadow:
+    inset 0 1px 2px rgba(255, 255, 255, 0.45),
+    inset 0 -8px 14px rgba(0, 0, 0, 0.12),
+    0 8px 18px rgba(17, 24, 26, 0.14);
+  transform: rotateY(0deg);
   transform-origin: center;
+  transform-style: preserve-3d;
   will-change: transform;
-  animation: paletteSpin 20s linear infinite;
+  animation: colorSwatchRotateY 8.5s linear infinite;
 }
 
 .swatchCard:nth-child(2n) .swatch {
-  animation-duration: 23s;
+  animation-duration: 10s;
 }
 
 .swatchCard:nth-child(3n) .swatch {
-  animation-duration: 26s;
+  animation-duration: 11.5s;
 }
 
 .swatchCopy {
@@ -254,6 +262,9 @@
   min-height: 52px;
   margin-top: 17px;
   padding: 0 18px;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -268,8 +279,31 @@
   transition: transform 160ms ease, box-shadow 160ms ease;
 }
 
+.christineButton::before {
+  content: '';
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    110deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.1) 35%,
+    rgba(255, 255, 255, 0.38) 50%,
+    rgba(255, 255, 255, 0.1) 65%,
+    transparent 100%
+  );
+  transform: translateX(-120%);
+  animation: christineButtonSheen 4.8s ease-in-out infinite;
+}
+
+.christineButton > span {
+  position: relative;
+  z-index: 1;
+}
+
 .christineButton:active {
-  transform: translateY(2px) scale(0.985);
+  transform: translateY(1px) scale(0.99);
   box-shadow: 0 8px 18px rgba(74, 46, 31, 0.22);
 }
 
@@ -288,9 +322,14 @@
   to { opacity: 1; transform: translateY(0); }
 }
 
-@keyframes paletteSpin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+@keyframes colorSwatchRotateY {
+  from { transform: rotateY(0deg); }
+  to { transform: rotateY(360deg); }
+}
+
+@keyframes christineButtonSheen {
+  0%, 12% { transform: translateX(-120%); }
+  58%, 100% { transform: translateX(120%); }
 }
 
 @media (max-width: 360px) {
@@ -309,5 +348,11 @@
 
   .swatch {
     animation: none;
+    transform: none;
+  }
+
+  .christineButton::before {
+    animation: none;
+    opacity: 0;
   }
 }

@@ -67,7 +67,9 @@ export function WardrobeScreen() {
       {visible.length === 0 ? (
         <section className={styles.emptyState}>
           <div className={styles.emptyIcon} aria-hidden="true">
-            <HangerIcon />
+            <span className={styles.emptyCategoryHanger}>
+              <HangerIcon />
+            </span>
           </div>
           <p>
             {items.length === 0 ? 'Гардероб пока пуст — добавь первую вещь' : 'В этой категории пока пусто'}

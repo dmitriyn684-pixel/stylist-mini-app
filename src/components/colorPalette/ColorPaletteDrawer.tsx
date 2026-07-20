@@ -112,11 +112,12 @@ export function ColorPaletteDrawer({ isOpen, onClose, onAskChristine, palette }:
                             className={styles.swatchCard}
                             style={{ '--swatch-index': index } as CSSProperties}
                           >
-                            <span
-                              className={styles.swatch}
-                              style={{ '--swatch-color': hex } as CSSProperties}
-                              aria-hidden="true"
-                            />
+                            <span className={styles.swatchPerspective} aria-hidden="true">
+                              <span
+                                className={styles.swatch}
+                                style={{ '--swatch-color': hex } as CSSProperties}
+                              />
+                            </span>
                             <span className={styles.swatchCopy}>
                               <strong>{color.name}</strong>
                               <small>{hex}</small>
@@ -134,7 +135,7 @@ export function ColorPaletteDrawer({ isOpen, onClose, onAskChristine, palette }:
           </div>
 
           <button type="button" className={styles.christineButton} onClick={onAskChristine}>
-            Спросить Кристин про цвета
+            <span>Спросить Кристин про цвета</span>
             <span aria-hidden="true">→</span>
           </button>
         </div>

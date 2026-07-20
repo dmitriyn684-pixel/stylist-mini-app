@@ -41,10 +41,8 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center 44%;
+  object-position: center 24%;
   filter: brightness(0.98) contrast(1.055) saturate(0.84);
-  transform: scale(1.005);
-  animation: heroImageDrift 14s ease-in-out infinite alternate;
 }
 
 .heroShade {
@@ -505,11 +503,24 @@
   color: var(--color-champagne-muted, #e8d7b9);
   background: linear-gradient(145deg, rgba(38, 75, 75, 0.9), rgba(6, 27, 34, 0.92));
   box-shadow: 0 16px 34px rgba(6, 27, 34, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.14);
+  perspective: 700px;
 }
 
-.emptyIcon svg {
+.emptyCategoryHanger {
+  display: grid;
+  place-items: center;
+  color: #d39a5b;
+  transform: rotateY(0deg);
+  transform-origin: center;
+  transform-style: preserve-3d;
+  will-change: transform;
+  animation: emptyHangerRotateY 7.5s linear infinite;
+}
+
+.emptyCategoryHanger svg {
   width: 26px;
   height: 26px;
+  filter: drop-shadow(0 5px 9px rgba(201, 121, 46, 0.2));
 }
 
 .emptyState p {
@@ -719,16 +730,6 @@
   }
 }
 
-@keyframes heroImageDrift {
-  from {
-    transform: scale(1.005) translate3d(0, 0, 0);
-  }
-
-  to {
-    transform: scale(1.018) translate3d(0, -0.12%, 0);
-  }
-}
-
 @keyframes iconPressDepth {
   0% {
     transform: translateY(0) scale(1);
@@ -740,6 +741,16 @@
 
   100% {
     transform: translateY(1px) scale(0.98);
+  }
+}
+
+@keyframes emptyHangerRotateY {
+  from {
+    transform: rotateY(0deg);
+  }
+
+  to {
+    transform: rotateY(360deg);
   }
 }
 
@@ -815,5 +826,10 @@
     transition-duration: 0.01ms !important;
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
+  }
+
+  .emptyCategoryHanger {
+    animation: none !important;
+    transform: none;
   }
 }
