@@ -4,8 +4,8 @@ import type { Keypoint3D } from '../types/avatar';
  * @mediapipe/pose несовместим с ESM-бандлерами "из коробки" (собран как UMD,
  * именованные экспорты назначаются динамически через внутренний хелпер — статический
  * анализ Vite/Rolldown их не видит, сборка падает с "Missing export"). Стандартное
- * решение — грузить библиотеку классическим <script> с CDN (см. index.html), как и
- * в официальных примерах MediaPipe; тогда Pose/POSE_CONNECTIONS попадают в window.
+ * решение — загрузить библиотеку классическим <script> с CDN только перед первым
+ * анализом позы; после загрузки конструктор Pose доступен в window.
  */
 interface MediapipeNormalizedLandmark {
   x: number;
@@ -41,6 +41,37 @@ declare global {
 }
 
 let poseInstance: MediapipePoseInstance | null = null;
+let poseScriptPromise: Promise<void> | null = null;
+
+const MEDIAPIPE_VERSION = '0.5.1675469404';
+const MEDIAPIPE_BASE_URL = `https://cdn.jsdelivr.net/npm/@mediapipe/pose@${MEDIAPIPE_VERSION}`;
+
+function loadPoseScript(): Promise<void> {
+  if (window.Pose) return Promise.resolve();
+  if (poseScriptPromise) return poseScriptPromise;
+
+  poseScriptPromise = new Promise<void>((resolve, reject) => {
+    const script = document.createElement('script');
+    script.src = `${MEDIAPIPE_BASE_URL}/pose.js`;
+    script.async = true;
+    script.crossOrigin = 'anonymous';
+    script.dataset.mediapipePose = 'true';
+    script.onload = () => {
+      if (window.Pose) {
+        resolve();
+      } else {
+        reject(new Error('MediaPipe Pose загрузился без доступного конструктора.'));
+      }
+    };
+    script.onerror = () => reject(new Error('Не удалось загрузить MediaPipe Pose. Проверь соединение.'));
+    document.head.append(script);
+  }).catch((error) => {
+    poseScriptPromise = null;
+    throw error;
+  });
+
+  return poseScriptPromise;
+}
 
 /**
  * Инстанс — синглтон: создание Pose дорогое (грузит модель ~10-20МБ с CDN).
@@ -48,13 +79,11 @@ let poseInstance: MediapipePoseInstance | null = null;
  * параллельно — onResults общий на инстанс, конкурентные send() перезапишут
  * друг другу колбэк.
  */
-function getPose(): MediapipePoseInstance {
-  if (!window.Pose) {
-    throw new Error('MediaPipe Pose ещё не загрузился с CDN — попробуй ещё раз через пару секунд.');
-  }
+async function getPose(): Promise<MediapipePoseInstance> {
+  await loadPoseScript();
   if (!poseInstance) {
     poseInstance = new window.Pose({
-      locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/pose@0.5.1675469404/${file}`,
+      locateFile: (file) => `${MEDIAPIPE_BASE_URL}/${file}`,
     });
     poseInstance.setOptions({
       modelComplexity: 1,
@@ -81,8 +110,8 @@ export function loadImageFromFile(file: File): Promise<HTMLImageElement> {
  * Прогоняет одно изображение через MediaPipe Pose.
  * Возвращает null, если тело на фото не найдено.
  */
-export function detectPose(image: HTMLImageElement): Promise<Keypoint3D[] | null> {
-  const pose = getPose();
+export async function detectPose(image: HTMLImageElement): Promise<Keypoint3D[] | null> {
+  const pose = await getPose();
   return new Promise((resolve, reject) => {
     pose.onResults((results: MediapipeResults) => {
       if (!results.poseLandmarks || results.poseLandmarks.length === 0) {

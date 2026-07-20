@@ -1,7 +1,7 @@
 import { Component, Suspense, type ErrorInfo, type ReactNode } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
-import { MannequinModel } from './MannequinModel';
+import { MannequinModel, MANNEQUIN_FALLBACK_MODEL_URL } from './MannequinModel';
 import { ParametricMannequin, type MannequinHighlight } from './ParametricMannequin';
 import type { BodyMeasurements } from '../../types/avatar';
 
@@ -58,7 +58,7 @@ function FallbackModel({
     <ModelErrorBoundary fallback={proceduralFallback}>
       <Suspense fallback={proceduralFallback}>
         <MannequinModel
-          url="/models/mannequin-fallback.glb"
+          url={MANNEQUIN_FALLBACK_MODEL_URL}
           measurements={measurements}
           highlights={highlights}
         />

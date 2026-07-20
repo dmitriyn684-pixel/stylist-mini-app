@@ -10,6 +10,9 @@ const DARK_WOOD = '#4A3728';
 const NORMALIZED_HEIGHT = 1.78;
 const GROUND_Y = -0.36;
 
+export const MANNEQUIN_MODEL_URL = `${import.meta.env.BASE_URL}models/mannequin.glb`;
+export const MANNEQUIN_FALLBACK_MODEL_URL = `${import.meta.env.BASE_URL}models/mannequin-fallback.glb`;
+
 const clamp = (value: number, min: number, max: number) =>
   Math.min(Math.max(value, min), max);
 
@@ -60,7 +63,7 @@ function separateStandMaterial(geometry: BufferGeometry) {
 export function MannequinModel({
   measurements,
   highlights = [],
-  url = '/models/mannequin.glb',
+  url = MANNEQUIN_MODEL_URL,
 }: MannequinModelProps) {
   const measurementGroup = useRef<Group>(null);
   const { scene } = useGLTF(url);
@@ -161,4 +164,4 @@ export function MannequinModel({
   );
 }
 
-useGLTF.preload('/models/mannequin.glb');
+useGLTF.preload(MANNEQUIN_MODEL_URL);
