@@ -1,0 +1,1 @@
+var e={Верх:`torso`,Низ:`legs`,Платья:`full`};export{e as t};

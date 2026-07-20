@@ -1,0 +1,1 @@
+function e(e){return`https://www.wildberries.ru/catalog/0/search.aspx?search=${encodeURIComponent(e)}`}function t(e){return`https://www.lamoda.ru/catalogsearch/result/?q=${encodeURIComponent(e)}`}export{e as n,t};

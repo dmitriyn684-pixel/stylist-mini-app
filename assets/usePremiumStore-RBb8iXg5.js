@@ -1,0 +1,1 @@
+import{n as e,r as t}from"./state-vendor-C5egqkH_.js";var n=t()(e(e=>({isPremium:!1,setPremium:t=>e({isPremium:t})}),{name:`stylist_premium`}));export{n as t};
