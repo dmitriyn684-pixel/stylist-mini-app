@@ -30,8 +30,20 @@ export interface ChatProfileMeasurements {
 }
 
 export interface ChatProfileWardrobeItem {
+  name?: string;
   category: string;
   color: string;
+  hex?: string;
+  seasons?: string[];
+  material?: string;
+}
+
+export interface ChatProfileCatalogItem {
+  name: string;
+  category: string;
+  color: string;
+  price?: number;
+  styles?: string[];
 }
 
 export interface ChatProfile {
@@ -39,5 +51,6 @@ export interface ChatProfile {
   kibbeType?: string | null;
   measurements?: ChatProfileMeasurements | null;
   wardrobe?: ChatProfileWardrobeItem[];
+  catalog?: ChatProfileCatalogItem[];
   palette?: { base: ColorSwatch[]; accent: ColorSwatch[]; avoid: ColorSwatch[] } | null;
 }

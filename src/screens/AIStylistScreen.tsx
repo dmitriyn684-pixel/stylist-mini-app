@@ -1,15 +1,16 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import stylistCollectiveHero from '../assets/editorial/stylist-collective-hero.png';
-import { STYLISTS, useStylistStore, type AIStylistId } from '../store/useStylistStore';
+import { aiStylists, type AIStylistId } from '../data/aiStylists';
+import { useStylistStore } from '../store/useStylistStore';
 import styles from './ChatScreen.module.css';
 
 export function AIStylistScreen() {
   const navigate = useNavigate();
-  const [activeStylist, setActiveStylist] = useState<AIStylistId>('rachel');
+  const [activeStylist, setActiveStylist] = useState<AIStylistId>('rachel_zoe');
   const setSelectedStylist = useStylistStore((state) => state.setSelectedStylist);
 
-  const currentStylist = STYLISTS.find((stylist) => stylist.id === activeStylist) ?? STYLISTS[0];
+  const currentStylist = aiStylists.find((stylist) => stylist.id === activeStylist) ?? aiStylists[0];
 
   const handleStylistSelect = (id: AIStylistId) => {
     setActiveStylist(id);
@@ -35,7 +36,7 @@ export function AIStylistScreen() {
 
       <div className={styles.content}>
         <div className={styles.stylistSelector} aria-label="Выберите AI-стилиста">
-          {STYLISTS.map((stylist) => {
+          {aiStylists.map((stylist) => {
             const isActive = stylist.id === activeStylist;
             return (
               <button
@@ -46,8 +47,8 @@ export function AIStylistScreen() {
                 aria-pressed={isActive}
                 aria-label={`Выбрать ${stylist.name}`}
               >
-                <span className={styles.selectorAvatar} style={{ background: stylist.avatar }}>
-                  {stylist.monogram}
+                <span className={`${styles.selectorAvatar} ${styles[`avatar_${stylist.id}`]}`}>
+                  {stylist.number}
                 </span>
                 <strong>{stylist.name}</strong>
                 <small>{stylist.tag}</small>
@@ -61,8 +62,8 @@ export function AIStylistScreen() {
             <article key={currentStylist.id} className={styles.introCard}>
               <span className={styles.introEyebrow}>Private AI stylist</span>
               <div className={styles.introHeader}>
-                <span className={styles.introAvatar} style={{ background: currentStylist.avatar }}>
-                  {currentStylist.monogram}
+                <span className={`${styles.introAvatar} ${styles[`avatar_${currentStylist.id}`]}`}>
+                  {currentStylist.number}
                 </span>
                 <div>
                   <h1>{currentStylist.name}</h1>

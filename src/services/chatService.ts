@@ -1,10 +1,12 @@
 import type { ChatProfile } from '../types/chat';
+import type { AIStylistId } from '../data/aiStylists';
 
 const API_BASE = import.meta.env.VITE_API_URL ?? '';
 
 interface StreamChatParams {
   messages: { role: 'user' | 'assistant'; content: string }[];
   profile: ChatProfile;
+  stylistId: AIStylistId;
   onChunk: (text: string) => void;
   onDone: () => void;
   onError: (message: string) => void;
@@ -16,13 +18,13 @@ interface StreamChatParams {
  * прокидывает поток от DeepSeek — формат OpenAI-совместимый: "data: {...}\n\n",
  * завершается "data: [DONE]").
  */
-export async function streamChat({ messages, profile, onChunk, onDone, onError, signal }: StreamChatParams) {
+export async function streamChat({ messages, profile, stylistId, onChunk, onDone, onError, signal }: StreamChatParams) {
   let res: Response;
   try {
     res = await fetch(`${API_BASE}/api/chat`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ messages, profile }),
+      body: JSON.stringify({ messages, profile, stylistId }),
       signal,
     });
   } catch {

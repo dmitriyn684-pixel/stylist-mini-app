@@ -8,12 +8,14 @@ import { useTelegram } from '../hooks/useTelegram';
 import { useAdminChatAccess } from '../hooks/useAdminChatAccess';
 import { useAvatarStore } from '../store/useAvatarStore';
 import { useWardrobeStore } from '../store/useWardrobeStore';
-import { DEFAULT_STYLIST_ID, getStylistById, useStylistStore, type StylistId } from '../store/useStylistStore';
+import { CAPSULE_ITEMS } from '../utils/capsuleData';
+import { DEFAULT_STYLIST_ID, getAIStylistById, type AIStylistId } from '../data/aiStylists';
+import { useStylistStore } from '../store/useStylistStore';
 import type { ChatProfile } from '../types/chat';
 import styles from './ChatScreen.module.css';
 
 interface ChatLocationState {
-  selectedStylistId?: StylistId;
+  selectedStylistId?: AIStylistId;
 }
 
 export function ChatScreen() {
@@ -22,7 +24,7 @@ export function ChatScreen() {
   const routeStylistId = (location.state as ChatLocationState | null)?.selectedStylistId;
   const selectedStylistId = useStylistStore((state) => state.selectedStylistId);
   const setSelectedStylist = useStylistStore((state) => state.setSelectedStylist);
-  const currentStylist = getStylistById(selectedStylistId);
+  const currentStylist = getAIStylistById(selectedStylistId);
   const messages = useChatStore((state) => state.messages);
   const isTyping = useChatStore((state) => state.isTyping);
   const sendMessage = useChatStore((state) => state.sendMessage);
@@ -41,7 +43,21 @@ export function ChatScreen() {
       seasonalType: colorResult?.seasonalType ?? null,
       kibbeType: kibbeResult?.type ?? colorResult?.kibbeType ?? null,
       measurements: measurements ?? null,
-      wardrobe: items.map((item) => ({ category: item.category, color: item.color })),
+      wardrobe: items.map((item) => ({
+        name: item.category,
+        category: item.category,
+        color: item.color,
+        hex: item.color,
+        seasons: item.season,
+        material: item.fabric,
+      })),
+      catalog: CAPSULE_ITEMS.map((item) => ({
+        name: item.name,
+        category: item.category,
+        color: item.color,
+        price: item.price,
+        styles: item.styles,
+      })),
       palette: colorResult?.palette ?? null,
     }),
     [colorResult, kibbeResult, measurements, items]
@@ -76,7 +92,7 @@ export function ChatScreen() {
         </button>
         <div className={styles.quickHeaderTitle}>
           <strong>{currentStylist.name}</strong>
-          <small>{currentStylist.id === DEFAULT_STYLIST_ID ? 'онлайн' : currentStylist.tag}</small>
+          <small>{currentStylist.tag}</small>
         </div>
         <span className={styles.quickHeaderSpacer} aria-hidden="true" />
       </header>
@@ -85,12 +101,10 @@ export function ChatScreen() {
         <section className={styles.chatSection} aria-label="Диалог со стилистом">
           <div ref={scrollRef} className={styles.messageScroller}>
             <div className={styles.chatWindow}>
-              {currentStylist.id !== DEFAULT_STYLIST_ID && (
-                <div className={styles.activeStylistChip}>
-                  <span style={{ background: currentStylist.avatar }}>{currentStylist.monogram}</span>
-                  {currentStylist.name} · {currentStylist.tag}
-                </div>
-              )}
+              <div className={styles.activeStylistChip}>
+                <span className={styles[`avatar_${currentStylist.id}`]}>{currentStylist.number}</span>
+                {currentStylist.name} · {currentStylist.tag}
+              </div>
               {messages.length === 0 && (
                 <div className={styles.welcomeMessage}>
                   Привет! Я твой AI-стилист. Спроси меня про образ, гардероб или что надеть — я знаю твой цветотип,
@@ -110,7 +124,7 @@ export function ChatScreen() {
           />
 
           <ChatInput
-            onSend={(text) => sendMessage(text, profile)}
+            onSend={(text) => sendMessage(text, profile, selectedStylistId)}
             onPhotoClick={handlePhotoClick}
             disabled={disabled}
             limitReached={remaining <= 0}

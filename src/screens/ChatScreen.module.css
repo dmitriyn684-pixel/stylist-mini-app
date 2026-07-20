@@ -234,6 +234,18 @@
   transition: transform 240ms ease, border-color 240ms ease, box-shadow 240ms ease;
 }
 
+.avatar_rachel_zoe {
+  background: linear-gradient(145deg, #b8763b, #643e2d);
+}
+
+.avatar_lina_hansen {
+  background: linear-gradient(145deg, #6f8582, #304f51);
+}
+
+.avatar_ellie_jean_royden {
+  background: linear-gradient(145deg, #d0aa74, #755642);
+}
+
 .stylistOption strong {
   max-width: 100%;
   overflow: hidden;

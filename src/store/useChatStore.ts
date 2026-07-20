@@ -3,6 +3,7 @@ import { persist } from 'zustand/middleware';
 import { streamChat } from '../services/chatService';
 import { usePremiumStore } from './usePremiumStore';
 import type { ChatMessage, ChatProfile } from '../types/chat';
+import type { AIStylistId } from '../data/aiStylists';
 
 const FREE_LIMIT = 10;
 
@@ -19,7 +20,7 @@ interface ChatState {
   isUnlimited: boolean;
   setUnlimited: (value: boolean) => void;
   remaining: () => number;
-  sendMessage: (text: string, profile: ChatProfile) => Promise<void>;
+  sendMessage: (text: string, profile: ChatProfile, stylistId: AIStylistId) => Promise<void>;
   addPaletteMessage: (palette: ChatMessage['palette']) => void;
   addNote: (text: string) => void;
   clear: () => void;
@@ -46,7 +47,7 @@ export const useChatStore = create<ChatState>()(
         return Math.max(0, FREE_LIMIT - s.usageCount);
       },
 
-      sendMessage: async (text, profile) => {
+      sendMessage: async (text, profile, stylistId) => {
         if (get().usageDate !== today()) {
           set({ usageDate: today(), usageCount: 0 });
         }
@@ -67,6 +68,7 @@ export const useChatStore = create<ChatState>()(
         await streamChat({
           messages: historyForRequest,
           profile,
+          stylistId,
           onChunk: (chunk) => {
             set((s) => ({
               messages: s.messages.map((m) => (m.id === assistantId ? { ...m, content: m.content + chunk } : m)),
