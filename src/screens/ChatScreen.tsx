@@ -94,10 +94,10 @@ export function ChatScreen() {
     setIsPaletteOpen(true);
   };
 
-  const handleAskLina = () => {
-    setSelectedStylist('lina_hansen');
+  const handleAskChristine = () => {
+    setSelectedStylist('christine_scaman');
     setIsPaletteOpen(false);
-    navigate('/chat', { replace: true, state: { selectedStylistId: 'lina_hansen' } });
+    navigate('/chat', { replace: true, state: { selectedStylistId: 'christine_scaman' } });
   };
 
   return (
@@ -160,7 +160,7 @@ export function ChatScreen() {
       <ColorPaletteDrawer
         isOpen={isPaletteOpen}
         onClose={handlePaletteClose}
-        onAskLina={handleAskLina}
+        onAskChristine={handleAskChristine}
         palette={userPalette}
       />
     </main>

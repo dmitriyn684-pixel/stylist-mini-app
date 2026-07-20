@@ -20,7 +20,7 @@ export interface UserPalette {
 export interface ColorPaletteDrawerProps {
   isOpen: boolean;
   onClose: () => void;
-  onAskLina: () => void;
+  onAskChristine: () => void;
   palette?: UserPalette;
 }
 
@@ -36,7 +36,7 @@ function normalizeHex(hex: string): string {
   return /^#[0-9A-F]{6}$/.test(value) ? value : '#D8D4CC';
 }
 
-export function ColorPaletteDrawer({ isOpen, onClose, onAskLina, palette }: ColorPaletteDrawerProps) {
+export function ColorPaletteDrawer({ isOpen, onClose, onAskChristine, palette }: ColorPaletteDrawerProps) {
   const closeButtonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
@@ -130,8 +130,8 @@ export function ColorPaletteDrawer({ isOpen, onClose, onAskLina, palette }: Colo
             })}
           </div>
 
-          <button type="button" className={styles.linaButton} onClick={onAskLina}>
-            Спросить Лину про цвета
+          <button type="button" className={styles.christineButton} onClick={onAskChristine}>
+            Спросить Кристин про цвета
             <span aria-hidden="true">→</span>
           </button>
         </div>

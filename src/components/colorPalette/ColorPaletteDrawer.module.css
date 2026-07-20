@@ -242,7 +242,7 @@
   font-size: 11px;
 }
 
-.linaButton {
+.christineButton {
   width: 100%;
   min-height: 52px;
   margin-top: 17px;
@@ -261,7 +261,7 @@
   transition: transform 160ms ease, box-shadow 160ms ease;
 }
 
-.linaButton:active {
+.christineButton:active {
   transform: translateY(2px) scale(0.985);
   box-shadow: 0 8px 18px rgba(74, 46, 31, 0.22);
 }
