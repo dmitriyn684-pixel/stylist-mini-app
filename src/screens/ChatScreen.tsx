@@ -76,7 +76,7 @@ export function ChatScreen() {
         </button>
         <div className={styles.quickHeaderTitle}>
           <strong>{currentStylist.name}</strong>
-          <small>онлайн</small>
+          <small>{currentStylist.id === DEFAULT_STYLIST_ID ? 'онлайн' : currentStylist.tag}</small>
         </div>
         <span className={styles.quickHeaderSpacer} aria-hidden="true" />
       </header>
@@ -88,7 +88,7 @@ export function ChatScreen() {
               {currentStylist.id !== DEFAULT_STYLIST_ID && (
                 <div className={styles.activeStylistChip}>
                   <span style={{ background: currentStylist.avatar }}>{currentStylist.monogram}</span>
-                  {currentStylist.name} · online
+                  {currentStylist.name} · {currentStylist.tag}
                 </div>
               )}
               {messages.length === 0 && (

@@ -1,22 +1,22 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import stylistCollectiveHero from '../assets/editorial/stylist-collective-hero.png';
-import { STYLISTS, useStylistStore, type StylistId } from '../store/useStylistStore';
+import { STYLISTS, useStylistStore, type AIStylistId } from '../store/useStylistStore';
 import styles from './ChatScreen.module.css';
 
 export function AIStylistScreen() {
   const navigate = useNavigate();
-  const [activeStylist, setActiveStylist] = useState<StylistId | null>(null);
+  const [activeStylist, setActiveStylist] = useState<AIStylistId>('rachel');
   const setSelectedStylist = useStylistStore((state) => state.setSelectedStylist);
 
-  const currentStylist = activeStylist ? STYLISTS.find((stylist) => stylist.id === activeStylist) ?? null : null;
+  const currentStylist = STYLISTS.find((stylist) => stylist.id === activeStylist) ?? STYLISTS[0];
 
-  const handleStylistSelect = (id: StylistId) => {
+  const handleStylistSelect = (id: AIStylistId) => {
     setActiveStylist(id);
+    setSelectedStylist(id);
   };
 
   const handleDialogStart = () => {
-    if (!currentStylist) return;
     setSelectedStylist(currentStylist.id);
     navigate('/chat', { state: { selectedStylistId: currentStylist.id } });
   };
@@ -58,36 +58,45 @@ export function AIStylistScreen() {
 
         <section className={styles.chatSection} aria-label="Выбор AI-стилиста">
           <div className={styles.messageScroller}>
-            {!currentStylist ? (
-              <div className={styles.selectionWelcome}>
-                <span>AI stylist edit</span>
-                <h1>Выберите свой подход к стилю</h1>
-                <p>Три AI-персоны по-разному расставят акценты — от editorial luxury до точной работы с пропорциями.</p>
+            <article key={currentStylist.id} className={styles.introCard}>
+              <span className={styles.introEyebrow}>Private AI stylist</span>
+              <div className={styles.introHeader}>
+                <span className={styles.introAvatar} style={{ background: currentStylist.avatar }}>
+                  {currentStylist.monogram}
+                </span>
+                <div>
+                  <h1>{currentStylist.name}</h1>
+                  <p>{currentStylist.tag}</p>
+                </div>
               </div>
-            ) : (
-              <article className={styles.introCard}>
-                <span className={styles.introEyebrow}>Private AI stylist</span>
-                <div className={styles.introHeader}>
-                  <span className={styles.introAvatar} style={{ background: currentStylist.avatar }}>
-                    {currentStylist.monogram}
-                  </span>
-                  <div>
-                    <h1>{currentStylist.name}</h1>
-                    <p>{currentStylist.tag}</p>
-                  </div>
-                </div>
-                <p className={styles.introDescription}>{currentStylist.description}</p>
-                <div className={styles.strengthList}>
-                  {currentStylist.chips.map((strength) => (
-                    <span key={strength}>{strength}</span>
-                  ))}
-                </div>
-                <button type="button" className={styles.startButton} onClick={handleDialogStart}>
-                  Начать диалог
-                  <span aria-hidden="true">→</span>
-                </button>
-              </article>
-            )}
+
+              <p className={styles.previewLead}>{currentStylist.shortPreview}</p>
+
+              <div className={styles.previewDetails}>
+                <section className={styles.previewSection}>
+                  <h2>Чем ценен разговор</h2>
+                  <p>{currentStylist.value}</p>
+                </section>
+                <section className={styles.previewSection}>
+                  <h2>Манера</h2>
+                  <p>{currentStylist.manner}</p>
+                </section>
+                <section className={styles.previewSection}>
+                  <h2>Роль в приложении</h2>
+                  <p>{currentStylist.role}</p>
+                </section>
+              </div>
+
+              <div className={styles.strengthList}>
+                {currentStylist.chips.map((strength) => (
+                  <span key={strength}>{strength}</span>
+                ))}
+              </div>
+              <button type="button" className={styles.startButton} onClick={handleDialogStart}>
+                Начать диалог
+                <span aria-hidden="true">→</span>
+              </button>
+            </article>
           </div>
         </section>
       </div>
