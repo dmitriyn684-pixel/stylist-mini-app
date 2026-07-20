@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useLayoutEffect, useMemo, useRef } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { MessageList } from '../components/chat/MessageList';
 import { ChatInput } from '../components/chat/ChatInput';
 import { useChatStore } from '../store/useChatStore';
@@ -8,11 +8,21 @@ import { useTelegram } from '../hooks/useTelegram';
 import { useAdminChatAccess } from '../hooks/useAdminChatAccess';
 import { useAvatarStore } from '../store/useAvatarStore';
 import { useWardrobeStore } from '../store/useWardrobeStore';
+import { DEFAULT_STYLIST_ID, getStylistById, useStylistStore, type StylistId } from '../store/useStylistStore';
 import type { ChatProfile } from '../types/chat';
 import styles from './ChatScreen.module.css';
 
+interface ChatLocationState {
+  selectedStylistId?: StylistId;
+}
+
 export function ChatScreen() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const routeStylistId = (location.state as ChatLocationState | null)?.selectedStylistId;
+  const selectedStylistId = useStylistStore((state) => state.selectedStylistId);
+  const setSelectedStylist = useStylistStore((state) => state.setSelectedStylist);
+  const currentStylist = getStylistById(selectedStylistId);
   const messages = useChatStore((state) => state.messages);
   const isTyping = useChatStore((state) => state.isTyping);
   const sendMessage = useChatStore((state) => state.sendMessage);
@@ -41,6 +51,10 @@ export function ChatScreen() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  useLayoutEffect(() => {
+    setSelectedStylist(routeStylistId ?? DEFAULT_STYLIST_ID);
+  }, [routeStylistId, setSelectedStylist]);
+
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' });
   }, [messages]);
@@ -61,7 +75,7 @@ export function ChatScreen() {
           Назад
         </button>
         <div className={styles.quickHeaderTitle}>
-          <strong>AI-стилист</strong>
+          <strong>{currentStylist.name}</strong>
           <small>онлайн</small>
         </div>
         <span className={styles.quickHeaderSpacer} aria-hidden="true" />
@@ -71,6 +85,12 @@ export function ChatScreen() {
         <section className={styles.chatSection} aria-label="Диалог со стилистом">
           <div ref={scrollRef} className={styles.messageScroller}>
             <div className={styles.chatWindow}>
+              {currentStylist.id !== DEFAULT_STYLIST_ID && (
+                <div className={styles.activeStylistChip}>
+                  <span style={{ background: currentStylist.avatar }}>{currentStylist.monogram}</span>
+                  {currentStylist.name} · online
+                </div>
+              )}
               {messages.length === 0 && (
                 <div className={styles.welcomeMessage}>
                   Привет! Я твой AI-стилист. Спроси меня про образ, гардероб или что надеть — я знаю твой цветотип,

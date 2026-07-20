@@ -295,19 +295,6 @@
   padding-bottom: calc(110px + env(safe-area-inset-bottom));
 }
 
-.keyboardActive {
-  max-height: 100dvh;
-  overflow: hidden;
-}
-
-.keyboardActive .content {
-  height: calc(100% - clamp(220px, 32dvh, 260px));
-}
-
-.keyboardActive .chatSection {
-  padding-bottom: calc(8px + env(safe-area-inset-bottom));
-}
-
 .messageScroller {
   min-height: 0;
   overflow-y: auto;
