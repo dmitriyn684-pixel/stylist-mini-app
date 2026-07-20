@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useMemo, useRef } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { MessageList } from '../components/chat/MessageList';
 import { ChatInput } from '../components/chat/ChatInput';
@@ -11,6 +11,8 @@ import { useWardrobeStore } from '../store/useWardrobeStore';
 import { CAPSULE_ITEMS } from '../utils/capsuleData';
 import { DEFAULT_STYLIST_ID, getAIStylistById, type AIStylistId } from '../data/aiStylists';
 import { useStylistStore } from '../store/useStylistStore';
+import { ColorPaletteDrawer } from '../components/colorPalette/ColorPaletteDrawer';
+import { createUserPalette } from '../components/colorPalette/paletteData';
 import type { ChatProfile } from '../types/chat';
 import styles from './ChatScreen.module.css';
 
@@ -30,6 +32,7 @@ export function ChatScreen() {
   const sendMessage = useChatStore((state) => state.sendMessage);
   const addNote = useChatStore((state) => state.addNote);
   const remaining = useChatStore((state) => state.remaining());
+  const [isPaletteOpen, setIsPaletteOpen] = useState(false);
   const { user } = useTelegram();
   useAdminChatAccess(user.id);
 
@@ -62,6 +65,7 @@ export function ChatScreen() {
     }),
     [colorResult, kibbeResult, measurements, items]
   );
+  const userPalette = useMemo(() => createUserPalette(colorResult), [colorResult]);
 
   const disabled = isTyping || remaining <= 0;
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -83,6 +87,19 @@ export function ChatScreen() {
     addNote('Пока не умею разбирать фото прямо в чате — загляни в «AI Анализ» на Главной, там реальный AI-сканер фото.');
   };
 
+  const handlePaletteClose = useCallback(() => setIsPaletteOpen(false), []);
+
+  const handlePaletteOpen = () => {
+    if (document.activeElement instanceof HTMLElement) document.activeElement.blur();
+    setIsPaletteOpen(true);
+  };
+
+  const handleAskLina = () => {
+    setSelectedStylist('lina_hansen');
+    setIsPaletteOpen(false);
+    navigate('/chat', { replace: true, state: { selectedStylistId: 'lina_hansen' } });
+  };
+
   return (
     <main className={`${styles.page} ${styles.quickPage}`}>
       <header className={styles.quickHeader}>
@@ -94,7 +111,15 @@ export function ChatScreen() {
           <strong>{currentStylist.name}</strong>
           <small>{currentStylist.tag}</small>
         </div>
-        <span className={styles.quickHeaderSpacer} aria-hidden="true" />
+        <button
+          type="button"
+          className={styles.paletteButton}
+          onClick={handlePaletteOpen}
+          aria-expanded={isPaletteOpen}
+          aria-controls="color-palette-drawer"
+        >
+          Моя палитра
+        </button>
       </header>
 
       <div className={`${styles.content} ${styles.quickContent}`}>
@@ -131,6 +156,13 @@ export function ChatScreen() {
           />
         </section>
       </div>
+
+      <ColorPaletteDrawer
+        isOpen={isPaletteOpen}
+        onClose={handlePaletteClose}
+        onAskLina={handleAskLina}
+        palette={userPalette}
+      />
     </main>
   );
 }

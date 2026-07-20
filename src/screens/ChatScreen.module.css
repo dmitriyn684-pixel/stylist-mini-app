@@ -90,6 +90,29 @@
   justify-self: end;
 }
 
+.paletteButton {
+  min-height: 36px;
+  padding: 0 11px;
+  justify-self: end;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 999px;
+  color: #fff8ef;
+  background: rgba(251, 248, 243, 0.11);
+  box-shadow: 0 8px 18px rgba(17, 35, 38, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.13);
+  backdrop-filter: blur(13px) saturate(120%);
+  -webkit-backdrop-filter: blur(13px) saturate(120%);
+  font-size: 10px;
+  font-weight: 780;
+  white-space: nowrap;
+  transition: color 160ms ease, transform 160ms ease, background 160ms ease;
+}
+
+.paletteButton:active {
+  color: #f1bd82;
+  background: rgba(251, 248, 243, 0.17);
+  transform: translateY(2px) scale(0.98);
+}
+
 .quickContent {
   width: 100%;
   height: auto;

@@ -1,0 +1,297 @@
+.overlay {
+  position: fixed;
+  z-index: 300;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  background: rgba(10, 18, 20, 0.42);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  animation: overlayShow 220ms ease-out both;
+}
+
+.drawer {
+  width: 100%;
+  max-width: 430px;
+  max-height: min(86dvh, 760px);
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.64);
+  border-bottom: 0;
+  border-radius: 30px 30px 0 0;
+  color: #1e2326;
+  background: #f7f3ed;
+  box-shadow: 0 -24px 70px rgba(17, 24, 26, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.82);
+  animation: drawerShow 360ms cubic-bezier(0.22, 0.8, 0.24, 1) both;
+}
+
+.handle {
+  width: 42px;
+  height: 4px;
+  margin: 9px auto 2px;
+  border-radius: 999px;
+  background: rgba(30, 35, 38, 0.16);
+}
+
+.header {
+  min-height: 68px;
+  padding: 10px 20px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  border-bottom: 1px solid rgba(30, 35, 38, 0.07);
+  background: rgba(247, 243, 237, 0.9);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+.eyebrow {
+  color: #c98232;
+  font-size: 9px;
+  font-weight: 850;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.header h2 {
+  margin-top: 3px;
+  font-family: var(--font-display);
+  font-size: 27px;
+  font-weight: 560;
+  line-height: 1;
+  letter-spacing: -0.025em;
+}
+
+.closeButton {
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  flex: 0 0 38px;
+  border: 1px solid rgba(30, 35, 38, 0.08);
+  border-radius: 50%;
+  color: #445052;
+  background: #fbf8f3;
+  box-shadow: 0 8px 18px rgba(17, 24, 26, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  font-size: 24px;
+  line-height: 1;
+  transition: transform 160ms ease;
+}
+
+.closeButton:active {
+  transform: translateY(2px) scale(0.96);
+}
+
+.scrollArea {
+  max-height: calc(min(86dvh, 760px) - 83px);
+  padding: 16px 16px calc(22px + env(safe-area-inset-bottom));
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.seasonCard {
+  padding: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at 92% 6%, rgba(201, 130, 50, 0.13), transparent 32%),
+    #fbf8f3;
+  box-shadow: 0 14px 32px rgba(17, 24, 26, 0.09), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+.seasonCard > span {
+  color: rgba(30, 35, 38, 0.5);
+  font-size: 9px;
+  font-weight: 820;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.seasonCard h3 {
+  margin-top: 6px;
+  color: #1e2326;
+  font-family: var(--font-display);
+  font-size: 30px;
+  font-weight: 560;
+  line-height: 1.05;
+}
+
+.seasonCard small {
+  display: block;
+  margin-top: 4px;
+  color: #c98232;
+  font-size: 11px;
+  font-weight: 760;
+}
+
+.seasonCard p {
+  max-width: 350px;
+  margin-top: 10px;
+  color: rgba(30, 35, 38, 0.68);
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+.fallbackNote {
+  width: fit-content;
+  margin-top: 12px;
+  padding: 6px 9px;
+  border: 1px solid rgba(201, 130, 50, 0.15);
+  border-radius: 999px;
+  color: #8d5a24;
+  background: rgba(201, 130, 50, 0.07);
+  font-size: 9px;
+  font-weight: 700;
+}
+
+.groups {
+  margin-top: 16px;
+  display: grid;
+  gap: 14px;
+}
+
+.group {
+  padding: 15px;
+  border: 1px solid rgba(255, 255, 255, 0.68);
+  border-radius: 22px;
+  background: rgba(251, 248, 243, 0.82);
+  box-shadow: 0 10px 25px rgba(17, 24, 26, 0.065), inset 0 1px 0 rgba(255, 255, 255, 0.78);
+}
+
+.groupHeading {
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.groupHeading h3 {
+  color: #353c3d;
+  font-size: 11px;
+  font-weight: 820;
+}
+
+.groupHeading span {
+  min-width: 23px;
+  height: 23px;
+  padding: 0 7px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  color: #966027;
+  background: rgba(201, 130, 50, 0.09);
+  font-size: 9px;
+  font-weight: 800;
+}
+
+.swatchGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.swatchCard {
+  min-width: 0;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  border: 1px solid rgba(30, 35, 38, 0.055);
+  border-radius: 15px;
+  background: #fbf8f3;
+  box-shadow: 0 6px 14px rgba(17, 24, 26, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.82);
+  animation: swatchShow 360ms calc(70ms + var(--swatch-index) * 42ms) ease-out both;
+}
+
+.swatch {
+  width: 32px;
+  height: 32px;
+  flex: 0 0 32px;
+  border: 1px solid rgba(30, 35, 38, 0.11);
+  border-radius: 50%;
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.46), 0 5px 12px rgba(17, 24, 26, 0.09);
+}
+
+.swatchCopy {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.swatchCopy strong {
+  overflow: hidden;
+  color: #353c3d;
+  font-size: 10px;
+  font-weight: 720;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.swatchCopy small {
+  color: rgba(30, 35, 38, 0.52);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 9px;
+}
+
+.emptyGroup {
+  padding: 5px 0 2px;
+  color: rgba(30, 35, 38, 0.46);
+  font-size: 11px;
+}
+
+.linaButton {
+  width: 100%;
+  min-height: 52px;
+  margin-top: 17px;
+  padding: 0 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border: 0;
+  border-radius: 999px;
+  color: #fffaf2;
+  background: linear-gradient(90deg, #4a2e1f 0%, #6d4631 45%, #8b5e44 100%);
+  box-shadow: 0 14px 28px rgba(74, 46, 31, 0.24), 0 0 22px rgba(201, 130, 50, 0.1);
+  font-size: 12px;
+  font-weight: 820;
+  transition: transform 160ms ease, box-shadow 160ms ease;
+}
+
+.linaButton:active {
+  transform: translateY(2px) scale(0.985);
+  box-shadow: 0 8px 18px rgba(74, 46, 31, 0.22);
+}
+
+@keyframes overlayShow {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes drawerShow {
+  from { opacity: 0; transform: translateY(42px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes swatchShow {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 360px) {
+  .swatchGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .overlay,
+  .drawer,
+  .swatchCard {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
