@@ -8,9 +8,19 @@ interface ChatInputProps {
   disabled: boolean;
   limitReached: boolean;
   autoFocus?: boolean;
+  onInputFocus?: () => void;
+  onInputBlur?: () => void;
 }
 
-export function ChatInput({ onSend, onPhotoClick, disabled, limitReached, autoFocus = false }: ChatInputProps) {
+export function ChatInput({
+  onSend,
+  onPhotoClick,
+  disabled,
+  limitReached,
+  autoFocus = false,
+  onInputFocus,
+  onInputBlur,
+}: ChatInputProps) {
   const [text, setText] = useState('');
 
   const submit = () => {
@@ -47,6 +57,8 @@ export function ChatInput({ onSend, onPhotoClick, disabled, limitReached, autoFo
           placeholder="Написать стилисту..."
           disabled={disabled}
           autoFocus={autoFocus}
+          onFocus={onInputFocus}
+          onBlur={onInputBlur}
           className={styles.input}
         />
         <button

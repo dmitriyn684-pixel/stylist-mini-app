@@ -9,7 +9,6 @@ import { useAdminChatAccess } from '../hooks/useAdminChatAccess';
 import { useAvatarStore } from '../store/useAvatarStore';
 import { useWardrobeStore } from '../store/useWardrobeStore';
 import type { ChatProfile } from '../types/chat';
-import quickStylistHero from '../assets/editorial/stylist-chat-hero.jpg';
 import styles from './ChatScreen.module.css';
 
 export function ChatScreen() {
@@ -55,18 +54,20 @@ export function ChatScreen() {
   };
 
   return (
-    <main className={styles.page}>
-      <section className={styles.hero} aria-label="Private fashion concierge">
-        <img src={quickStylistHero} alt="Fashion mannequins in an editorial display" className={styles.heroImage} />
-        <div className={styles.heroWash} aria-hidden="true" />
-        <div className={styles.heroSweep} aria-hidden="true" />
-        <button type="button" onClick={() => navigate(-1)} className={styles.backButton}>
+    <main className={`${styles.page} ${styles.quickPage}`}>
+      <header className={styles.quickHeader}>
+        <button type="button" onClick={() => navigate(-1)} className={styles.compactBackButton}>
           <span aria-hidden="true">←</span>
           Назад
         </button>
-      </section>
+        <div className={styles.quickHeaderTitle}>
+          <strong>AI-стилист</strong>
+          <small>онлайн</small>
+        </div>
+        <span className={styles.quickHeaderSpacer} aria-hidden="true" />
+      </header>
 
-      <div className={styles.content}>
+      <div className={`${styles.content} ${styles.quickContent}`}>
         <section className={styles.chatSection} aria-label="Диалог со стилистом">
           <div ref={scrollRef} className={styles.messageScroller}>
             <div className={styles.chatWindow}>

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useOutletContext } from 'react-router-dom';
 import { MessageList } from '../components/chat/MessageList';
 import { ChatInput } from '../components/chat/ChatInput';
 import { useChatStore } from '../store/useChatStore';
@@ -10,6 +10,7 @@ import { useAvatarStore } from '../store/useAvatarStore';
 import { useWardrobeStore } from '../store/useWardrobeStore';
 import type { ChatProfile } from '../types/chat';
 import stylistCollectiveHero from '../assets/editorial/stylist-collective-hero.png';
+import type { LayoutOutletContext } from '../components/ui/Layout';
 import styles from './ChatScreen.module.css';
 
 type StylistId = 'stylist1' | 'stylist2' | 'stylist3';
@@ -63,6 +64,9 @@ export function AIStylistScreen() {
   const remaining = useChatStore((state) => state.remaining());
   const [activeStylist, setActiveStylist] = useState<StylistId | null>(null);
   const [isDialogStarted, setIsDialogStarted] = useState(false);
+  const [isKeyboardActive, setIsKeyboardActive] = useState(false);
+  const [visualViewportHeight, setVisualViewportHeight] = useState<number | null>(null);
+  const { setTabBarHidden } = useOutletContext<LayoutOutletContext>();
 
   const currentStylist = activeStylist ? STYLISTS.find((stylist) => stylist.id === activeStylist) ?? null : null;
 
@@ -94,6 +98,27 @@ export function AIStylistScreen() {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' });
   }, [messages, isDialogStarted]);
 
+  useEffect(() => {
+    if (!isKeyboardActive || !window.visualViewport) {
+      setVisualViewportHeight(null);
+      return;
+    }
+
+    const viewport = window.visualViewport;
+    const syncViewportHeight = () => setVisualViewportHeight(viewport.height);
+
+    syncViewportHeight();
+    viewport.addEventListener('resize', syncViewportHeight);
+    viewport.addEventListener('scroll', syncViewportHeight);
+
+    return () => {
+      viewport.removeEventListener('resize', syncViewportHeight);
+      viewport.removeEventListener('scroll', syncViewportHeight);
+    };
+  }, [isKeyboardActive]);
+
+  useEffect(() => () => setTabBarHidden(false), [setTabBarHidden]);
+
   const handleStylistSelect = (id: StylistId) => {
     setActiveStylist(id);
     setIsDialogStarted(false);
@@ -105,6 +130,16 @@ export function AIStylistScreen() {
     setIsDialogStarted(true);
   };
 
+  const handleInputFocus = () => {
+    setIsKeyboardActive(true);
+    setTabBarHidden(true);
+  };
+
+  const handleInputBlur = () => {
+    setIsKeyboardActive(false);
+    setTabBarHidden(false);
+  };
+
   // В чате нет реального анализа фото: честно направляем к рабочему AI-сканеру.
   const handlePhotoClick = () => fileInputRef.current?.click();
   const handlePhotoSelected = () => {
@@ -113,7 +148,14 @@ export function AIStylistScreen() {
   };
 
   return (
-    <main className={`${styles.page} ${styles.pageWithTabBar}`}>
+    <main
+      className={`${styles.page} ${styles.pageWithTabBar} ${isKeyboardActive ? styles.keyboardActive : ''}`}
+      style={
+        isKeyboardActive && visualViewportHeight
+          ? { height: `${visualViewportHeight}px`, minHeight: `${visualViewportHeight}px` }
+          : undefined
+      }
+    >
       <section className={styles.hero} aria-label="Private fashion concierge">
         <img src={stylistCollectiveHero} alt="Three AI fashion stylist personas in a private atelier" className={styles.heroImage} />
         <div className={styles.heroWash} aria-hidden="true" />
@@ -125,28 +167,30 @@ export function AIStylistScreen() {
       </section>
 
       <div className={styles.content}>
-        <div className={styles.stylistSelector} aria-label="Выберите AI-стилиста">
-          {STYLISTS.map((stylist) => {
-            const isActive = stylist.id === activeStylist;
-            return (
-              <button
-                key={stylist.id}
-                type="button"
-                className={`${styles.stylistOption} ${isActive ? styles.stylistOptionActive : ''}`}
-                onClick={() => handleStylistSelect(stylist.id)}
-                disabled={isTyping}
-                aria-pressed={isActive}
-                aria-label={`Выбрать ${stylist.name}`}
-              >
-                <span className={styles.selectorAvatar} style={{ background: stylist.avatar }}>
-                  {stylist.monogram}
-                </span>
-                <strong>{stylist.name}</strong>
-                <small>{stylist.tag}</small>
-              </button>
-            );
-          })}
-        </div>
+        {!isDialogStarted && (
+          <div className={styles.stylistSelector} aria-label="Выберите AI-стилиста">
+            {STYLISTS.map((stylist) => {
+              const isActive = stylist.id === activeStylist;
+              return (
+                <button
+                  key={stylist.id}
+                  type="button"
+                  className={`${styles.stylistOption} ${isActive ? styles.stylistOptionActive : ''}`}
+                  onClick={() => handleStylistSelect(stylist.id)}
+                  disabled={isTyping}
+                  aria-pressed={isActive}
+                  aria-label={`Выбрать ${stylist.name}`}
+                >
+                  <span className={styles.selectorAvatar} style={{ background: stylist.avatar }}>
+                    {stylist.monogram}
+                  </span>
+                  <strong>{stylist.name}</strong>
+                  <small>{stylist.tag}</small>
+                </button>
+              );
+            })}
+          </div>
+        )}
 
         <section className={styles.chatSection} aria-label="Диалог со стилистом">
           <div ref={scrollRef} className={styles.messageScroller}>
@@ -207,7 +251,8 @@ export function AIStylistScreen() {
               onPhotoClick={handlePhotoClick}
               disabled={disabled}
               limitReached={remaining <= 0}
-              autoFocus
+              onInputFocus={handleInputFocus}
+              onInputBlur={handleInputBlur}
             />
           )}
         </section>
