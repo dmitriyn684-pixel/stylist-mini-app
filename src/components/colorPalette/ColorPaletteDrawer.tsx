@@ -101,7 +101,6 @@ export function ColorPaletteDrawer({ isOpen, onClose, onAskChristine, palette }:
                 <section key={key} className={styles.group}>
                   <div className={styles.groupHeading}>
                     <h3>{label}</h3>
-                    <span>{colors.length}</span>
                   </div>
                   {colors.length ? (
                     <ul className={styles.swatchGrid}>
@@ -113,7 +112,11 @@ export function ColorPaletteDrawer({ isOpen, onClose, onAskChristine, palette }:
                             className={styles.swatchCard}
                             style={{ '--swatch-index': index } as CSSProperties}
                           >
-                            <span className={styles.swatch} style={{ backgroundColor: hex }} aria-hidden="true" />
+                            <span
+                              className={styles.swatch}
+                              style={{ '--swatch-color': hex } as CSSProperties}
+                              aria-hidden="true"
+                            />
                             <span className={styles.swatchCopy}>
                               <strong>{color.name}</strong>
                               <small>{hex}</small>

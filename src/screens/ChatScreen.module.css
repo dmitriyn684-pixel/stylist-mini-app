@@ -137,7 +137,7 @@
   height: 100%;
   display: block;
   object-fit: cover;
-  object-position: center 44%;
+  object-position: center center;
   filter: saturate(0.8) contrast(1.04) brightness(0.94);
 }
 
@@ -271,12 +271,12 @@
 
 .stylistOption strong {
   max-width: 100%;
-  overflow: hidden;
-  font-size: 11px;
+  min-height: 23px;
+  font-size: 10px;
   font-weight: 800;
-  line-height: 1.25;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  line-height: 1.15;
+  text-align: center;
+  text-wrap: balance;
 }
 
 .stylistOption small {

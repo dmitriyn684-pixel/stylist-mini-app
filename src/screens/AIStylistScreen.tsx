@@ -7,7 +7,7 @@ import styles from './ChatScreen.module.css';
 
 export function AIStylistScreen() {
   const navigate = useNavigate();
-  const [activeStylist, setActiveStylist] = useState<AIStylistId>('rachel_zoe');
+  const [activeStylist, setActiveStylist] = useState<AIStylistId>('ellie_jean_royden');
   const setSelectedStylist = useStylistStore((state) => state.setSelectedStylist);
 
   const currentStylist = aiStylists.find((stylist) => stylist.id === activeStylist) ?? aiStylists[0];
@@ -25,7 +25,11 @@ export function AIStylistScreen() {
   return (
     <main className={`${styles.page} ${styles.pageWithTabBar}`}>
       <section className={styles.hero} aria-label="Private fashion concierge">
-        <img src={stylistCollectiveHero} alt="Three AI fashion stylist personas in a private atelier" className={styles.heroImage} />
+        <img
+          src={stylistCollectiveHero}
+          alt="AI-стилисты в эстетике Ellie-Jean Royden, Christine Scaman и Rachel Zoe"
+          className={styles.heroImage}
+        />
         <div className={styles.heroWash} aria-hidden="true" />
         <div className={styles.heroSweep} aria-hidden="true" />
         <button type="button" onClick={() => navigate(-1)} className={styles.backButton}>

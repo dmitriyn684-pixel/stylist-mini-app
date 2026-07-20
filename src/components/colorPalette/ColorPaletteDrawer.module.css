@@ -172,19 +172,6 @@
   font-weight: 820;
 }
 
-.groupHeading span {
-  min-width: 23px;
-  height: 23px;
-  padding: 0 7px;
-  display: grid;
-  place-items: center;
-  border-radius: 999px;
-  color: #966027;
-  background: rgba(201, 130, 50, 0.09);
-  font-size: 9px;
-  font-weight: 800;
-}
-
 .swatchGrid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -210,7 +197,27 @@
   flex: 0 0 32px;
   border: 1px solid rgba(30, 35, 38, 0.11);
   border-radius: 50%;
+  background-color: var(--swatch-color);
+  background-image: conic-gradient(
+    from 0deg,
+    var(--swatch-color) 0deg 118deg,
+    color-mix(in srgb, var(--swatch-color) 76%, white) 148deg,
+    var(--swatch-color) 190deg 286deg,
+    color-mix(in srgb, var(--swatch-color) 82%, black) 318deg,
+    var(--swatch-color) 360deg
+  );
   box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.46), 0 5px 12px rgba(17, 24, 26, 0.09);
+  transform-origin: center;
+  will-change: transform;
+  animation: paletteSpin 20s linear infinite;
+}
+
+.swatchCard:nth-child(2n) .swatch {
+  animation-duration: 23s;
+}
+
+.swatchCard:nth-child(3n) .swatch {
+  animation-duration: 26s;
 }
 
 .swatchCopy {
@@ -281,6 +288,11 @@
   to { opacity: 1; transform: translateY(0); }
 }
 
+@keyframes paletteSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
 @media (max-width: 360px) {
   .swatchGrid {
     grid-template-columns: 1fr;
@@ -293,5 +305,9 @@
   .swatchCard {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
+  }
+
+  .swatch {
+    animation: none;
   }
 }
