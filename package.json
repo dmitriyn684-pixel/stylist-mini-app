@@ -9,6 +9,7 @@
     "brandbook:capture": "node scripts/capture-brandbook-visuals.mjs",
     "brandbook:pdf": "python scripts/generate_brandbook_pdf.py",
     "brandbook:v2": "python scripts/generate_brandbook_v2.py",
+    "brandbook:visual": "python scripts/generate_visual_brandbook_pdf.py",
     "brandbook:assets": "python scripts/optimize_portfolio_assets.py",
     "brandbook:smoke": "node scripts/smoke-portfolio.mjs",
     "lint": "oxlint",

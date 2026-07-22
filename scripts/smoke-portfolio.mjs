@@ -29,6 +29,8 @@ async function verify(viewport, filename) {
     services: await page.locator('#clients .service-card').count(),
     employerRoutes: await page.locator('#employers .route-card').count(),
     aiDirectorStatus: await page.locator('#lab .director-teaser .status-badge').innerText(),
+    visualBrandbookLinks: await page.locator('a[href$="dimkoff-brandbook-2026-visual.pdf"]').count(),
+    visualEditionBadges: await page.locator('.new-badge').count(),
     imagesLoaded: await page.locator('img').evaluateAll((images) => images.every((image) => image.complete && image.naturalWidth > 0)),
     bodyLength: (await page.locator('body').innerText()).trim().length,
     horizontalOverflow: await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth),
@@ -40,6 +42,8 @@ async function verify(viewport, filename) {
   if (checks.services !== 5) throw new Error(`Expected 5 client services, got ${checks.services}`);
   if (checks.employerRoutes !== 2) throw new Error(`Expected 2 employer route cards, got ${checks.employerRoutes}`);
   if (!checks.aiDirectorStatus.includes('IN PLANNING')) throw new Error('AI Director status is missing');
+  if (checks.visualBrandbookLinks < 4) throw new Error(`Expected Visual Brandbook links, got ${checks.visualBrandbookLinks}`);
+  if (checks.visualEditionBadges < 4) throw new Error(`Expected visual edition badges, got ${checks.visualEditionBadges}`);
   if (!checks.imagesLoaded) throw new Error('One or more portfolio images failed to load');
   if (checks.bodyLength < 1000) throw new Error('Main UI did not render enough content');
   if (checks.horizontalOverflow > 1) throw new Error(`Horizontal overflow: ${checks.horizontalOverflow}px`);
@@ -50,10 +54,14 @@ async function verify(viewport, filename) {
     'dimkoff-brandbook-2026-v2.pdf',
     'dimkoff-client-deck-2026.pdf',
     'dimkoff-employer-deck-2026.pdf',
+    'dimkoff-brandbook-2026-visual.pdf',
   ];
   for (const filename of pdfs) {
     const pdfResponse = await page.request.head(new URL(filename, base).href);
     if (!pdfResponse.ok()) throw new Error(`${filename} response: ${pdfResponse.status()}`);
+    if (!pdfResponse.headers()['content-type']?.includes('application/pdf')) {
+      throw new Error(`${filename} content-type: ${pdfResponse.headers()['content-type']}`);
+    }
   }
 
   await page.evaluate(async () => {
