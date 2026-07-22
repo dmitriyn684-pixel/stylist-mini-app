@@ -6,6 +6,10 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "brandbook:capture": "node scripts/capture-brandbook-visuals.mjs",
+    "brandbook:pdf": "python scripts/generate_brandbook_pdf.py",
+    "brandbook:assets": "python scripts/optimize_portfolio_assets.py",
+    "brandbook:smoke": "node scripts/smoke-portfolio.mjs",
     "lint": "oxlint",
     "preview": "vite preview",
     "deploy": "npm run build && gh-pages -d dist"
@@ -32,6 +36,7 @@
     "autoprefixer": "^10.5.2",
     "gh-pages": "^6.3.0",
     "oxlint": "^1.71.0",
+    "playwright": "^1.61.1",
     "postcss": "^8.5.16",
     "tailwindcss": "^4.3.2",
     "typescript": "~6.0.2",
