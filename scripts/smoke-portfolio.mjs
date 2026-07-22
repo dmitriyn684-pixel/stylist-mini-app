@@ -52,7 +52,7 @@ async function verify(viewport, filename) {
     'dimkoff-employer-deck-2026.pdf',
   ];
   for (const filename of pdfs) {
-    const pdfResponse = await page.request.get(new URL(filename, base).href);
+    const pdfResponse = await page.request.head(new URL(filename, base).href);
     if (!pdfResponse.ok()) throw new Error(`${filename} response: ${pdfResponse.status()}`);
   }
 
