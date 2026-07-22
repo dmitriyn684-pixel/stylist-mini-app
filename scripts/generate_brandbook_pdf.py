@@ -84,7 +84,7 @@ def title(c, text, x=54, y=H - 105, width=820, size=31, color=TEXT):
     return text_block(c, text, x, y, width, size=size, leading=size * 1.08, color=color, font="Georgia-Bold")
 
 
-def page_base(c, number, section):
+def page_base(c, number, section, total=25):
     c.setFillColor(BG)
     c.rect(0, 0, W, H, fill=1, stroke=0)
     c.setStrokeColor(LINE)
@@ -93,7 +93,7 @@ def page_base(c, number, section):
     label(c, f"DIMKOFF / {section}", 54, H - 31, MUTED)
     c.setFont("Arial", 8)
     c.setFillColor(MUTED)
-    c.drawRightString(W - 54, 24, f"{number:02d} / 25")
+    c.drawRightString(W - 54, 24, f"{number:02d} / {total:02d}")
     c.setFillColor(LIME)
     c.circle(W - 38, H - 28, 3, fill=1, stroke=0)
 

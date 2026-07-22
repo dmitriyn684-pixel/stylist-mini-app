@@ -25,18 +25,36 @@ async function verify(viewport, filename) {
     h1: await page.locator('h1').innerText(),
     mainCases: await page.locator('#cases .case-card').count(),
     bots: await page.locator('#bots .bot-card').count(),
+    concepts: await page.locator('#lab .concept-card').count(),
+    services: await page.locator('#clients .service-card').count(),
+    employerRoutes: await page.locator('#employers .route-card').count(),
+    aiDirectorStatus: await page.locator('#lab .director-teaser .status-badge').innerText(),
     imagesLoaded: await page.locator('img').evaluateAll((images) => images.every((image) => image.complete && image.naturalWidth > 0)),
     bodyLength: (await page.locator('body').innerText()).trim().length,
+    horizontalOverflow: await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth),
   };
   if (!checks.title.includes('DimkoFF')) throw new Error('Missing DimkoFF title');
   if (checks.mainCases !== 2) throw new Error(`Expected 2 main cases, got ${checks.mainCases}`);
   if (checks.bots !== 3) throw new Error(`Expected 3 bot cards, got ${checks.bots}`);
+  if (checks.concepts !== 6) throw new Error(`Expected 6 Demo Lab concepts, got ${checks.concepts}`);
+  if (checks.services !== 5) throw new Error(`Expected 5 client services, got ${checks.services}`);
+  if (checks.employerRoutes !== 2) throw new Error(`Expected 2 employer route cards, got ${checks.employerRoutes}`);
+  if (!checks.aiDirectorStatus.includes('IN PLANNING')) throw new Error('AI Director status is missing');
   if (!checks.imagesLoaded) throw new Error('One or more portfolio images failed to load');
   if (checks.bodyLength < 1000) throw new Error('Main UI did not render enough content');
+  if (checks.horizontalOverflow > 1) throw new Error(`Horizontal overflow: ${checks.horizontalOverflow}px`);
   if (errors.length) throw new Error(`Runtime errors: ${errors.join(' | ')}`);
 
-  const pdfResponse = await page.request.get(new URL('dimkoff-brandbook-2026.pdf', base).href);
-  if (!pdfResponse.ok()) throw new Error(`PDF response: ${pdfResponse.status()}`);
+  const pdfs = [
+    'dimkoff-brandbook-2026.pdf',
+    'dimkoff-brandbook-2026-v2.pdf',
+    'dimkoff-client-deck-2026.pdf',
+    'dimkoff-employer-deck-2026.pdf',
+  ];
+  for (const filename of pdfs) {
+    const pdfResponse = await page.request.get(new URL(filename, base).href);
+    if (!pdfResponse.ok()) throw new Error(`${filename} response: ${pdfResponse.status()}`);
+  }
 
   await page.evaluate(async () => {
     const pause = (milliseconds) => new Promise((resolve) => setTimeout(resolve, milliseconds));
@@ -54,6 +72,6 @@ async function verify(viewport, filename) {
 
 await mkdir(output, { recursive: true });
 const desktop = await verify({ width: 1440, height: 1000 }, 'portfolio-desktop.png');
-const mobile = await verify({ width: 390, height: 844 }, 'portfolio-mobile.png');
+const mobile = await verify({ width: 375, height: 812 }, 'portfolio-mobile.png');
 console.log(JSON.stringify({ desktop, mobile }, null, 2));
 await browser.close();
