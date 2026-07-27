@@ -29,7 +29,30 @@ SIGNAL -> SYSTEM -> PRODUCT -> GROWTH
 - Material textures and patterns support the message; they never replace it.
 - No acid cyberpunk, gaming effects, decorative clutter or unverified claims.
 
-## Page map - 28 pages
+## Digital Experiences
+
+The brandbook includes three clearly labelled concept directions. They are demo
+concepts, not launched client sites.
+
+1. Premium Hospitality - Riverside Lounge Experience.
+   A cinematic restaurant / hotel / bar / lounge direction that sells atmosphere
+   into a booking action.
+2. AI Product - CaloriePT AI / Product Launch Website.
+   A dark-tech product surface that explains the user journey from photo to
+   insight and routes the user into Telegram.
+3. Personal Brand - Founder Signal Website.
+   An editorial platform that presents a founder as a system of ideas, products,
+   media, cases and commercial directions.
+
+Each direction includes a desktop mockup, a mobile mockup, key features, a visual
+palette and the business problem it solves. The section closes with a technology
+layer and a clear list of client outcomes.
+
+Reference patterns were studied from Veranda Riverside and curated Three.js /
+WebGL award galleries. All imagery and interfaces in the concept pages are
+original DimkoFF demo compositions; no external logos or photographs are copied.
+
+## Page map - 34 pages
 
 1. Cover
 2. Brand Idea
@@ -47,24 +70,31 @@ SIGNAL -> SYSTEM -> PRODUCT -> GROWTH
 14. Layout System / Grid / Poster Logic
 15. Adaptive Composition
 16. Product Ecosystem
-17. Case Study - CaloriePT AI
-18. CaloriePT Product System
-19. Case Study - Stylist AI
-20. Stylist Product System
-21. AI Bot Portfolio
-22. Demo Lab
-23. AI Director - Next Product Concept / In planning
-24. Client Route
-25. Employer Route
-26. Proof System
-27. Contact / CTA
-28. Final Poster
+17. Digital Experiences - Three concept directions
+18. Premium Hospitality - Riverside Lounge Experience
+19. AI Product - CaloriePT AI / Product Launch Website
+20. Personal Brand - Founder Signal Website
+21. Not Templates / Technology Layer
+22. What the Client Gets
+23. Case Study - CaloriePT AI
+24. CaloriePT Product System
+25. Case Study - Stylist AI
+26. Stylist Product System
+27. AI Bot Portfolio
+28. Demo Lab
+29. AI Director - Next Product Concept / In planning
+30. Client Route
+31. Employer Route
+32. Proof System
+33. Contact / CTA
+34. Final Poster
 
 ## Evidence rules
 
 - CaloriePT AI and Stylist AI are the two primary product case studies.
 - Psy Mind AI, BusinessMentorAI_bot and Pulse AI Coach demonstrate niche breadth.
 - AI Director is always marked as a concept / in planning.
+- Digital Experience directions are always marked as concept directions / demo concepts.
 - No unverified metrics, "best", "unique" or "without analogues" claims.
 - Existing older PDF editions remain unchanged.
 

@@ -19,9 +19,10 @@ OUT = ROOT / "output" / "pdf" / "dimkoff-brandbook-2026-visual-v2.pdf"
 PUBLIC = ROOT / "public" / "portfolio" / OUT.name
 CASES = ROOT / "brandbook" / "assets" / "cases"
 PORTFOLIO = ROOT / "brandbook" / "assets" / "portfolio"
+EXPERIENCES = ROOT / "brandbook" / "assets" / "digital-experiences"
 
 W, H = 1400, 788
-TOTAL_PAGES = 28
+TOTAL_PAGES = 34
 
 BLACK = HexColor("#080A0E")
 BLACK_2 = HexColor("#0D1015")
@@ -287,18 +288,34 @@ def arrow(c: canvas.Canvas, x1: float, y1: float, x2: float, y2: float, color=MI
     c.restoreState()
 
 
-def image_cover(c: canvas.Canvas, path: Path, x: float, y: float, w: float, h: float, radius=8) -> None:
+def image_cover(
+    c: canvas.Canvas,
+    path: Path,
+    x: float,
+    y: float,
+    w: float,
+    h: float,
+    radius=8,
+    focal_x: float = 0.5,
+    focal_y: float = 0.5,
+) -> None:
     image = Image.open(path).convert("RGB")
     source_ratio = image.width / image.height
     target_ratio = w / h
     if source_ratio > target_ratio:
         new_width = int(image.height * target_ratio)
-        left = (image.width - new_width) // 2
+        left = int((image.width - new_width) * focal_x)
+        left = max(0, min(left, image.width - new_width))
         image = image.crop((left, 0, left + new_width, image.height))
     else:
         new_height = int(image.width / target_ratio)
-        top = (image.height - new_height) // 2
+        top = int((image.height - new_height) * focal_y)
+        top = max(0, min(top, image.height - new_height))
         image = image.crop((0, top, image.width, top + new_height))
+    target_width = max(1, int(w * 1.4))
+    target_height = max(1, int(h * 1.4))
+    if image.width > target_width or image.height > target_height:
+        image = image.resize((target_width, target_height), Image.Resampling.LANCZOS)
     c.saveState()
     path_clip = c.beginPath()
     path_clip.roundRect(x, y, w, h, radius)
@@ -321,6 +338,70 @@ def phone(c: canvas.Canvas, path: Path, x: float, y: float, w: float, h: float, 
     image_cover(c, path, x + 8, y + 9, w - 16, h - 18, w * 0.09)
     c.setFillColor(BLACK)
     c.roundRect(x + w * 0.34, y + h - 18, w * 0.32, 8, 4, fill=1, stroke=0)
+    c.restoreState()
+
+
+def site_desktop_mockup(
+    c: canvas.Canvas,
+    path: Path,
+    x: float,
+    y: float,
+    w: float,
+    h: float,
+    title_value: str,
+    subtitle: str,
+    cta: str,
+    accent=MINT,
+    focal_x: float = 0.5,
+) -> None:
+    c.saveState()
+    glow(c, x + w * 0.55, y + h * 0.46, h * 0.72, accent, 0.1)
+    set_alpha_fill(c, BLACK_2, 1)
+    set_alpha_stroke(c, WHITE, 0.24)
+    c.setLineWidth(1)
+    c.roundRect(x, y, w, h, 12, fill=1, stroke=1)
+    image_cover(c, path, x + 8, y + 8, w - 16, h - 42, 7, focal_x=focal_x)
+    set_alpha_fill(c, BLACK, 0.56)
+    c.rect(x + 8, y + 8, (w - 16) * 0.56, h - 42, fill=1, stroke=0)
+    set_alpha_fill(c, BLACK_2, 0.98)
+    c.roundRect(x + 8, y + h - 34, w - 16, 26, 6, fill=1, stroke=0)
+    for index, color in enumerate((RED, GOLD, GREEN)):
+        c.setFillColor(color)
+        c.circle(x + 23 + index * 12, y + h - 21, 3, fill=1, stroke=0)
+    cap(c, "DIMKOFF / CONCEPT", x + 70, y + h - 25, GRAY, 5.8)
+    cap(c, "STORY   EXPERIENCE   CONTACT", x + w - 232, y + h - 25, WHITE, 5.4)
+    copy(c, title_value, x + 34, y + h - 112, w * 0.47, 29, 30, WHITE, DISPLAY, 3)
+    copy(c, subtitle, x + 36, y + h - 205, w * 0.42, 10, 14, WHITE, BODY, 4)
+    pill(c, cta, x + 36, y + 43, accent, active=True)
+    c.restoreState()
+
+
+def site_mobile_mockup(
+    c: canvas.Canvas,
+    path: Path,
+    x: float,
+    y: float,
+    w: float,
+    h: float,
+    title_value: str,
+    cta: str,
+    accent=MINT,
+    focal_x: float = 0.5,
+) -> None:
+    c.saveState()
+    glow(c, x + w / 2, y + h / 2, h * 0.55, accent, 0.1)
+    set_alpha_fill(c, BLACK_2, 1)
+    set_alpha_stroke(c, WHITE, 0.34)
+    c.setLineWidth(1.2)
+    c.roundRect(x, y, w, h, 28, fill=1, stroke=1)
+    image_cover(c, path, x + 8, y + 10, w - 16, h - 20, 22, focal_x=focal_x)
+    set_alpha_fill(c, BLACK, 0.58)
+    c.roundRect(x + 8, y + 10, w - 16, h * 0.45, 22, fill=1, stroke=0)
+    set_alpha_fill(c, BLACK, 1)
+    c.roundRect(x + w * 0.34, y + h - 18, w * 0.32, 8, 4, fill=1, stroke=0)
+    cap(c, "DFF / MOBILE", x + 24, y + h - 43, WHITE, 5.5)
+    copy(c, title_value, x + 24, y + h * 0.38, w - 48, 17, 19, WHITE, DISPLAY, 3)
+    pill(c, cta, x + 24, y + 32, accent, active=True)
     c.restoreState()
 
 
@@ -799,10 +880,264 @@ def ecosystem(c: canvas.Canvas) -> None:
     copy(c, "Portfolio / decks / Telegram / Mini Apps / AI products / product showcases", 58, 146, 560, 17, 25, WHITE, SEMI, 4)
 
 
+def digital_experiences_overview(c: canvas.Canvas) -> None:
+    page_base(c, 17, "16 / DIGITAL EXPERIENCES")
+    cap(c, "16 / DIGITAL EXPERIENCES", 54, 720, MINT, 9)
+    heading(c, "3 TYPES OF DIGITAL EXPERIENCES WE CREATE", 54, 650, 1110, 54)
+    cap(c, "CONCEPT DIRECTIONS / DEMO CONCEPTS", 54, 600, GOLD, 7.5)
+    concepts = [
+        (
+            "01",
+            "PREMIUM HOSPITALITY",
+            "Sells atmosphere into booking.",
+            EXPERIENCES / "hospitality-riverside-concept.jpg",
+            GOLD,
+            0.58,
+        ),
+        (
+            "02",
+            "AI PRODUCT",
+            "Makes a complex system feel simple.",
+            EXPERIENCES / "ai-product-concept.jpg",
+            MINT,
+            0.58,
+        ),
+        (
+            "03",
+            "PERSONAL BRAND",
+            "Turns a person into a platform.",
+            EXPERIENCES / "personal-brand-concept.jpg",
+            BLUE,
+            0.68,
+        ),
+    ]
+    for index, (num, title, body, image, accent, focal_x) in enumerate(concepts):
+        x = 54 + index * 435
+        panel(c, x, 92, 405, 466, BLACK_2, accent, 10)
+        image_cover(c, image, x + 12, 282, 381, 264, 7, focal_x=focal_x)
+        c.saveState()
+        set_alpha_fill(c, BLACK, 0.42)
+        c.rect(x + 12, 282, 381, 92, fill=1, stroke=0)
+        c.restoreState()
+        cap(c, num, x + 18, 523, accent, 7)
+        copy(c, title, x + 18, 330, 355, 20, 22, WHITE, DISPLAY, 2)
+        copy(c, body, x + 18, 218, 350, 13, 17, GRAY, BODY, 3)
+        pill(c, "DEMO CONCEPT", x + 18, 120, accent, active=True)
+
+
+def concept_detail_panel(
+    c: canvas.Canvas,
+    accent,
+    features: list[str],
+    palette: list[tuple[str, str]],
+    business_problem: str,
+) -> None:
+    panel(c, 1088, 92, 258, 516, BLACK_2, accent, 10)
+    cap(c, "KEY FEATURES", 1110, 574, accent, 7)
+    for index, item in enumerate(features):
+        y = 530 - index * 50
+        cap(c, f"0{index + 1}", 1110, y, GRAY, 6.4)
+        copy(c, item, 1140, y - 2, 178, 10.5, 13, WHITE, SEMI, 2)
+    cap(c, "VISUAL PALETTE", 1110, 298, accent, 7)
+    for index, (name, color_hex) in enumerate(palette):
+        x = 1110 + index * 53
+        c.setFillColor(HexColor(color_hex))
+        c.circle(x + 10, 262, 10, fill=1, stroke=0)
+        cap(c, name, x, 238, GRAY, 5.2)
+    cap(c, "BUSINESS PROBLEM", 1110, 202, accent, 7)
+    copy(c, business_problem, 1110, 172, 212, 8.7, 10.7, GRAY, BODY, 7)
+
+
+def hospitality_concept(c: canvas.Canvas) -> None:
+    page_base(c, 18, "17 / CONCEPT / PREMIUM HOSPITALITY", field=False)
+    glow(c, 1060, 390, 380, GOLD, 0.13)
+    cap(c, "17 / CONCEPT DIRECTION / DEMO CONCEPT", 54, 720, GOLD, 9)
+    heading(c, "RIVERSIDE LOUNGE EXPERIENCE", 54, 650, 960, 57)
+    site_desktop_mockup(
+        c,
+        EXPERIENCES / "hospitality-riverside-concept.jpg",
+        54,
+        142,
+        770,
+        452,
+        "RIVERSIDE",
+        "LOUNGE / DINING / EVENTS",
+        "BOOK A TABLE",
+        GOLD,
+        focal_x=0.53,
+    )
+    site_mobile_mockup(
+        c,
+        EXPERIENCES / "hospitality-riverside-concept.jpg",
+        850,
+        142,
+        206,
+        452,
+        "RIVERSIDE",
+        "BOOK A TABLE",
+        GOLD,
+        focal_x=0.72,
+    )
+    concept_detail_panel(
+        c,
+        GOLD,
+        ["3D / parallax hero", "Interactive hall map", "Animated dish card", "Glass light effect", "Floating booking CTA"],
+        [("INK", "#080B10"), ("GOLD", "#C6A15B"), ("GLASS", "#D8D0C4"), ("WARM", "#8B5E3C")],
+        "Сайт для премиального пространства, который продаёт не квадратные метры и меню, а состояние: вечер, свет, вкус, статус и желание забронировать.",
+    )
+    cap(c, "PREMIUM RESTAURANT / HOTEL / BAR / LOUNGE", 54, 100, GOLD, 7)
+
+
+def ai_product_concept(c: canvas.Canvas) -> None:
+    page_base(c, 19, "18 / CONCEPT / AI PRODUCT", field=False)
+    glow(c, 1050, 390, 400, MINT, 0.16)
+    cap(c, "18 / CONCEPT DIRECTION / DEMO CONCEPT", 54, 720, MINT, 9)
+    heading(c, "CALORIEPT AI / PRODUCT LAUNCH WEBSITE", 54, 650, 1050, 55)
+    site_desktop_mockup(
+        c,
+        EXPERIENCES / "ai-product-concept.jpg",
+        54,
+        142,
+        770,
+        452,
+        "AI HEALTH COMPANION",
+        "PHOTO → INSIGHT → PROGRESS",
+        "OPEN IN TELEGRAM",
+        MINT,
+        focal_x=0.55,
+    )
+    site_mobile_mockup(
+        c,
+        EXPERIENCES / "ai-product-concept.jpg",
+        850,
+        142,
+        206,
+        452,
+        "CALORIEPT AI",
+        "OPEN IN TELEGRAM",
+        MINT,
+        focal_x=0.58,
+    )
+    concept_detail_panel(
+        c,
+        MINT,
+        ["3D device mockup", "Floating UI screens", "Interactive feature cards", "Animated calorie ring", "Embedded Telegram CTA"],
+        [("INK", "#080B10"), ("MINT", "#64F2C4"), ("BLUE", "#42A5F5"), ("GREEN", "#35D07F")],
+        "Лендинг для AI-продукта, который объясняет сложную технологию через простой сценарий пользователя: открыл, сфотографировал, понял, улучшил.",
+    )
+    cap(c, "AI PRODUCT / TELEGRAM-FIRST / PRODUCT WALKTHROUGH", 54, 100, MINT, 7)
+
+
+def personal_brand_concept(c: canvas.Canvas) -> None:
+    page_base(c, 20, "19 / CONCEPT / PERSONAL BRAND", field=False)
+    glow(c, 1040, 390, 390, BLUE, 0.14)
+    cap(c, "19 / CONCEPT DIRECTION / DEMO CONCEPT", 54, 720, BLUE, 9)
+    heading(c, "FOUNDER SIGNAL WEBSITE", 54, 650, 880, 59)
+    site_desktop_mockup(
+        c,
+        EXPERIENCES / "personal-brand-concept.jpg",
+        54,
+        142,
+        770,
+        452,
+        "FROM PERSON",
+        "TO A BRAND PLATFORM",
+        "DISCUSS A PROJECT",
+        BLUE,
+        focal_x=0.62,
+    )
+    site_mobile_mockup(
+        c,
+        EXPERIENCES / "personal-brand-concept.jpg",
+        850,
+        142,
+        206,
+        452,
+        "FOUNDER SIGNAL",
+        "DISCUSS A PROJECT",
+        BLUE,
+        focal_x=0.75,
+    )
+    concept_detail_panel(
+        c,
+        BLUE,
+        ["Portrait depth / parallax", "Glow signature orbit", "Journey timeline", "Case + product cards", "AI personality module"],
+        [("INK", "#080B10"), ("WHITE", "#F4F5F7"), ("MINT", "#64F2C4"), ("BLUE", "#42A5F5")],
+        "Сайт для личного бренда, где человек представлен не просто как эксперт, а как система: идеи, продукты, медиа, кейсы и коммерческие направления.",
+    )
+    cap(c, "FOUNDER / EXPERT / CREATOR / AI PERSONALITY", 54, 100, BLUE, 7)
+
+
+def technology_layer(c: canvas.Canvas) -> None:
+    page_base(c, 21, "20 / TECHNOLOGY LAYER")
+    cap(c, "20 / CAPABILITY SYSTEM", 54, 720, MINT, 9)
+    heading(c, "NOT TEMPLATES. PRODUCTIZED DIGITAL EXPERIENCES.", 54, 650, 1170, 51)
+    panel(c, 54, 126, 568, 450, BLACK_2, BLUE, 12)
+    selection_frame(c, 80, 344, 510, 166, BLUE)
+    copy(c, "DIGITAL", 108, 438, 450, 34, 38, WHITE, DISPLAY, 1)
+    copy(c, "SCENES", 108, 384, 450, 34, 38, MINT, DISPLAY, 1)
+    copy(
+        c,
+        "Мы создаём не просто сайты-визитки. Мы проектируем цифровые сцены, в которых бренд, продукт и пользовательский сценарий соединяются в одну premium-систему.",
+        82,
+        250,
+        490,
+        15,
+        20,
+        GRAY,
+        BODY,
+        6,
+    )
+    technologies = [
+        ("01", "REACT / NEXT.JS"),
+        ("02", "THREE.JS / WEBGL"),
+        ("03", "GSAP / FRAMER MOTION"),
+        ("04", "TELEGRAM MINI APP INTEGRATIONS"),
+        ("05", "AI MODULES"),
+        ("06", "CRM / FORMS / PAYMENTS"),
+        ("07", "ANALYTICS"),
+        ("08", "SEO FOUNDATION"),
+        ("09", "MOBILE-FIRST PERFORMANCE"),
+    ]
+    for index, (num, name) in enumerate(technologies):
+        col, row = index % 3, index // 3
+        x = 664 + col * 220
+        y = 422 - row * 144
+        panel(c, x, y, 198, 118, BLACK_2, [MINT, BLUE, GOLD][col], 8)
+        cap(c, num, x + 14, y + 90, GRAY, 6)
+        copy(c, name, x + 14, y + 42, 168, 12, 14, WHITE, SEMI, 3)
+    cap(c, "TECHNOLOGY FOLLOWS THE EXPERIENCE AND THE BUSINESS GOAL", 664, 100, GOLD, 7)
+
+
+def client_outcomes(c: canvas.Canvas) -> None:
+    page_base(c, 22, "21 / WHAT THE CLIENT GETS")
+    cap(c, "21 / CLIENT OUTCOMES", 54, 720, GOLD, 9)
+    heading(c, "WHAT THE CLIENT GETS", 54, 650, 860, 63)
+    copy(c, "A launch-ready digital surface connected to a commercial scenario.", 58, 592, 850, 17, 22, GRAY, BODY, 2)
+    outcomes = [
+        ("01", "PREMIUM SITE", "A coherent high-value visual system.", GOLD),
+        ("02", "VISUAL WOW", "A memorable first interaction.", MINT),
+        ("03", "SALES SCENARIO", "Clear path from interest to action.", BLUE),
+        ("04", "MOBILE FIRST", "The core experience survives the small screen.", GREEN),
+        ("05", "LEAD INTEGRATION", "Forms, CRM, booking or payments.", MINT),
+        ("06", "AI + TELEGRAM", "Product logic beyond the landing page.", BLUE),
+        ("07", "PRODUCT PACKAGING", "Message, interface and proof in one story.", GOLD),
+        ("08", "PARTNER PRESENTATION", "A system ready to explain and sell.", GREEN),
+    ]
+    for index, (num, head, body, accent) in enumerate(outcomes):
+        col, row = index % 4, index // 4
+        x = 54 + col * 323
+        y = 342 if row == 0 else 116
+        small_card(c, x, y, 286, 190, num, head, body, accent)
+    selection_frame(c, 1006, 579, 312, 65, BLUE)
+    copy(c, "DISCUSS THE NEXT SCENE", 1028, 601, 270, 15, 17, WHITE, SEMI, 1)
+    cap(c, "ALL THREE DIRECTIONS ARE DEMO CONCEPTS / NOT LAUNCHED CLIENT SITES", 54, 78, RED, 7)
+
+
 def calorie_hero(c: canvas.Canvas) -> None:
-    page_base(c, 17, "16 / CASE / CALORIEPT AI", field=False)
+    page_base(c, 23, "22 / CASE / CALORIEPT AI", field=False)
     glow(c, 1090, 385, 360, GREEN, 0.18)
-    cap(c, "16 / CASE 01 / WORKING PRODUCT", 54, 720, GREEN, 9)
+    cap(c, "22 / CASE 01 / WORKING PRODUCT", 54, 720, GREEN, 9)
     heading(c, "CALORIEPT AI", 54, 640, 620, 78)
     copy(c, "TELEGRAM NUTRITION PRODUCT", 58, 558, 600, 20, 24, MINT, SEMI, 1)
     copy(c, "Food photo analysis, calorie and macro diary, day summary, fridge recipes, frequent meals and shopping list in one Telegram-first flow.", 58, 470, 530, 15, 22, GRAY, BODY, 6)
@@ -819,8 +1154,8 @@ def calorie_hero(c: canvas.Canvas) -> None:
 
 
 def calorie_system(c: canvas.Canvas) -> None:
-    page_base(c, 18, "17 / CALORIEPT PRODUCT SYSTEM")
-    cap(c, "17 / PRODUCT SYSTEM", 54, 720, GREEN, 9)
+    page_base(c, 24, "23 / CALORIEPT PRODUCT SYSTEM")
+    cap(c, "23 / PRODUCT SYSTEM", 54, 720, GREEN, 9)
     heading(c, "A REPEATABLE ACTION, NOT A FEATURE LIST", 54, 650, 1020, 52)
     flow = [
         ("01", "PHOTO", "INPUT"),
@@ -849,10 +1184,10 @@ def calorie_system(c: canvas.Canvas) -> None:
 
 
 def stylist_hero(c: canvas.Canvas) -> None:
-    page_base(c, 19, "18 / CASE / STYLIST AI", field=False)
+    page_base(c, 25, "24 / CASE / STYLIST AI", field=False)
     glow(c, 965, 390, 430, GOLD, 0.15)
-    tile_field(c, 685, 0, 715, H, 19, GOLD, 20, 0.035)
-    cap(c, "18 / CASE 02 / WORKING BUILD", 54, 720, GOLD, 9)
+    tile_field(c, 685, 0, 715, H, 25, GOLD, 20, 0.035)
+    cap(c, "24 / CASE 02 / WORKING BUILD", 54, 720, GOLD, 9)
     heading(c, "STYLIST AI", 54, 640, 620, 78)
     copy(c, "PREMIUM PERSONAL STYLING SYSTEM", 58, 558, 600, 20, 24, GOLD, SEMI, 1)
     copy(c, "Wardrobe, stylist selection, one quick chat, personal palette and recommendation logic in an editorial Telegram Mini App.", 58, 470, 540, 15, 22, GRAY, BODY, 6)
@@ -864,8 +1199,8 @@ def stylist_hero(c: canvas.Canvas) -> None:
 
 
 def stylist_system(c: canvas.Canvas) -> None:
-    page_base(c, 20, "19 / STYLIST PRODUCT SYSTEM")
-    cap(c, "19 / PRODUCT SYSTEM", 54, 720, GOLD, 9)
+    page_base(c, 26, "25 / STYLIST PRODUCT SYSTEM")
+    cap(c, "25 / PRODUCT SYSTEM", 54, 720, GOLD, 9)
     heading(c, "PREMIUM UX IS A SYSTEM", 54, 650, 880, 58)
     phone(c, CASES / "stylist-ai-quick-chat.png", 54, 108, 204, 454, MINT)
     phone(c, CASES / "stylist-ai-rachel.png", 286, 108, 204, 454, GOLD)
@@ -883,8 +1218,8 @@ def stylist_system(c: canvas.Canvas) -> None:
 
 
 def bot_portfolio(c: canvas.Canvas) -> None:
-    page_base(c, 21, "20 / AI BOT PORTFOLIO")
-    cap(c, "20 / AI BOT PORTFOLIO", 54, 720, MINT, 9)
+    page_base(c, 27, "26 / AI BOT PORTFOLIO")
+    cap(c, "26 / AI BOT PORTFOLIO", 54, 720, MINT, 9)
     heading(c, "THREE NICHES. ONE DELIVERY LOGIC.", 54, 650, 980, 56)
     bots = [
         ("PSY MIND AI", "PSYCHOLOGY / SELF-REFLECTION", "Sensitive conversation design.", "psy-mind-ai-card.png", MINT_DARK),
@@ -902,10 +1237,10 @@ def bot_portfolio(c: canvas.Canvas) -> None:
 
 
 def demo_lab(c: canvas.Canvas) -> None:
-    page_base(c, 22, "21 / DEMO LAB", field=False)
+    page_base(c, 28, "27 / DEMO LAB", field=False)
     glow(c, 1050, 390, 390, BLUE, 0.16)
-    pattern_code(c, 700, 70, 620, 590, 22)
-    cap(c, "21 / DEMO LAB", 54, 720, BLUE, 9)
+    pattern_code(c, 700, 70, 620, 590, 28)
+    cap(c, "27 / DEMO LAB", 54, 720, BLUE, 9)
     heading(c, "IDEAS BECOME INTERFACES", 54, 650, 820, 61)
     copy(c, "A controlled space for testing product hypotheses, conversation mechanics, interface systems and launch narratives before they become full products.", 58, 485, 560, 16, 23, GRAY, BODY, 7)
     real = ["CALORIEPT AI", "STYLIST AI", "PSY MIND AI", "BUSINESSMENTOR", "PULSE AI COACH"]
@@ -929,10 +1264,10 @@ def demo_lab(c: canvas.Canvas) -> None:
 
 
 def ai_director(c: canvas.Canvas) -> None:
-    page_base(c, 23, "22 / AI DIRECTOR / IN PLANNING", field=False)
+    page_base(c, 29, "28 / AI DIRECTOR / IN PLANNING", field=False)
     glow(c, 1040, 380, 420, MINT, 0.17)
-    tile_field(c, 710, 0, 690, H, 23, MINT, 18, 0.07)
-    cap(c, "22 / NEXT PRODUCT CONCEPT / IN PLANNING", 54, 720, MINT, 9)
+    tile_field(c, 710, 0, 690, H, 29, MINT, 18, 0.07)
+    cap(c, "28 / NEXT PRODUCT CONCEPT / IN PLANNING", 54, 720, MINT, 9)
     heading(c, "AI DIRECTOR", 54, 640, 620, 78)
     copy(c, "A Telegram-first business pulse concept for money, tasks, sales, risks and next actions. Presented as a product direction - not a finished product.", 58, 518, 560, 16, 23, GRAY, BODY, 7)
     panel(c, 730, 164, 570, 430, BLACK_2, MINT, 12)
@@ -967,8 +1302,8 @@ def route_page(c: canvas.Canvas, page_no: int, route: str, headline: str, accent
 def clients(c: canvas.Canvas) -> None:
     route_page(
         c,
-        24,
-        "23 / CLIENT ROUTE",
+        30,
+        "29 / CLIENT ROUTE",
         "BUILT FOR FOUNDERS, BRANDS AND TEAMS",
         MINT,
         [
@@ -984,8 +1319,8 @@ def clients(c: canvas.Canvas) -> None:
 def employers(c: canvas.Canvas) -> None:
     route_page(
         c,
-        25,
-        "24 / EMPLOYER ROUTE",
+        31,
+        "30 / EMPLOYER ROUTE",
         "SMM SPECIALIST AMPLIFIED BY PRODUCT THINKING",
         BLUE,
         [
@@ -999,9 +1334,9 @@ def employers(c: canvas.Canvas) -> None:
 
 
 def proof(c: canvas.Canvas) -> None:
-    page_base(c, 26, "25 / PROOF SYSTEM", field=False)
+    page_base(c, 32, "31 / PROOF SYSTEM", field=False)
     glow(c, 1020, 390, 410, GREEN, 0.13)
-    cap(c, "25 / PROOF SYSTEM", 54, 720, GREEN, 9)
+    cap(c, "31 / PROOF SYSTEM", 54, 720, GREEN, 9)
     heading(c, "EVIDENCE BEFORE PROMISES", 54, 650, 850, 62)
     proofs = [
         ("01", "CALORIEPT AI", "Telegram product / AI vision / retention / backend", GREEN),
@@ -1020,13 +1355,13 @@ def proof(c: canvas.Canvas) -> None:
 
 
 def contact(c: canvas.Canvas) -> None:
-    page_base(c, 27, "26 / CONTACT", field=False)
+    page_base(c, 33, "32 / CONTACT", field=False)
     image_cover(c, PORTFOLIO / "dimkoff-hero-sculpture-v2.png", 700, 0, 700, H, 0)
     c.saveState()
     set_alpha_fill(c, BLACK, 0.3)
     c.rect(700, 0, 700, H, fill=1, stroke=0)
     c.restoreState()
-    cap(c, "26 / CONTACT", 54, 720, MINT, 9)
+    cap(c, "32 / CONTACT", 54, 720, MINT, 9)
     heading(c, "LET'S TURN THE NEXT SIGNAL INTO A PRODUCT", 54, 635, 690, 60)
     copy(c, "Strategy, interface, automation and growth - connected in one delivery logic.", 58, 400, 540, 17, 24, GRAY, BODY, 5)
     selection_frame(c, 58, 244, 520, 92, BLUE)
@@ -1037,10 +1372,10 @@ def contact(c: canvas.Canvas) -> None:
 
 
 def final(c: canvas.Canvas) -> None:
-    page_base(c, 28, "FINAL POSTER", field=False)
+    page_base(c, 34, "FINAL POSTER", field=False)
     glow(c, 700, 390, 520, MINT, 0.19)
-    tile_field(c, 0, 0, W, H, 28, MINT, 25, 0.06)
-    grain(c, 28, 1400)
+    tile_field(c, 0, 0, W, H, 34, MINT, 25, 0.06)
+    grain(c, 34, 1400)
     wordmark(c, 54, 636, 78, WHITE)
     copy(c, "NOT CONTENT.", 54, 474, 900, 64, 65, WHITE, DISPLAY, 1)
     selection_frame(c, 48, 378, 760, 78, BLUE)
@@ -1068,6 +1403,12 @@ def build_pages():
         layout_grid,
         adaptive,
         ecosystem,
+        digital_experiences_overview,
+        hospitality_concept,
+        ai_product_concept,
+        personal_brand_concept,
+        technology_layer,
+        client_outcomes,
         calorie_hero,
         calorie_system,
         stylist_hero,
