@@ -368,8 +368,8 @@ def site_desktop_mockup(
     for index, color in enumerate((RED, GOLD, GREEN)):
         c.setFillColor(color)
         c.circle(x + 23 + index * 12, y + h - 21, 3, fill=1, stroke=0)
-    cap(c, "DIMKOFF / CONCEPT", x + 70, y + h - 25, GRAY, 5.8)
-    cap(c, "STORY   EXPERIENCE   CONTACT", x + w - 232, y + h - 25, WHITE, 5.4)
+    cap(c, "DIMKOFF / КОНЦЕПТ", x + 70, y + h - 25, GRAY, 5.8)
+    cap(c, "ИСТОРИЯ   ПРОДУКТ   СВЯЗАТЬСЯ", x + w - 260, y + h - 25, WHITE, 5.2)
     copy(c, title_value, x + 34, y + h - 112, w * 0.47, 29, 30, WHITE, DISPLAY, 3)
     copy(c, subtitle, x + 36, y + h - 205, w * 0.42, 10, 14, WHITE, BODY, 4)
     pill(c, cta, x + 36, y + 43, accent, active=True)
@@ -399,7 +399,7 @@ def site_mobile_mockup(
     c.roundRect(x + 8, y + 10, w - 16, h * 0.45, 22, fill=1, stroke=0)
     set_alpha_fill(c, BLACK, 1)
     c.roundRect(x + w * 0.34, y + h - 18, w * 0.32, 8, 4, fill=1, stroke=0)
-    cap(c, "DFF / MOBILE", x + 24, y + h - 43, WHITE, 5.5)
+    cap(c, "DFF / МОБИЛЬНАЯ ВЕРСИЯ", x + 24, y + h - 43, WHITE, 5.1)
     copy(c, title_value, x + 24, y + h * 0.38, w - 48, 17, 19, WHITE, DISPLAY, 3)
     pill(c, cta, x + 24, y + 32, accent, active=True)
     c.restoreState()
@@ -880,49 +880,144 @@ def ecosystem(c: canvas.Canvas) -> None:
     copy(c, "Portfolio / decks / Telegram / Mini Apps / AI products / product showcases", 58, 146, 560, 17, 25, WHITE, SEMI, 4)
 
 
+def perspective_floor(c: canvas.Canvas, horizon_y: float, bottom_y: float, accent=MINT) -> None:
+    c.saveState()
+    for index in range(11):
+        progress = index / 10
+        y = bottom_y + (horizon_y - bottom_y) * (progress**1.8)
+        rule(c, 42, y, W - 42, y, accent, 0.05 + progress * 0.08, 0.55)
+    vanishing_x = W / 2
+    for bottom_x in range(-120, int(W) + 220, 150):
+        rule(c, vanishing_x, horizon_y, bottom_x, bottom_y, accent, 0.1, 0.55)
+    c.restoreState()
+
+
+def orbit(c: canvas.Canvas, cx: float, cy: float, rx: float, ry: float, accent=MINT, angle: float = 0) -> None:
+    c.saveState()
+    c.translate(cx, cy)
+    c.rotate(angle)
+    set_alpha_stroke(c, accent, 0.42)
+    c.setLineWidth(1.25)
+    c.ellipse(-rx, -ry, rx, ry, fill=0, stroke=1)
+    set_alpha_stroke(c, WHITE, 0.12)
+    c.setLineWidth(0.55)
+    c.ellipse(-rx * 0.78, -ry * 1.12, rx * 0.78, ry * 1.12, fill=0, stroke=1)
+    c.setFillColor(accent)
+    c.setFillAlpha(0.9)
+    c.circle(rx * 0.76, ry * 0.66, 3.2, fill=1, stroke=0)
+    c.restoreState()
+
+
+def floating_glass(
+    c: canvas.Canvas,
+    x: float,
+    y: float,
+    w: float,
+    h: float,
+    label: str,
+    accent=MINT,
+    angle: float = 0,
+    note: str | None = None,
+) -> None:
+    c.saveState()
+    c.translate(x + w / 2, y + h / 2)
+    c.rotate(angle)
+    set_alpha_fill(c, BLACK, 0.55)
+    c.roundRect(-w / 2 + 7, -h / 2 - 8, w, h, 8, fill=1, stroke=0)
+    set_alpha_fill(c, GRAPHITE, 0.86)
+    set_alpha_stroke(c, accent, 0.68)
+    c.setLineWidth(0.8)
+    c.roundRect(-w / 2, -h / 2, w, h, 8, fill=1, stroke=1)
+    c.setFillColor(accent)
+    c.setFillAlpha(1)
+    c.circle(-w / 2 + 13, h / 2 - 14, 2.5, fill=1, stroke=0)
+    cap(c, label, -w / 2 + 24, h / 2 - 18, WHITE, 6.2)
+    if note:
+        cap(c, note, -w / 2 + 12, -h / 2 + 11, accent, 5.1)
+    c.restoreState()
+
+
+def demo_disclaimer(c: canvas.Canvas) -> None:
+    copy(
+        c,
+        "Все три направления — демонстрационные концепты, показывающие визуальные и продуктовые возможности DimkoFF. Это не запущенные клиентские сайты.",
+        54,
+        51,
+        1285,
+        6.3,
+        7.6,
+        GRAY,
+        BODY,
+        2,
+    )
+
+
 def digital_experiences_overview(c: canvas.Canvas) -> None:
-    page_base(c, 17, "16 / DIGITAL EXPERIENCES")
-    cap(c, "16 / DIGITAL EXPERIENCES", 54, 720, MINT, 9)
-    heading(c, "3 TYPES OF DIGITAL EXPERIENCES WE CREATE", 54, 650, 1110, 54)
-    cap(c, "CONCEPT DIRECTIONS / DEMO CONCEPTS", 54, 600, GOLD, 7.5)
+    page_base(c, 17, "16 / ЦИФРОВЫЕ ПРОДУКТЫ", field=False)
+    perspective_floor(c, 505, 36, MINT)
+    glow(c, 700, 286, 520, MINT, 0.08)
+    orbit(c, 710, 292, 286, 116, MINT, 8)
+    orbit(c, 1110, 280, 170, 82, BLUE, -14)
+    cap(c, "16 / ЦИФРОВЫЕ ПРОДУКТЫ", 54, 720, MINT, 9)
+    heading(c, "3 ТИПА ЦИФРОВЫХ ПРОДУКТОВ, КОТОРЫЕ МЫ СОЗДАЁМ", 54, 654, 1200, 45)
+    cap(c, "КОНЦЕПТЫ / ДЕМОНСТРАЦИОННЫЕ НАПРАВЛЕНИЯ", 54, 566, GOLD, 7.5)
     concepts = [
         (
             "01",
-            "PREMIUM HOSPITALITY",
-            "Sells atmosphere into booking.",
+            "ПРЕМИАЛЬНЫЕ ПРОСТРАНСТВА",
+            "Продаёт атмосферу и желание забронировать",
             EXPERIENCES / "hospitality-riverside-concept.jpg",
             GOLD,
             0.58,
+            -2.4,
+            80,
         ),
         (
             "02",
-            "AI PRODUCT",
-            "Makes a complex system feel simple.",
+            "AI-ПРОДУКТЫ",
+            "Объясняет сложный продукт через простой сценарий",
             EXPERIENCES / "ai-product-concept.jpg",
             MINT,
             0.58,
+            0.8,
+            94,
         ),
         (
             "03",
-            "PERSONAL BRAND",
-            "Turns a person into a platform.",
+            "ЛИЧНЫЙ БРЕНД",
+            "Превращает личность в цифровую платформу",
             EXPERIENCES / "personal-brand-concept.jpg",
             BLUE,
             0.68,
+            2.6,
+            78,
         ),
     ]
-    for index, (num, title, body, image, accent, focal_x) in enumerate(concepts):
+    for index, (num, title, body, image, accent, focal_x, angle, y) in enumerate(concepts):
         x = 54 + index * 435
-        panel(c, x, 92, 405, 466, BLACK_2, accent, 10)
-        image_cover(c, image, x + 12, 282, 381, 264, 7, focal_x=focal_x)
+        glow(c, x + 202, y + 240, 250, accent, 0.12)
+        c.saveState()
+        c.translate(x + 202, y + 205)
+        c.rotate(angle)
+        set_alpha_fill(c, BLACK, 0.66)
+        c.roundRect(-190 + 16, -198 - 18, 380, 402, 11, fill=1, stroke=0)
+        panel(c, -202, -205, 405, 410, BLACK_2, accent, 10)
+        image_cover(c, image, -190, 17, 381, 176, 7, focal_x=focal_x)
         c.saveState()
         set_alpha_fill(c, BLACK, 0.42)
-        c.rect(x + 12, 282, 381, 92, fill=1, stroke=0)
+        c.rect(-190, 17, 381, 66, fill=1, stroke=0)
         c.restoreState()
-        cap(c, num, x + 18, 523, accent, 7)
-        copy(c, title, x + 18, 330, 355, 20, 22, WHITE, DISPLAY, 2)
-        copy(c, body, x + 18, 218, 350, 13, 17, GRAY, BODY, 3)
-        pill(c, "DEMO CONCEPT", x + 18, 120, accent, active=True)
+        cap(c, num, -184, 170, accent, 7)
+        copy(c, title, -184, 54, 350, 19, 20, WHITE, DISPLAY, 2)
+        copy(c, body, -184, -47, 348, 11.2, 14.2, GRAY, BODY, 3)
+        pill(c, "ДЕМО-КОНЦЕПТ", -184, -170, accent, active=True)
+        c.restoreState()
+        set_alpha_fill(c, accent, 0.12)
+        c.ellipse(x + 30, 57, x + 386, 93, fill=1, stroke=0)
+    floating_glass(c, 104, 490, 190, 46, "АТМОСФЕРА / БРОНЬ", GOLD, -3, "HOSPITALITY")
+    floating_glass(c, 590, 505, 205, 46, "AI / ПРОДУКТ / TELEGRAM", MINT, 2, "PRODUCT")
+    floating_glass(c, 1060, 487, 205, 46, "ЛИЧНОСТЬ / ПЛАТФОРМА", BLUE, 3, "FOUNDER")
+    demo_disclaimer(c)
 
 
 def concept_detail_panel(
@@ -932,37 +1027,39 @@ def concept_detail_panel(
     palette: list[tuple[str, str]],
     business_problem: str,
 ) -> None:
-    panel(c, 1088, 92, 258, 516, BLACK_2, accent, 10)
-    cap(c, "KEY FEATURES", 1110, 574, accent, 7)
+    panel(c, 1088, 74, 258, 466, BLACK_2, accent, 10)
+    cap(c, "КЛЮЧЕВЫЕ ЭФФЕКТЫ", 1110, 508, accent, 7)
     for index, item in enumerate(features):
-        y = 530 - index * 50
+        y = 466 - index * 43
         cap(c, f"0{index + 1}", 1110, y, GRAY, 6.4)
-        copy(c, item, 1140, y - 2, 178, 10.5, 13, WHITE, SEMI, 2)
-    cap(c, "VISUAL PALETTE", 1110, 298, accent, 7)
+        copy(c, item, 1140, y - 2, 180, 9.3, 11.4, WHITE, SEMI, 2)
+    cap(c, "ВИЗУАЛЬНАЯ ПАЛИТРА", 1110, 266, accent, 7)
     for index, (name, color_hex) in enumerate(palette):
         x = 1110 + index * 53
         c.setFillColor(HexColor(color_hex))
-        c.circle(x + 10, 262, 10, fill=1, stroke=0)
-        cap(c, name, x, 238, GRAY, 5.2)
-    cap(c, "BUSINESS PROBLEM", 1110, 202, accent, 7)
-    copy(c, business_problem, 1110, 172, 212, 8.7, 10.7, GRAY, BODY, 7)
+        c.circle(x + 10, 230, 10, fill=1, stroke=0)
+        cap(c, name, x, 207, GRAY, 5.2)
+    cap(c, "БИЗНЕС-ЗАДАЧА", 1110, 174, accent, 7)
+    copy(c, business_problem, 1110, 145, 212, 8.2, 10.1, GRAY, BODY, 7)
 
 
 def hospitality_concept(c: canvas.Canvas) -> None:
-    page_base(c, 18, "17 / CONCEPT / PREMIUM HOSPITALITY", field=False)
+    page_base(c, 18, "17 / КОНЦЕПТ / ПРЕМИАЛЬНЫЕ ПРОСТРАНСТВА", field=False)
+    perspective_floor(c, 306, 36, GOLD)
     glow(c, 1060, 390, 380, GOLD, 0.13)
-    cap(c, "17 / CONCEPT DIRECTION / DEMO CONCEPT", 54, 720, GOLD, 9)
-    heading(c, "RIVERSIDE LOUNGE EXPERIENCE", 54, 650, 960, 57)
+    orbit(c, 706, 304, 230, 72, GOLD, -7)
+    cap(c, "17 / КОНЦЕПТ / ДЕМОНСТРАЦИОННОЕ НАПРАВЛЕНИЕ", 54, 720, GOLD, 9)
+    heading(c, "RIVERSIDE LOUNGE / ПРЕМИАЛЬНЫЙ САЙТ ПРОСТРАНСТВА", 54, 653, 1220, 43)
     site_desktop_mockup(
         c,
         EXPERIENCES / "hospitality-riverside-concept.jpg",
         54,
-        142,
+        95,
         770,
-        452,
+        430,
         "RIVERSIDE",
-        "LOUNGE / DINING / EVENTS",
-        "BOOK A TABLE",
+        "LOUNGE / РЕСТОРАН / СОБЫТИЯ",
+        "ЗАБРОНИРОВАТЬ",
         GOLD,
         focal_x=0.53,
     )
@@ -970,39 +1067,62 @@ def hospitality_concept(c: canvas.Canvas) -> None:
         c,
         EXPERIENCES / "hospitality-riverside-concept.jpg",
         850,
-        142,
+        95,
         206,
-        452,
+        430,
         "RIVERSIDE",
-        "BOOK A TABLE",
+        "ЗАБРОНИРОВАТЬ",
         GOLD,
         focal_x=0.72,
     )
+    set_alpha_stroke(c, WHITE, 0.28)
+    c.setLineWidth(1.1)
+    c.line(585, 466, 742, 492)
+    c.line(616, 438, 772, 465)
+    set_alpha_stroke(c, GOLD, 0.38)
+    for index in range(5):
+        c.arc(410 + index * 32, 112 + index * 3, 650 + index * 28, 168 + index * 8, 4, 164)
+    floating_glass(c, 626, 316, 156, 76, "БЛЮДО / SIGNATURE", GOLD, 4, "CHEF'S CHOICE")
+    c.setFillColor(GOLD)
+    c.setFillAlpha(0.55)
+    c.circle(652, 345, 14, fill=0, stroke=1)
+    c.circle(652, 345, 8, fill=0, stroke=1)
+    floating_glass(c, 665, 185, 126, 92, "ПЛАН ЗАЛА", GOLD, -3, "TABLE MAP")
+    for row in range(2):
+        for col in range(3):
+            c.setFillColor(GOLD if (row + col) % 2 else WHITE)
+            c.setFillAlpha(0.7)
+            c.circle(690 + col * 28, 218 + row * 22, 4, fill=1, stroke=0)
+    floating_glass(c, 656, 118, 170, 42, "ЗАБРОНИРОВАТЬ", GOLD, 2, "FLOATING CTA")
     concept_detail_panel(
         c,
         GOLD,
-        ["3D / parallax hero", "Interactive hall map", "Animated dish card", "Glass light effect", "Floating booking CTA"],
-        [("INK", "#080B10"), ("GOLD", "#C6A15B"), ("GLASS", "#D8D0C4"), ("WARM", "#8B5E3C")],
+        ["3D-сцена с параллаксом", "Интерактивная карта зала", "Анимированная карточка блюда", "Свет на стекле и воде", "Плавающая кнопка бронирования"],
+        [("ГРАФИТ", "#080B10"), ("ЗОЛОТО", "#C6A15B"), ("СТЕКЛО", "#D8D0C4"), ("ТЕПЛО", "#8B5E3C")],
         "Сайт для премиального пространства, который продаёт не квадратные метры и меню, а состояние: вечер, свет, вкус, статус и желание забронировать.",
     )
-    cap(c, "PREMIUM RESTAURANT / HOTEL / BAR / LOUNGE", 54, 100, GOLD, 7)
+    cap(c, "РЕСТОРАН / ОТЕЛЬ / БАР / LOUNGE / ПРЕМИАЛЬНОЕ ПРОСТРАНСТВО", 54, 72, GOLD, 7)
+    demo_disclaimer(c)
 
 
 def ai_product_concept(c: canvas.Canvas) -> None:
-    page_base(c, 19, "18 / CONCEPT / AI PRODUCT", field=False)
+    page_base(c, 19, "18 / КОНЦЕПТ / AI-ПРОДУКТ", field=False)
+    perspective_floor(c, 315, 36, MINT)
     glow(c, 1050, 390, 400, MINT, 0.16)
-    cap(c, "18 / CONCEPT DIRECTION / DEMO CONCEPT", 54, 720, MINT, 9)
-    heading(c, "CALORIEPT AI / PRODUCT LAUNCH WEBSITE", 54, 650, 1050, 55)
+    orbit(c, 646, 305, 255, 96, MINT, -8)
+    orbit(c, 765, 320, 170, 128, BLUE, 14)
+    cap(c, "18 / КОНЦЕПТ / ДЕМОНСТРАЦИОННОЕ НАПРАВЛЕНИЕ", 54, 720, MINT, 9)
+    heading(c, "CALORIEPT AI / САЙТ ЗАПУСКА AI-ПРОДУКТА", 54, 653, 1160, 46)
     site_desktop_mockup(
         c,
         EXPERIENCES / "ai-product-concept.jpg",
         54,
-        142,
+        95,
         770,
-        452,
-        "AI HEALTH COMPANION",
-        "PHOTO → INSIGHT → PROGRESS",
-        "OPEN IN TELEGRAM",
+        430,
+        "AI-ПОМОЩНИК ПО ПИТАНИЮ",
+        "ФОТО → АНАЛИЗ → ПРОГРЕСС",
+        "ОТКРЫТЬ В TELEGRAM",
         MINT,
         focal_x=0.55,
     )
@@ -1010,39 +1130,51 @@ def ai_product_concept(c: canvas.Canvas) -> None:
         c,
         EXPERIENCES / "ai-product-concept.jpg",
         850,
-        142,
+        95,
         206,
-        452,
+        430,
         "CALORIEPT AI",
-        "OPEN IN TELEGRAM",
+        "ОТКРЫТЬ В TELEGRAM",
         MINT,
         focal_x=0.58,
     )
+    glow(c, 648, 135, 150, MINT, 0.22)
+    set_alpha_fill(c, MINT, 0.11)
+    c.ellipse(510, 104, 792, 163, fill=1, stroke=0)
+    floating_glass(c, 540, 416, 132, 44, "ФОТО ЕДЫ", MINT, -5, "VISION")
+    floating_glass(c, 680, 390, 136, 44, "AI-ИТОГ ДНЯ", BLUE, 5, "SUMMARY")
+    floating_glass(c, 495, 255, 114, 42, "АННА", MINT, 4, "ASSISTANT")
+    floating_glass(c, 690, 240, 112, 42, "РЕЦЕПТЫ", BLUE, -4, "RECIPES")
+    floating_glass(c, 548, 168, 122, 42, "ПРОГРЕСС", MINT, 3, "DATA")
     concept_detail_panel(
         c,
         MINT,
-        ["3D device mockup", "Floating UI screens", "Interactive feature cards", "Animated calorie ring", "Embedded Telegram CTA"],
-        [("INK", "#080B10"), ("MINT", "#64F2C4"), ("BLUE", "#42A5F5"), ("GREEN", "#35D07F")],
+        ["3D-мокап телефона", "Парящие экраны интерфейса", "Интерактивные карточки функций", "Анимированное кольцо калорий", "Telegram CTA внутри сценария"],
+        [("ГРАФИТ", "#080B10"), ("МЯТА", "#64F2C4"), ("СИНИЙ", "#42A5F5"), ("ЗЕЛЕНЫЙ", "#35D07F")],
         "Лендинг для AI-продукта, который объясняет сложную технологию через простой сценарий пользователя: открыл, сфотографировал, понял, улучшил.",
     )
-    cap(c, "AI PRODUCT / TELEGRAM-FIRST / PRODUCT WALKTHROUGH", 54, 100, MINT, 7)
+    cap(c, "AI-ПРОДУКТ / TELEGRAM-FIRST / ПРОДУКТОВЫЙ СЦЕНАРИЙ", 54, 72, MINT, 7)
+    demo_disclaimer(c)
 
 
 def personal_brand_concept(c: canvas.Canvas) -> None:
-    page_base(c, 20, "19 / CONCEPT / PERSONAL BRAND", field=False)
+    page_base(c, 20, "19 / КОНЦЕПТ / ЛИЧНЫЙ БРЕНД", field=False)
+    perspective_floor(c, 315, 36, BLUE)
     glow(c, 1040, 390, 390, BLUE, 0.14)
-    cap(c, "19 / CONCEPT DIRECTION / DEMO CONCEPT", 54, 720, BLUE, 9)
-    heading(c, "FOUNDER SIGNAL WEBSITE", 54, 650, 880, 59)
+    orbit(c, 677, 320, 248, 132, MINT, -11)
+    orbit(c, 760, 320, 164, 176, BLUE, 10)
+    cap(c, "19 / КОНЦЕПТ / ДЕМОНСТРАЦИОННОЕ НАПРАВЛЕНИЕ", 54, 720, BLUE, 9)
+    heading(c, "САЙТ ЛИЧНОГО БРЕНДА / FOUNDER SIGNAL", 54, 653, 1100, 48)
     site_desktop_mockup(
         c,
         EXPERIENCES / "personal-brand-concept.jpg",
         54,
-        142,
+        95,
         770,
-        452,
-        "FROM PERSON",
-        "TO A BRAND PLATFORM",
-        "DISCUSS A PROJECT",
+        430,
+        "ИЗ ЛИЧНОСТИ",
+        "В ЦИФРОВУЮ ПЛАТФОРМУ",
+        "ОБСУДИТЬ ПРОЕКТ",
         BLUE,
         focal_x=0.62,
     )
@@ -1050,40 +1182,53 @@ def personal_brand_concept(c: canvas.Canvas) -> None:
         c,
         EXPERIENCES / "personal-brand-concept.jpg",
         850,
-        142,
+        95,
         206,
-        452,
+        430,
         "FOUNDER SIGNAL",
-        "DISCUSS A PROJECT",
+        "ОБСУДИТЬ ПРОЕКТ",
         BLUE,
         focal_x=0.75,
     )
+    set_alpha_stroke(c, MINT, 0.35)
+    c.setLineWidth(2.1)
+    c.arc(510, 130, 836, 498, 72, 236)
+    set_alpha_stroke(c, WHITE, 0.14)
+    c.arc(542, 145, 810, 480, 78, 220)
+    floating_glass(c, 430, 390, 106, 42, "КЕЙСЫ", BLUE, -3, "01")
+    floating_glass(c, 703, 392, 124, 42, "ПРОДУКТЫ", MINT, 4, "02")
+    floating_glass(c, 510, 232, 106, 42, "МЕДИА", MINT, 4, "03")
+    floating_glass(c, 699, 210, 132, 42, "AI-ДВОЙНИК", BLUE, -4, "04")
     concept_detail_panel(
         c,
         BLUE,
-        ["Portrait depth / parallax", "Glow signature orbit", "Journey timeline", "Case + product cards", "AI personality module"],
-        [("INK", "#080B10"), ("WHITE", "#F4F5F7"), ("MINT", "#64F2C4"), ("BLUE", "#42A5F5")],
+        ["Портрет с глубиной и параллаксом", "Световая орбита бренда", "Таймлайн пути", "Карточки кейсов и продуктов", "AI-модуль личности"],
+        [("ГРАФИТ", "#080B10"), ("БЕЛЫЙ", "#F4F5F7"), ("МЯТА", "#64F2C4"), ("СИНИЙ", "#42A5F5")],
         "Сайт для личного бренда, где человек представлен не просто как эксперт, а как система: идеи, продукты, медиа, кейсы и коммерческие направления.",
     )
-    cap(c, "FOUNDER / EXPERT / CREATOR / AI PERSONALITY", 54, 100, BLUE, 7)
+    cap(c, "ОСНОВАТЕЛЬ / ЭКСПЕРТ / АВТОР / AI-ЛИЧНОСТЬ", 54, 72, BLUE, 7)
+    demo_disclaimer(c)
 
 
 def technology_layer(c: canvas.Canvas) -> None:
-    page_base(c, 21, "20 / TECHNOLOGY LAYER")
-    cap(c, "20 / CAPABILITY SYSTEM", 54, 720, MINT, 9)
-    heading(c, "NOT TEMPLATES. PRODUCTIZED DIGITAL EXPERIENCES.", 54, 650, 1170, 51)
-    panel(c, 54, 126, 568, 450, BLACK_2, BLUE, 12)
-    selection_frame(c, 80, 344, 510, 166, BLUE)
-    copy(c, "DIGITAL", 108, 438, 450, 34, 38, WHITE, DISPLAY, 1)
-    copy(c, "SCENES", 108, 384, 450, 34, 38, MINT, DISPLAY, 1)
+    page_base(c, 21, "20 / ТЕХНОЛОГИЧЕСКИЙ СЛОЙ")
+    perspective_floor(c, 296, 36, MINT)
+    glow(c, 342, 282, 310, BLUE, 0.09)
+    orbit(c, 360, 285, 242, 92, BLUE, -8)
+    cap(c, "20 / СИСТЕМА ВОЗМОЖНОСТЕЙ", 54, 720, MINT, 9)
+    heading(c, "НЕ ШАБЛОНЫ. А ЦИФРОВЫЕ ПРОДУКТЫ С БИЗНЕС-СЦЕНАРИЕМ.", 54, 654, 1210, 45)
+    panel(c, 54, 83, 568, 430, BLACK_2, BLUE, 12)
+    selection_frame(c, 80, 308, 510, 142, BLUE)
+    copy(c, "ЦИФРОВЫЕ", 108, 390, 450, 31, 35, WHITE, DISPLAY, 1)
+    copy(c, "СЦЕНЫ", 108, 342, 450, 31, 35, MINT, DISPLAY, 1)
     copy(
         c,
         "Мы создаём не просто сайты-визитки. Мы проектируем цифровые сцены, в которых бренд, продукт и пользовательский сценарий соединяются в одну premium-систему.",
         82,
-        250,
+        237,
         490,
-        15,
-        20,
+        14,
+        18,
         GRAY,
         BODY,
         6,
@@ -1102,36 +1247,39 @@ def technology_layer(c: canvas.Canvas) -> None:
     for index, (num, name) in enumerate(technologies):
         col, row = index % 3, index // 3
         x = 664 + col * 220
-        y = 422 - row * 144
-        panel(c, x, y, 198, 118, BLACK_2, [MINT, BLUE, GOLD][col], 8)
-        cap(c, num, x + 14, y + 90, GRAY, 6)
-        copy(c, name, x + 14, y + 42, 168, 12, 14, WHITE, SEMI, 3)
-    cap(c, "TECHNOLOGY FOLLOWS THE EXPERIENCE AND THE BUSINESS GOAL", 664, 100, GOLD, 7)
+        y = 376 - row * 130
+        panel(c, x, y, 198, 106, BLACK_2, [MINT, BLUE, GOLD][col], 8)
+        cap(c, num, x + 14, y + 80, GRAY, 6)
+        copy(c, name, x + 14, y + 36, 168, 11, 13, WHITE, SEMI, 3)
+    cap(c, "ТЕХНОЛОГИИ ПОДЧИНЕНЫ ОПЫТУ ПОЛЬЗОВАТЕЛЯ И БИЗНЕС-ЗАДАЧЕ", 664, 92, GOLD, 6.3)
+    demo_disclaimer(c)
 
 
 def client_outcomes(c: canvas.Canvas) -> None:
-    page_base(c, 22, "21 / WHAT THE CLIENT GETS")
-    cap(c, "21 / CLIENT OUTCOMES", 54, 720, GOLD, 9)
-    heading(c, "WHAT THE CLIENT GETS", 54, 650, 860, 63)
-    copy(c, "A launch-ready digital surface connected to a commercial scenario.", 58, 592, 850, 17, 22, GRAY, BODY, 2)
+    page_base(c, 22, "21 / ЧТО ПОЛУЧАЕТ КЛИЕНТ")
+    perspective_floor(c, 305, 36, GOLD)
+    glow(c, 1090, 370, 340, MINT, 0.08)
+    cap(c, "21 / РЕЗУЛЬТАТ ДЛЯ КЛИЕНТА", 54, 720, GOLD, 9)
+    heading(c, "ЧТО ПОЛУЧАЕТ КЛИЕНТ", 54, 650, 960, 58)
+    copy(c, "Готовую digital-поверхность, связанную с продажами, заявками и продуктовым сценарием.", 58, 590, 980, 16, 21, GRAY, BODY, 2)
+    selection_frame(c, 56, 526, 1045, 42, BLUE)
+    copy(c, "От первого wow-эффекта — к заявке, бронированию или переходу в продукт.", 78, 540, 1000, 16, 19, WHITE, SEMI, 1)
     outcomes = [
-        ("01", "PREMIUM SITE", "A coherent high-value visual system.", GOLD),
-        ("02", "VISUAL WOW", "A memorable first interaction.", MINT),
-        ("03", "SALES SCENARIO", "Clear path from interest to action.", BLUE),
-        ("04", "MOBILE FIRST", "The core experience survives the small screen.", GREEN),
-        ("05", "LEAD INTEGRATION", "Forms, CRM, booking or payments.", MINT),
-        ("06", "AI + TELEGRAM", "Product logic beyond the landing page.", BLUE),
-        ("07", "PRODUCT PACKAGING", "Message, interface and proof in one story.", GOLD),
-        ("08", "PARTNER PRESENTATION", "A system ready to explain and sell.", GREEN),
+        ("01", "ПРЕМИАЛЬНЫЙ САЙТ", "Цельная визуальная система высокого уровня.", GOLD),
+        ("02", "ВИЗУАЛЬНЫЙ WOW-ЭФФЕКТ", "Первое взаимодействие, которое запоминается.", MINT),
+        ("03", "СЦЕНАРИЙ ПРОДАЖ", "Понятный путь от интереса к действию.", BLUE),
+        ("04", "MOBILE-FIRST", "Ключевой опыт сохраняется на малом экране.", GREEN),
+        ("05", "ИНТЕГРАЦИЯ ЗАЯВОК", "Формы, CRM, бронирование или платежи.", MINT),
+        ("06", "AI + TELEGRAM", "Продуктовая логика за пределами лендинга.", BLUE),
+        ("07", "ПРОДУКТОВАЯ УПАКОВКА", "Сообщение, интерфейс и доказательства в одной истории.", GOLD),
+        ("08", "ПРЕЗЕНТАБЕЛЬНОСТЬ ДЛЯ ПАРТНЁРОВ", "Система, которую легко объяснить и продать.", GREEN),
     ]
     for index, (num, head, body, accent) in enumerate(outcomes):
         col, row = index % 4, index // 4
         x = 54 + col * 323
-        y = 342 if row == 0 else 116
-        small_card(c, x, y, 286, 190, num, head, body, accent)
-    selection_frame(c, 1006, 579, 312, 65, BLUE)
-    copy(c, "DISCUSS THE NEXT SCENE", 1028, 601, 270, 15, 17, WHITE, SEMI, 1)
-    cap(c, "ALL THREE DIRECTIONS ARE DEMO CONCEPTS / NOT LAUNCHED CLIENT SITES", 54, 78, RED, 7)
+        y = 315 if row == 0 else 105
+        small_card(c, x, y, 286, 174, num, head, body, accent)
+    demo_disclaimer(c)
 
 
 def calorie_hero(c: canvas.Canvas) -> None:

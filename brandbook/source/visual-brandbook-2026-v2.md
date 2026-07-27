@@ -29,28 +29,29 @@ SIGNAL -> SYSTEM -> PRODUCT -> GROWTH
 - Material textures and patterns support the message; they never replace it.
 - No acid cyberpunk, gaming effects, decorative clutter or unverified claims.
 
-## Digital Experiences
+## Цифровые продукты
 
-The brandbook includes three clearly labelled concept directions. They are demo
-concepts, not launched client sites.
+В брендбук включены три демонстрационных направления. Это концепты, показывающие
+визуальные и продуктовые возможности DimkoFF, а не запущенные клиентские сайты.
 
-1. Premium Hospitality - Riverside Lounge Experience.
-   A cinematic restaurant / hotel / bar / lounge direction that sells atmosphere
-   into a booking action.
-2. AI Product - CaloriePT AI / Product Launch Website.
-   A dark-tech product surface that explains the user journey from photo to
-   insight and routes the user into Telegram.
-3. Personal Brand - Founder Signal Website.
-   An editorial platform that presents a founder as a system of ideas, products,
-   media, cases and commercial directions.
+1. Премиальные пространства - Riverside Lounge.
+   Кинематографичный сайт для ресторана, отеля, бара или lounge-пространства,
+   который продаёт атмосферу и желание забронировать.
+2. AI-продукты - CaloriePT AI / сайт запуска AI-продукта.
+   Тёмная технологичная digital-сцена, которая объясняет сложный продукт через
+   простой пользовательский сценарий и ведёт в Telegram.
+3. Личный бренд - сайт личного бренда / Founder Signal.
+   Editorial-платформа, где человек представлен как система идей, продуктов,
+   медиа, кейсов и коммерческих направлений.
 
-Each direction includes a desktop mockup, a mobile mockup, key features, a visual
-palette and the business problem it solves. The section closes with a technology
-layer and a clear list of client outcomes.
+Каждое направление включает desktop- и mobile-мокапы, ключевые эффекты,
+визуальную палитру и описание бизнес-задачи. Объём усиливают перспективная сетка,
+световые орбиты, глубинные тени, отражения и парящие glass-панели. Раздел
+завершается технологическим слоем и перечнем результатов для клиента.
 
-Reference patterns were studied from Veranda Riverside and curated Three.js /
-WebGL award galleries. All imagery and interfaces in the concept pages are
-original DimkoFF demo compositions; no external logos or photographs are copied.
+Визуальные механики изучены на примере Veranda Riverside и подборок Three.js /
+WebGL. Все изображения и интерфейсы являются оригинальными demo-композициями
+DimkoFF; чужие логотипы и фотографии не использованы.
 
 ## Page map - 34 pages
 
@@ -70,12 +71,12 @@ original DimkoFF demo compositions; no external logos or photographs are copied.
 14. Layout System / Grid / Poster Logic
 15. Adaptive Composition
 16. Product Ecosystem
-17. Digital Experiences - Three concept directions
-18. Premium Hospitality - Riverside Lounge Experience
-19. AI Product - CaloriePT AI / Product Launch Website
-20. Personal Brand - Founder Signal Website
-21. Not Templates / Technology Layer
-22. What the Client Gets
+17. Цифровые продукты - три демонстрационных направления
+18. Премиальные пространства - Riverside Lounge
+19. AI-продукты - CaloriePT AI / сайт запуска
+20. Личный бренд - Founder Signal
+21. Не шаблоны / технологический слой
+22. Что получает клиент
 23. Case Study - CaloriePT AI
 24. CaloriePT Product System
 25. Case Study - Stylist AI
@@ -94,7 +95,7 @@ original DimkoFF demo compositions; no external logos or photographs are copied.
 - CaloriePT AI and Stylist AI are the two primary product case studies.
 - Psy Mind AI, BusinessMentorAI_bot and Pulse AI Coach demonstrate niche breadth.
 - AI Director is always marked as a concept / in planning.
-- Digital Experience directions are always marked as concept directions / demo concepts.
+- Направления Digital Experiences всегда маркируются как демонстрационные концепты.
 - No unverified metrics, "best", "unique" or "without analogues" claims.
 - Existing older PDF editions remain unchanged.
 
