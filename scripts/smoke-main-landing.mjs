@@ -12,6 +12,22 @@ const base =
   "http://127.0.0.1:4173/stylist-mini-app/";
 const browser = await chromium.launch({ headless: true });
 
+async function revealPage(page) {
+  await page.evaluate(async () => {
+    const pause = (milliseconds) =>
+      new Promise((resolve) => setTimeout(resolve, milliseconds));
+    const previousBehavior = document.documentElement.style.scrollBehavior;
+    document.documentElement.style.scrollBehavior = "auto";
+    for (const element of document.querySelectorAll("[data-agency-reveal]")) {
+      element.scrollIntoView({ block: "center" });
+      await pause(70);
+    }
+    window.scrollTo(0, 0);
+    document.documentElement.style.scrollBehavior = previousBehavior;
+    await pause(240);
+  });
+}
+
 async function verify(viewport, filename) {
   const context = await browser.newContext({ viewport, deviceScaleFactor: 1 });
   const page = await context.newPage();
@@ -23,20 +39,32 @@ async function verify(viewport, filename) {
   });
 
   const response = await page.goto(base, {
-    waitUntil: "networkidle",
+    waitUntil: "domcontentloaded",
     timeout: 45_000,
   });
-  if (!response?.ok()) throw new Error(`Main landing response: ${response?.status()}`);
+  if (!response?.ok()) {
+    throw new Error(`Main landing response: ${response?.status()}`);
+  }
 
   const landing = page.locator('[data-testid="dimkoff-main-landing"]');
   await landing.waitFor({ state: "visible" });
+  const loader = page.locator('[data-testid="dimkoff-loader"]');
+  const loaderWasVisible = await loader.isVisible().catch(() => false);
+  if (filename.includes("desktop") && loaderWasVisible) {
+    await page.screenshot({
+      path: path.join(output, "main-loader-desktop.png"),
+      fullPage: false,
+    });
+  }
+  await loader.waitFor({ state: "detached", timeout: 8_000 }).catch(() => {});
+  await page.waitForLoadState("networkidle");
+
   const h1 = landing.locator("h1");
   await h1.waitFor({ state: "visible" });
-
-  const isMobile = viewport.width < 1120;
+  const isMobile = viewport.width < 900;
   if (isMobile) {
-    await page.locator('button[aria-controls="dimkoff-main-nav"]').click();
-    await page.locator("#dimkoff-main-nav").waitFor({ state: "visible" });
+    await page.locator('button[aria-controls="agency-nav"]').click();
+    await page.locator("#agency-nav").waitFor({ state: "visible" });
   }
 
   const initialLanguage = await page.locator("html").getAttribute("lang");
@@ -48,64 +76,93 @@ async function verify(viewport, filename) {
   const restoredH1 = await h1.innerText();
 
   if (isMobile) {
-    await page.locator('button[aria-controls="dimkoff-main-nav"]').click();
+    await page.locator('button[aria-controls="agency-nav"]').click();
   }
 
-  await page.locator("#contact").scrollIntoViewIfNeeded();
-  await page.waitForTimeout(500);
-  await page.locator("#products").scrollIntoViewIfNeeded();
-  await page.waitForTimeout(350);
+  await revealPage(page);
+  await page.locator("img").evaluateAll(async (images) => {
+    images.forEach((image) => {
+      image.loading = "eager";
+    });
+    await Promise.all(
+      images.map((image) => {
+        if (image.complete) return Promise.resolve();
+        return new Promise((resolve) => {
+          image.addEventListener("load", resolve, { once: true });
+          image.addEventListener("error", resolve, { once: true });
+        });
+      }),
+    );
+  });
 
   const checks = {
     title: await page.title(),
+    loaderWasVisible,
     initialLanguage,
     initialH1,
     englishLanguage,
     englishH1,
     restoredH1,
-    serviceCards: await page.locator("#capabilities article").count(),
-    benefits: await page.locator("#value ol li").count(),
-    realProducts: await page.locator("#products article").evaluateAll(
-      (cards) => cards.filter((card) => card.querySelector("img")).length + cards.filter((card) => card.textContent?.includes("AI Bot Portfolio") || card.textContent?.includes("Visual Brandbook")).length,
-    ),
-    concepts: await page.locator("#products article").evaluateAll(
-      (cards) => cards.filter((card) => card.textContent?.includes("/ CONCEPT")).length,
-    ),
-    audiences: await page.locator('[class*="audienceGrid"] > span').count(),
+    serviceCards: await page.locator("#services article").count(),
+    projectCards: await page.locator("#projects article").count(),
+    projectImages: await page.locator("#projects article img").count(),
+    conceptCards: await page.locator("#concepts article").count(),
+    aiDirectorDetails: await page.locator("#concepts article").first().locator("ul li").count(),
+    experienceCards: await page.locator('[class*="experienceStage"] article').count(),
+    experienceImages: await page.locator('[class*="experienceStage"] article img').count(),
     processSteps: await page.locator("#process ol li").count(),
+    formatChips: await page.locator("#contact [class*='formatList'] span").count(),
     heroImages: await page.locator('[class*="heroScene"] > img').count(),
     heroAsset: await page.locator('[class*="heroScene"] > img').getAttribute("src"),
-    marqueeGroups: await page.locator('[data-testid="seamless-marquee"] [class*="marqueeGroup"]').count(),
-    marqueeItems: await page.locator('[data-testid="seamless-marquee"] [class*="marqueeGroup"] > span').count(),
-    marquee: await page.locator('[data-testid="seamless-marquee"] [class*="marqueeTrack"]').evaluate((track) => {
-      const groups = [...track.children];
-      const style = getComputedStyle(track);
-      return {
-        animationName: style.animationName,
-        groupWidthDelta: groups.length === 2
-          ? Math.abs(groups[0].getBoundingClientRect().width - groups[1].getBoundingClientRect().width)
-          : -1,
-      };
-    }),
-    productDescriptions: await page.locator('#products [class*="productGrid"] article p').count(),
-    portfolioLinks: await page.locator('a[href$="/portfolio/"]').count(),
-    brandbookLinks: await page.locator('a[href$="dimkoff-brandbook-2026-visual-v2.pdf"]').count(),
-    telegramLinks: await page.locator('a[href="https://t.me/AIStudioDimkoFF"]').count(),
+    portalMarks: await page.locator("header svg, footer svg").count(),
+    marqueeGroups: await page
+      .locator('[data-testid="seamless-marquee"] [class*="marqueeGroup"]')
+      .count(),
+    marqueeItems: await page
+      .locator('[data-testid="seamless-marquee"] [class*="marqueeGroup"] > span')
+      .count(),
+    marquee: await page
+      .locator('[data-testid="seamless-marquee"] [class*="marqueeTrack"]')
+      .evaluate((track) => {
+        const widths = [...track.children].map(
+          (group) => group.getBoundingClientRect().width,
+        );
+        return {
+          animationName: getComputedStyle(track).animationName,
+          groupWidthDelta: Math.max(...widths) - Math.min(...widths),
+        };
+      }),
+    portfolioLinks: await page
+      .locator('a[href*="/portfolio/"]:not([href$=".pdf"])')
+      .count(),
+    brandbookLinks: await page
+      .locator('a[href$="dimkoff-brandbook-2026-visual-v2.pdf"]')
+      .count(),
+    downloadLinks: await page.locator("a[download]").count(),
+    telegramLinks: await page
+      .locator('a[href="https://t.me/AIStudioDimkoFF"]')
+      .count(),
     phoneLinks: await page.locator('a[href="tel:+79999357608"]').count(),
     imageFailures: await page.locator("img").evaluateAll((images) =>
       images
         .filter((image) => !image.complete || image.naturalWidth === 0)
         .map((image) => image.currentSrc || image.src),
     ),
+    hiddenReveals: await page
+      .locator("[data-agency-reveal]")
+      .evaluateAll((elements) =>
+        elements.filter((element) => getComputedStyle(element).opacity === "0")
+          .length,
+      ),
     bodyLength: (await page.locator("body").innerText()).trim().length,
     horizontalOverflow: await page.evaluate(
       () =>
         document.documentElement.scrollWidth -
         document.documentElement.clientWidth,
     ),
-    headerPosition: await page.locator("header").evaluate(
-      (element) => getComputedStyle(element).position,
-    ),
+    headerPosition: await page
+      .locator("header")
+      .evaluate((element) => getComputedStyle(element).position),
     heroTypography: await h1.evaluate((element) => {
       const style = getComputedStyle(element);
       return {
@@ -114,66 +171,99 @@ async function verify(viewport, filename) {
         width: element.getBoundingClientRect().width,
       };
     }),
-    heroComposition: await page.locator('[class*="heroScene"]').evaluate((scene) => {
-      const hero = scene.closest("section");
-      const image = scene.querySelector("img");
-      const sceneRect = scene.getBoundingClientRect();
-      const heroRect = hero?.getBoundingClientRect();
-      return {
-        position: getComputedStyle(scene).position,
-        widthRatio: heroRect ? sceneRect.width / heroRect.width : 0,
-        imageRadius: image ? Number.parseFloat(getComputedStyle(image).borderRadius) : -1,
-      };
-    }),
+    heroComposition: await page
+      .locator('[class*="heroScene"]')
+      .evaluate((scene) => {
+        const hero = scene.closest("section");
+        const image = scene.querySelector("img");
+        const sceneRect = scene.getBoundingClientRect();
+        const heroRect = hero?.getBoundingClientRect();
+        return {
+          position: getComputedStyle(scene).position,
+          widthRatio: heroRect ? sceneRect.width / heroRect.width : 0,
+          imageRadius: image
+            ? Number.parseFloat(getComputedStyle(image).borderRadius)
+            : -1,
+        };
+      }),
   };
 
   if (!checks.title.includes("DimkoFF")) throw new Error("Missing DimkoFF title");
-  if (checks.initialLanguage !== "ru") {
-    throw new Error(`Expected default RU, got ${checks.initialLanguage}`);
-  }
-  if (!checks.initialH1.includes("AI-продукты и Telegram Mini Apps")) {
-    throw new Error(`Russian commercial hero is missing: ${checks.initialH1}`);
-  }
-  if (checks.englishLanguage !== "en" || !checks.englishH1.includes("AI products and Telegram Mini Apps")) {
-    throw new Error(`RU/EN toggle failed: ${checks.englishH1}`);
-  }
-  if (!checks.restoredH1.includes("AI-продукты и Telegram Mini Apps")) {
-    throw new Error("Russian language did not restore");
-  }
-  if (checks.serviceCards !== 5) throw new Error(`Expected 5 services, got ${checks.serviceCards}`);
-  if (checks.benefits !== 6) throw new Error(`Expected 6 benefits, got ${checks.benefits}`);
-  if (checks.realProducts !== 4) throw new Error(`Expected 4 real products, got ${checks.realProducts}`);
-  if (checks.concepts !== 6) throw new Error(`Expected 6 concepts, got ${checks.concepts}`);
-  if (checks.audiences !== 8) throw new Error(`Expected 8 audiences, got ${checks.audiences}`);
-  if (checks.processSteps !== 5) throw new Error(`Expected 5 process steps, got ${checks.processSteps}`);
-  if (checks.heroImages !== 1) throw new Error("3D hero object is missing");
-  if (!checks.heroAsset?.includes("dimkoff-hero-monolith-v2.webp")) {
-    throw new Error(`Premium hero asset is missing: ${checks.heroAsset}`);
-  }
-  if (checks.marqueeGroups !== 2 || checks.marqueeItems !== 24) {
-    throw new Error(`Seamless marquee is incomplete: ${checks.marqueeGroups} groups / ${checks.marqueeItems} items`);
-  }
-  if (checks.marquee.animationName === "none" || checks.marquee.groupWidthDelta > 1) {
-    throw new Error(`Seamless marquee motion failed: ${JSON.stringify(checks.marquee)}`);
-  }
-  if (checks.productDescriptions !== 4) {
-    throw new Error(`Product proof lacks depth: ${checks.productDescriptions} descriptions`);
-  }
-  if (checks.heroTypography.lineHeight < checks.heroTypography.fontSize) {
-    throw new Error(`Hero typography overlaps: ${JSON.stringify(checks.heroTypography)}`);
-  }
-  if (checks.heroTypography.width > 720) {
-    throw new Error(`Hero copy is too wide: ${checks.heroTypography.width}px`);
+  if (!checks.loaderWasVisible) throw new Error("Opening loader was not visible");
+  if (checks.initialLanguage !== "ru" || !checks.initialH1.includes("AI-продукты")) {
+    throw new Error(`Russian hero is missing: ${checks.initialH1}`);
   }
   if (
-    checks.heroComposition.position !== "absolute"
-    || checks.heroComposition.widthRatio < 0.75
-    || checks.heroComposition.imageRadius !== 0
+    checks.englishLanguage !== "en" ||
+    !checks.englishH1.includes("AI products")
   ) {
-    throw new Error(`Hero is not a monolithic scene: ${JSON.stringify(checks.heroComposition)}`);
+    throw new Error(`RU/EN toggle failed: ${checks.englishH1}`);
   }
-  if (checks.portfolioLinks < 2 || checks.brandbookLinks < 2) {
-    throw new Error("Portfolio or brandbook routes are incomplete");
+  if (!checks.restoredH1.includes("AI-продукты")) {
+    throw new Error("Russian language did not restore");
+  }
+  if (checks.serviceCards !== 6) {
+    throw new Error(`Expected 6 services, got ${checks.serviceCards}`);
+  }
+  if (checks.projectCards !== 6 || checks.projectImages !== 6) {
+    throw new Error(
+      `Expected 6 visual projects, got ${checks.projectCards}/${checks.projectImages}`,
+    );
+  }
+  if (checks.conceptCards !== 6 || checks.aiDirectorDetails !== 3) {
+    throw new Error(
+      `Concept Lab is incomplete: ${checks.conceptCards}/${checks.aiDirectorDetails}`,
+    );
+  }
+  if (checks.experienceCards !== 3 || checks.experienceImages !== 3) {
+    throw new Error(
+      `Digital Experiences is incomplete: ${checks.experienceCards}/${checks.experienceImages}`,
+    );
+  }
+  if (checks.processSteps !== 5) {
+    throw new Error(`Expected 5 process steps, got ${checks.processSteps}`);
+  }
+  if (checks.formatChips < 7) {
+    throw new Error(`Project formats are incomplete: ${checks.formatChips}`);
+  }
+  if (
+    checks.heroImages !== 1 ||
+    !checks.heroAsset?.includes("dimkoff-digital-portal-v3.webp")
+  ) {
+    throw new Error(`Digital Portal hero is missing: ${checks.heroAsset}`);
+  }
+  if (checks.portalMarks < 2) {
+    throw new Error(`2D Digital Portal identity is incomplete: ${checks.portalMarks}`);
+  }
+  if (checks.marqueeGroups !== 3 || checks.marqueeItems !== 36) {
+    throw new Error(
+      `Seamless marquee is incomplete: ${checks.marqueeGroups}/${checks.marqueeItems}`,
+    );
+  }
+  if (
+    checks.marquee.animationName === "none" ||
+    checks.marquee.groupWidthDelta > 1
+  ) {
+    throw new Error(`Marquee motion failed: ${JSON.stringify(checks.marquee)}`);
+  }
+  if (checks.heroTypography.lineHeight < checks.heroTypography.fontSize) {
+    throw new Error(
+      `Hero typography overlaps: ${JSON.stringify(checks.heroTypography)}`,
+    );
+  }
+  if (checks.heroComposition.position !== "absolute") {
+    throw new Error(
+      `Hero is not a monolithic scene: ${JSON.stringify(checks.heroComposition)}`,
+    );
+  }
+  if (
+    checks.portfolioLinks < 2 ||
+    checks.brandbookLinks < 2 ||
+    checks.downloadLinks < 1
+  ) {
+    throw new Error(
+      `Portfolio or brandbook routes are incomplete: ${checks.portfolioLinks}/${checks.brandbookLinks}/${checks.downloadLinks}`,
+    );
   }
   if (checks.telegramLinks < 4 || checks.phoneLinks !== 1) {
     throw new Error("Telegram or phone CTA is incomplete");
@@ -181,7 +271,10 @@ async function verify(viewport, filename) {
   if (checks.imageFailures.length) {
     throw new Error(`Images failed to load: ${checks.imageFailures.join(", ")}`);
   }
-  if (checks.bodyLength < 3000) {
+  if (checks.hiddenReveals > 0) {
+    throw new Error(`Scroll reveal left ${checks.hiddenReveals} blocks hidden`);
+  }
+  if (checks.bodyLength < 4_000) {
     throw new Error(`Main landing content is too short: ${checks.bodyLength}`);
   }
   if (checks.horizontalOverflow > 1) {
@@ -190,6 +283,7 @@ async function verify(viewport, filename) {
   if (checks.headerPosition !== "fixed") {
     throw new Error(`Header is not fixed: ${checks.headerPosition}`);
   }
+
   const criticalErrors = errors.filter(
     (error) => !error.includes("ERR_NETWORK_ACCESS_DENIED"),
   );
@@ -197,7 +291,9 @@ async function verify(viewport, filename) {
     throw new Error(`Runtime errors: ${criticalErrors.join(" | ")}`);
   }
 
-  const portfolioResponse = await page.request.head(new URL("portfolio/", base).href);
+  const portfolioResponse = await page.request.head(
+    new URL("portfolio/", base).href,
+  );
   if (!portfolioResponse.ok()) {
     throw new Error(`Portfolio response: ${portfolioResponse.status()}`);
   }
@@ -207,24 +303,19 @@ async function verify(viewport, filename) {
   if (!brandbookResponse.ok()) {
     throw new Error(`Brandbook response: ${brandbookResponse.status()}`);
   }
-  if (!brandbookResponse.headers()["content-type"]?.includes("application/pdf")) {
-    throw new Error(`Brandbook content-type: ${brandbookResponse.headers()["content-type"]}`);
+  if (
+    !brandbookResponse.headers()["content-type"]?.includes("application/pdf")
+  ) {
+    throw new Error(
+      `Brandbook content-type: ${brandbookResponse.headers()["content-type"]}`,
+    );
   }
-
-  await page.evaluate(async () => {
-    const pause = (milliseconds) =>
-      new Promise((resolve) => setTimeout(resolve, milliseconds));
-    for (
-      let y = 0;
-      y < document.body.scrollHeight;
-      y += Math.max(window.innerHeight * 0.75, 430)
-    ) {
-      window.scrollTo(0, y);
-      await pause(60);
-    }
-    window.scrollTo(0, 0);
-    await pause(180);
-  });
+  const faviconResponse = await page.request.get(
+    new URL("favicon.svg", base).href,
+  );
+  if (!faviconResponse.ok()) {
+    throw new Error(`Favicon response: ${faviconResponse.status()}`);
+  }
 
   await page.screenshot({ path: path.join(output, filename), fullPage: true });
 
@@ -240,7 +331,9 @@ async function verify(viewport, filename) {
   await appPage.close();
   await context.close();
 
-  if (!stylistAppPreserved) throw new Error("Stylist AI app route is not preserved");
+  if (!stylistAppPreserved) {
+    throw new Error("Stylist AI app route is not preserved");
+  }
   return { ...checks, stylistAppPreserved };
 }
 
