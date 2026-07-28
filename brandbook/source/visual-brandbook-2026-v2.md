@@ -47,13 +47,25 @@ SIGNAL -> SYSTEM -> PRODUCT -> GROWTH
 Каждое направление включает desktop- и mobile-мокапы, ключевые эффекты,
 визуальную палитру и описание бизнес-задачи. Объём усиливают перспективная сетка,
 световые орбиты, глубинные тени, отражения и парящие glass-панели. Раздел
-завершается технологическим слоем и перечнем результатов для клиента.
+завершается технологическим слоем, перечнем результатов для клиента и
+направлением Premium AI Founder Site.
+
+Страница Website Direction показывает механику будущего сайта DimkoFF:
+
+- sticky glass header;
+- переключатель RU / EN с активным русским языком;
+- оригинальную 3D-скульптуру DimkoFF вместо чужого портрета;
+- крупный hero, золотой и mint-акценты, два CTA;
+- объёмные карточки Telegram Mini Apps, AI-ботов, 3D/WebGL и SMM-систем;
+- реальные продуктовые направления с корректной маркировкой AI Director;
+- контактный CTA, Telegram, телефон и полноценный footer;
+- Feedback Format только как demo-layout без вымышленных отзывов.
 
 Визуальные механики изучены на примере Veranda Riverside и подборок Three.js /
 WebGL. Все изображения и интерфейсы являются оригинальными demo-композициями
 DimkoFF; чужие логотипы и фотографии не использованы.
 
-## Page map - 34 pages
+## Page map - 35 pages
 
 1. Cover
 2. Brand Idea
@@ -77,18 +89,19 @@ DimkoFF; чужие логотипы и фотографии не использ
 20. Личный бренд - Founder Signal
 21. Не шаблоны / технологический слой
 22. Что получает клиент
-23. Case Study - CaloriePT AI
-24. CaloriePT Product System
-25. Case Study - Stylist AI
-26. Stylist Product System
-27. AI Bot Portfolio
-28. Demo Lab
-29. AI Director - Next Product Concept / In planning
-30. Client Route
-31. Employer Route
-32. Proof System
-33. Contact / CTA
-34. Final Poster
+23. Website Direction - Premium AI Founder Site
+24. Case Study - CaloriePT AI
+25. CaloriePT Product System
+26. Case Study - Stylist AI
+27. Stylist Product System
+28. AI Bot Portfolio
+29. Demo Lab
+30. AI Director - Next Product Concept / In planning
+31. Client Route
+32. Employer Route
+33. Proof System
+34. Contact / CTA
+35. Final Poster
 
 ## Evidence rules
 

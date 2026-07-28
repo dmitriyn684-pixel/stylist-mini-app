@@ -22,7 +22,7 @@ PORTFOLIO = ROOT / "brandbook" / "assets" / "portfolio"
 EXPERIENCES = ROOT / "brandbook" / "assets" / "digital-experiences"
 
 W, H = 1400, 788
-TOTAL_PAGES = 34
+TOTAL_PAGES = 35
 
 BLACK = HexColor("#080A0E")
 BLACK_2 = HexColor("#0D1015")
@@ -262,8 +262,7 @@ def selection_frame(c: canvas.Canvas, x: float, y: float, w: float, h: float, co
     c.restoreState()
 
 
-def pill(c: canvas.Canvas, value: str, x: float, y: float, color=MINT, active=False) -> float:
-    size = 8.2
+def pill(c: canvas.Canvas, value: str, x: float, y: float, color=MINT, active=False, size: float = 8.2) -> float:
     width = pdfmetrics.stringWidth(value.upper(), MONO, size) + 24
     c.saveState()
     set_alpha_fill(c, color, 1 if active else 0.1)
@@ -931,9 +930,12 @@ def floating_glass(
     c.setFillColor(accent)
     c.setFillAlpha(1)
     c.circle(-w / 2 + 13, h / 2 - 14, 2.5, fill=1, stroke=0)
-    cap(c, label, -w / 2 + 24, h / 2 - 18, WHITE, 6.2)
+    label_size = 7.2
+    while label_size > 5.8 and pdfmetrics.stringWidth(label.upper(), MONO, label_size) > w - 36:
+        label_size -= 0.25
+    cap(c, label, -w / 2 + 24, h / 2 - 18, WHITE, label_size)
     if note:
-        cap(c, note, -w / 2 + 12, -h / 2 + 11, accent, 5.1)
+        cap(c, note, -w / 2 + 12, -h / 2 + 11, accent, 5.8)
     c.restoreState()
 
 
@@ -942,11 +944,11 @@ def demo_disclaimer(c: canvas.Canvas) -> None:
         c,
         "Все три направления — демонстрационные концепты, показывающие визуальные и продуктовые возможности DimkoFF. Это не запущенные клиентские сайты.",
         54,
-        51,
+        52,
         1285,
-        6.3,
-        7.6,
-        GRAY,
+        7.1,
+        8.2,
+        HexColor("#C1C6CE"),
         BODY,
         2,
     )
@@ -959,8 +961,8 @@ def digital_experiences_overview(c: canvas.Canvas) -> None:
     orbit(c, 710, 292, 286, 116, MINT, 8)
     orbit(c, 1110, 280, 170, 82, BLUE, -14)
     cap(c, "16 / ЦИФРОВЫЕ ПРОДУКТЫ", 54, 720, MINT, 9)
-    heading(c, "3 ТИПА ЦИФРОВЫХ ПРОДУКТОВ, КОТОРЫЕ МЫ СОЗДАЁМ", 54, 654, 1200, 45)
-    cap(c, "КОНЦЕПТЫ / ДЕМОНСТРАЦИОННЫЕ НАПРАВЛЕНИЯ", 54, 566, GOLD, 7.5)
+    heading(c, "3 ТИПА ЦИФРОВЫХ ПРОДУКТОВ, КОТОРЫЕ МЫ СОЗДАЁМ", 54, 654, 1200, 39)
+    cap(c, "КОНЦЕПТЫ / ДЕМОНСТРАЦИОННЫЕ НАПРАВЛЕНИЯ", 54, 575, GOLD, 7.5)
     concepts = [
         (
             "01",
@@ -970,7 +972,7 @@ def digital_experiences_overview(c: canvas.Canvas) -> None:
             GOLD,
             0.58,
             -2.4,
-            80,
+            95,
         ),
         (
             "02",
@@ -980,7 +982,7 @@ def digital_experiences_overview(c: canvas.Canvas) -> None:
             MINT,
             0.58,
             0.8,
-            94,
+            109,
         ),
         (
             "03",
@@ -990,7 +992,7 @@ def digital_experiences_overview(c: canvas.Canvas) -> None:
             BLUE,
             0.68,
             2.6,
-            78,
+            93,
         ),
     ]
     for index, (num, title, body, image, accent, focal_x, angle, y) in enumerate(concepts):
@@ -1251,14 +1253,42 @@ def technology_layer(c: canvas.Canvas) -> None:
         panel(c, x, y, 198, 106, BLACK_2, [MINT, BLUE, GOLD][col], 8)
         cap(c, num, x + 14, y + 80, GRAY, 6)
         copy(c, name, x + 14, y + 36, 168, 11, 13, WHITE, SEMI, 3)
-    cap(c, "ТЕХНОЛОГИИ ПОДЧИНЕНЫ ОПЫТУ ПОЛЬЗОВАТЕЛЯ И БИЗНЕС-ЗАДАЧЕ", 664, 92, GOLD, 6.3)
+    cap(c, "ТЕХНОЛОГИИ ПОДЧИНЕНЫ ОПЫТУ ПОЛЬЗОВАТЕЛЯ И БИЗНЕС-ЗАДАЧЕ", 664, 92, GOLD, 8.4)
     demo_disclaimer(c)
+
+
+def outcome_network(c: canvas.Canvas) -> None:
+    centers = [
+        (197, 402, GOLD),
+        (520, 402, MINT),
+        (843, 402, BLUE),
+        (1166, 402, GREEN),
+        (197, 192, MINT),
+        (520, 192, BLUE),
+        (843, 192, GOLD),
+        (1166, 192, GREEN),
+    ]
+    for x, y, accent in centers:
+        glow(c, x, y, 120, accent, 0.08)
+    for row in range(2):
+        row_centers = centers[row * 4 : row * 4 + 4]
+        for (x1, y1, accent), (x2, y2, _) in zip(row_centers, row_centers[1:]):
+            rule(c, x1 + 126, y1, x2 - 126, y2, accent, 0.7, 1.4)
+            c.setFillColor(accent)
+            c.setFillAlpha(0.9)
+            c.circle((x1 + x2) / 2, y1, 3.2, fill=1, stroke=0)
+    for col in range(4):
+        x1, y1, accent = centers[col]
+        x2, y2, _ = centers[4 + col]
+        rule(c, x1, y1 - 92, x2, y2 + 92, accent, 0.48, 1)
+    orbit(c, 681, 296, 350, 78, MINT, 0)
 
 
 def client_outcomes(c: canvas.Canvas) -> None:
     page_base(c, 22, "21 / ЧТО ПОЛУЧАЕТ КЛИЕНТ")
     perspective_floor(c, 305, 36, GOLD)
     glow(c, 1090, 370, 340, MINT, 0.08)
+    outcome_network(c)
     cap(c, "21 / РЕЗУЛЬТАТ ДЛЯ КЛИЕНТА", 54, 720, GOLD, 9)
     heading(c, "ЧТО ПОЛУЧАЕТ КЛИЕНТ", 54, 650, 960, 58)
     copy(c, "Готовую digital-поверхность, связанную с продажами, заявками и продуктовым сценарием.", 58, 590, 980, 16, 21, GRAY, BODY, 2)
@@ -1282,10 +1312,141 @@ def client_outcomes(c: canvas.Canvas) -> None:
     demo_disclaimer(c)
 
 
+def website_direction(c: canvas.Canvas) -> None:
+    page_base(c, 23, "22 / WEBSITE DIRECTION / PREMIUM AI FOUNDER SITE", field=False)
+    perspective_floor(c, 300, 36, GOLD)
+    glow(c, 760, 360, 520, MINT, 0.1)
+    orbit(c, 730, 355, 330, 118, MINT, -7)
+    cap(c, "22 / WEBSITE DIRECTION / PREMIUM AI FOUNDER SITE", 54, 720, GOLD, 9)
+    heading(c, "САЙТ, КОТОРЫЙ ЖИВЁТ КАК ИНТЕРФЕЙС", 54, 654, 1110, 47)
+
+    browser_x, browser_y, browser_w, browser_h = 54, 90, 944, 500
+    panel(c, browser_x, browser_y, browser_w, browser_h, BLACK_2, GOLD, 13)
+    set_alpha_fill(c, GRAPHITE, 0.96)
+    c.roundRect(browser_x + 8, browser_y + browser_h - 38, browser_w - 16, 30, 7, fill=1, stroke=0)
+    for index, color in enumerate((RED, GOLD, GREEN)):
+        c.setFillColor(color)
+        c.circle(browser_x + 24 + index * 12, browser_y + browser_h - 23, 3, fill=1, stroke=0)
+    copy(c, "DIMKOFF.", browser_x + 72, browser_y + browser_h - 28, 140, 13, 15, WHITE, DISPLAY, 1)
+    cap(c, "ПРОЕКТЫ   УСЛУГИ   ПУТЬ   КОНТАКТЫ", browser_x + 244, browser_y + browser_h - 27, GRAY, 5.4)
+    panel(c, browser_x + 646, browser_y + browser_h - 33, 76, 20, BLACK, BLUE, 10)
+    cap(c, "RU", browser_x + 661, browser_y + browser_h - 27, GOLD, 5.7)
+    cap(c, "/", browser_x + 684, browser_y + browser_h - 27, GRAY, 5.7)
+    cap(c, "EN", browser_x + 700, browser_y + browser_h - 27, GRAY, 5.7)
+    panel(c, browser_x + 738, browser_y + browser_h - 34, 182, 22, BLACK, GOLD, 11)
+    cap(c, "НАПИСАТЬ В TELEGRAM", browser_x + 756, browser_y + browser_h - 27, GOLD, 5.5)
+
+    hero_x, hero_y, hero_w, hero_h = browser_x + 8, browser_y + 198, browser_w - 16, 252
+    image_cover(c, PORTFOLIO / "dimkoff-hero-sculpture-v2.png", hero_x + 442, hero_y, hero_w - 442, hero_h, 0, focal_x=0.5)
+    c.saveState()
+    set_alpha_fill(c, BLACK, 0.9)
+    c.rect(hero_x, hero_y, 520, hero_h, fill=1, stroke=0)
+    set_alpha_fill(c, BLACK, 0.48)
+    c.rect(hero_x + 500, hero_y, 110, hero_h, fill=1, stroke=0)
+    c.restoreState()
+    glow(c, hero_x + 684, hero_y + 116, 190, MINT, 0.16)
+    orbit(c, hero_x + 706, hero_y + 126, 168, 72, GOLD, 14)
+    mesh_points = [
+        (hero_x + 492, hero_y + 214),
+        (hero_x + 588, hero_y + 188),
+        (hero_x + 674, hero_y + 224),
+        (hero_x + 790, hero_y + 176),
+        (hero_x + 886, hero_y + 212),
+        (hero_x + 834, hero_y + 86),
+        (hero_x + 696, hero_y + 54),
+        (hero_x + 566, hero_y + 96),
+    ]
+    for index, start in enumerate(mesh_points):
+        end = mesh_points[(index + 1) % len(mesh_points)]
+        rule(c, start[0], start[1], end[0], end[1], MINT if index % 2 else GOLD, 0.28, 0.7)
+        c.setFillColor(MINT if index % 2 else GOLD)
+        c.setFillAlpha(0.85)
+        c.circle(start[0], start[1], 2.4, fill=1, stroke=0)
+    pill(c, "SMM + AI PRODUCT BUILDER", hero_x + 30, hero_y + 208, GOLD, active=False)
+    copy(c, "AI-ПРОДУКТЫ,", hero_x + 30, hero_y + 165, 380, 25, 27, GOLD, DISPLAY, 1)
+    copy(c, "SMM-СИСТЕМЫ И", hero_x + 30, hero_y + 126, 390, 25, 27, WHITE, DISPLAY, 1)
+    copy(c, "ЦИФРОВЫЕ СЦЕНЫ", hero_x + 30, hero_y + 87, 410, 25, 27, MINT, DISPLAY, 1)
+    copy(
+        c,
+        "Соединяю SMM, AI и разработку, чтобы превращать внимание в работающие digital-продукты.",
+        hero_x + 30,
+        hero_y + 52,
+        400,
+        8.4,
+        10,
+        GRAY,
+        BODY,
+        2,
+    )
+    pill(c, "ОБСУДИТЬ ПРОЕКТ", hero_x + 30, hero_y + 16, GOLD, active=True)
+    pill(c, "СМОТРЕТЬ КЕЙСЫ", hero_x + 188, hero_y + 16, MINT, active=False)
+
+    cap(c, "ЧТО МЫ СОЗДАЁМ", browser_x + 28, browser_y + 181, GOLD, 6.5)
+    site_cards = [
+        ("01", "TELEGRAM MINI APPS", "Быстрый вход и продуктовая логика.", MINT),
+        ("02", "AI-БОТЫ И АССИСТЕНТЫ", "Консультанты и цифровые личности.", BLUE),
+        ("03", "3D / WEBGL САЙТЫ", "Объём, параллакс и wow-эффект.", GOLD),
+        ("04", "SMM + GROWTH SYSTEMS", "Контент, воронка и запуск.", GREEN),
+    ]
+    for index, (num, title, body, accent) in enumerate(site_cards):
+        x = browser_x + 28 + index * 224
+        panel(c, x, browser_y + 109, 207, 62, BLACK, accent, 7)
+        cap(c, num, x + 10, browser_y + 154, accent, 5.2)
+        copy(c, title, x + 10, browser_y + 137, 184, 7.2, 8.3, WHITE, SEMI, 2)
+        copy(c, body, x + 10, browser_y + 117, 184, 5.8, 6.8, GRAY, BODY, 2)
+        cap(c, "+", x + 184, browser_y + 151, accent, 7)
+
+    cap(c, "АКТИВНЫЕ AI-ПРОЕКТЫ", browser_x + 28, browser_y + 97, MINT, 5.8)
+    projects = [
+        ("CALORIEPT AI 2.0", "РАБОТАЕТ", GREEN),
+        ("STYLIST AI", "РАБОТАЕТ", GOLD),
+        ("AI BOT PORTFOLIO", "3 НИШИ", MINT),
+        ("AI DIRECTOR", "В РАЗРАБОТКЕ / КОНЦЕПТ", BLUE),
+    ]
+    for index, (title, status, accent) in enumerate(projects):
+        x = browser_x + 28 + index * 224
+        panel(c, x, browser_y + 55, 207, 32, BLACK, accent, 6)
+        copy(c, title, x + 9, browser_y + 72, 126, 6.2, 7, WHITE, SEMI, 1)
+        cap(c, status, x + 137, browser_y + 70, accent, 4.1)
+
+    set_alpha_fill(c, GRAPHITE, 0.98)
+    c.rect(browser_x + 8, browser_y + 8, browser_w - 16, 42, fill=1, stroke=0)
+    cap(c, "ОБСУДИТЬ AI-ПРОДУКТ / САЙТ / MINI APP", browser_x + 24, browser_y + 32, WHITE, 5.1)
+    cap(c, "TELEGRAM / @AISTUDIODIMKOFF", browser_x + 355, browser_y + 32, MINT, 5.1)
+    cap(c, "+7 999-935-76-08", browser_x + 620, browser_y + 32, GOLD, 5.1)
+    cap(c, "СДЕЛАНО С ВНИМАНИЕМ К ПРОДУКТУ", browser_x + 776, browser_y + 32, GRAY, 4.2)
+
+    panel(c, 1022, 90, 324, 500, BLACK_2, MINT, 11)
+    cap(c, "WEBSITE MECHANICS WE CAN BUILD", 1044, 554, MINT, 6.8)
+    copy(c, "ПРЕМИАЛЬНЫЙ AI-САЙТ", 1044, 512, 274, 20, 22, WHITE, DISPLAY, 2)
+    mechanics = [
+        "STICKY GLASS HEADER",
+        "RU / EN TOGGLE",
+        "3D HERO SCULPTURE",
+        "FLOATING BOXES",
+        "CARD TILT + BORDER GLOW",
+        "PROJECTS + STATUS",
+        "FEEDBACK FORMAT / DEMO",
+        "CONTACT CTA + FOOTER",
+    ]
+    for index, item in enumerate(mechanics):
+        y = 458 - index * 35
+        cap(c, f"0{index + 1}", 1044, y, GRAY, 5.2)
+        copy(c, item, 1075, y - 1, 236, 7.4, 8.4, WHITE, SEMI, 1)
+        c.setFillColor([GOLD, MINT, BLUE][index % 3])
+        c.setFillAlpha(0.85)
+        c.circle(1320, y + 2, 2.2, fill=1, stroke=0)
+    cap(c, "ПУТЬ ОТ КОНТЕНТА К ПРОДУКТАМ", 1044, 172, GOLD, 6.1)
+    copy(c, "SMM → AI-боты → Mini Apps → Digital Experiences", 1044, 149, 270, 8.1, 10, GRAY, BODY, 2)
+    cap(c, "КОНТАКТ", 1044, 108, MINT, 6)
+    copy(c, "Проект / партнёрство / white-label / MVP", 1097, 108, 215, 7.4, 8.8, WHITE, BODY, 2)
+    demo_disclaimer(c)
+
+
 def calorie_hero(c: canvas.Canvas) -> None:
-    page_base(c, 23, "22 / CASE / CALORIEPT AI", field=False)
+    page_base(c, 24, "23 / CASE / CALORIEPT AI", field=False)
     glow(c, 1090, 385, 360, GREEN, 0.18)
-    cap(c, "22 / CASE 01 / WORKING PRODUCT", 54, 720, GREEN, 9)
+    cap(c, "23 / CASE 01 / WORKING PRODUCT", 54, 720, GREEN, 9)
     heading(c, "CALORIEPT AI", 54, 640, 620, 78)
     copy(c, "TELEGRAM NUTRITION PRODUCT", 58, 558, 600, 20, 24, MINT, SEMI, 1)
     copy(c, "Food photo analysis, calorie and macro diary, day summary, fridge recipes, frequent meals and shopping list in one Telegram-first flow.", 58, 470, 530, 15, 22, GRAY, BODY, 6)
@@ -1302,8 +1463,8 @@ def calorie_hero(c: canvas.Canvas) -> None:
 
 
 def calorie_system(c: canvas.Canvas) -> None:
-    page_base(c, 24, "23 / CALORIEPT PRODUCT SYSTEM")
-    cap(c, "23 / PRODUCT SYSTEM", 54, 720, GREEN, 9)
+    page_base(c, 25, "24 / CALORIEPT PRODUCT SYSTEM")
+    cap(c, "24 / PRODUCT SYSTEM", 54, 720, GREEN, 9)
     heading(c, "A REPEATABLE ACTION, NOT A FEATURE LIST", 54, 650, 1020, 52)
     flow = [
         ("01", "PHOTO", "INPUT"),
@@ -1332,10 +1493,10 @@ def calorie_system(c: canvas.Canvas) -> None:
 
 
 def stylist_hero(c: canvas.Canvas) -> None:
-    page_base(c, 25, "24 / CASE / STYLIST AI", field=False)
+    page_base(c, 26, "25 / CASE / STYLIST AI", field=False)
     glow(c, 965, 390, 430, GOLD, 0.15)
-    tile_field(c, 685, 0, 715, H, 25, GOLD, 20, 0.035)
-    cap(c, "24 / CASE 02 / WORKING BUILD", 54, 720, GOLD, 9)
+    tile_field(c, 685, 0, 715, H, 26, GOLD, 20, 0.035)
+    cap(c, "25 / CASE 02 / WORKING BUILD", 54, 720, GOLD, 9)
     heading(c, "STYLIST AI", 54, 640, 620, 78)
     copy(c, "PREMIUM PERSONAL STYLING SYSTEM", 58, 558, 600, 20, 24, GOLD, SEMI, 1)
     copy(c, "Wardrobe, stylist selection, one quick chat, personal palette and recommendation logic in an editorial Telegram Mini App.", 58, 470, 540, 15, 22, GRAY, BODY, 6)
@@ -1347,8 +1508,8 @@ def stylist_hero(c: canvas.Canvas) -> None:
 
 
 def stylist_system(c: canvas.Canvas) -> None:
-    page_base(c, 26, "25 / STYLIST PRODUCT SYSTEM")
-    cap(c, "25 / PRODUCT SYSTEM", 54, 720, GOLD, 9)
+    page_base(c, 27, "26 / STYLIST PRODUCT SYSTEM")
+    cap(c, "26 / PRODUCT SYSTEM", 54, 720, GOLD, 9)
     heading(c, "PREMIUM UX IS A SYSTEM", 54, 650, 880, 58)
     phone(c, CASES / "stylist-ai-quick-chat.png", 54, 108, 204, 454, MINT)
     phone(c, CASES / "stylist-ai-rachel.png", 286, 108, 204, 454, GOLD)
@@ -1366,8 +1527,8 @@ def stylist_system(c: canvas.Canvas) -> None:
 
 
 def bot_portfolio(c: canvas.Canvas) -> None:
-    page_base(c, 27, "26 / AI BOT PORTFOLIO")
-    cap(c, "26 / AI BOT PORTFOLIO", 54, 720, MINT, 9)
+    page_base(c, 28, "27 / AI BOT PORTFOLIO")
+    cap(c, "27 / AI BOT PORTFOLIO", 54, 720, MINT, 9)
     heading(c, "THREE NICHES. ONE DELIVERY LOGIC.", 54, 650, 980, 56)
     bots = [
         ("PSY MIND AI", "PSYCHOLOGY / SELF-REFLECTION", "Sensitive conversation design.", "psy-mind-ai-card.png", MINT_DARK),
@@ -1385,10 +1546,10 @@ def bot_portfolio(c: canvas.Canvas) -> None:
 
 
 def demo_lab(c: canvas.Canvas) -> None:
-    page_base(c, 28, "27 / DEMO LAB", field=False)
+    page_base(c, 29, "28 / DEMO LAB", field=False)
     glow(c, 1050, 390, 390, BLUE, 0.16)
-    pattern_code(c, 700, 70, 620, 590, 28)
-    cap(c, "27 / DEMO LAB", 54, 720, BLUE, 9)
+    pattern_code(c, 700, 70, 620, 590, 29)
+    cap(c, "28 / DEMO LAB", 54, 720, BLUE, 9)
     heading(c, "IDEAS BECOME INTERFACES", 54, 650, 820, 61)
     copy(c, "A controlled space for testing product hypotheses, conversation mechanics, interface systems and launch narratives before they become full products.", 58, 485, 560, 16, 23, GRAY, BODY, 7)
     real = ["CALORIEPT AI", "STYLIST AI", "PSY MIND AI", "BUSINESSMENTOR", "PULSE AI COACH"]
@@ -1412,10 +1573,10 @@ def demo_lab(c: canvas.Canvas) -> None:
 
 
 def ai_director(c: canvas.Canvas) -> None:
-    page_base(c, 29, "28 / AI DIRECTOR / IN PLANNING", field=False)
+    page_base(c, 30, "29 / AI DIRECTOR / IN PLANNING", field=False)
     glow(c, 1040, 380, 420, MINT, 0.17)
-    tile_field(c, 710, 0, 690, H, 29, MINT, 18, 0.07)
-    cap(c, "28 / NEXT PRODUCT CONCEPT / IN PLANNING", 54, 720, MINT, 9)
+    tile_field(c, 710, 0, 690, H, 30, MINT, 18, 0.07)
+    cap(c, "29 / NEXT PRODUCT CONCEPT / IN PLANNING", 54, 720, MINT, 9)
     heading(c, "AI DIRECTOR", 54, 640, 620, 78)
     copy(c, "A Telegram-first business pulse concept for money, tasks, sales, risks and next actions. Presented as a product direction - not a finished product.", 58, 518, 560, 16, 23, GRAY, BODY, 7)
     panel(c, 730, 164, 570, 430, BLACK_2, MINT, 12)
@@ -1450,8 +1611,8 @@ def route_page(c: canvas.Canvas, page_no: int, route: str, headline: str, accent
 def clients(c: canvas.Canvas) -> None:
     route_page(
         c,
-        30,
-        "29 / CLIENT ROUTE",
+        31,
+        "30 / CLIENT ROUTE",
         "BUILT FOR FOUNDERS, BRANDS AND TEAMS",
         MINT,
         [
@@ -1467,8 +1628,8 @@ def clients(c: canvas.Canvas) -> None:
 def employers(c: canvas.Canvas) -> None:
     route_page(
         c,
-        31,
-        "30 / EMPLOYER ROUTE",
+        32,
+        "31 / EMPLOYER ROUTE",
         "SMM SPECIALIST AMPLIFIED BY PRODUCT THINKING",
         BLUE,
         [
@@ -1482,9 +1643,9 @@ def employers(c: canvas.Canvas) -> None:
 
 
 def proof(c: canvas.Canvas) -> None:
-    page_base(c, 32, "31 / PROOF SYSTEM", field=False)
+    page_base(c, 33, "32 / PROOF SYSTEM", field=False)
     glow(c, 1020, 390, 410, GREEN, 0.13)
-    cap(c, "31 / PROOF SYSTEM", 54, 720, GREEN, 9)
+    cap(c, "32 / PROOF SYSTEM", 54, 720, GREEN, 9)
     heading(c, "EVIDENCE BEFORE PROMISES", 54, 650, 850, 62)
     proofs = [
         ("01", "CALORIEPT AI", "Telegram product / AI vision / retention / backend", GREEN),
@@ -1503,13 +1664,13 @@ def proof(c: canvas.Canvas) -> None:
 
 
 def contact(c: canvas.Canvas) -> None:
-    page_base(c, 33, "32 / CONTACT", field=False)
+    page_base(c, 34, "33 / CONTACT", field=False)
     image_cover(c, PORTFOLIO / "dimkoff-hero-sculpture-v2.png", 700, 0, 700, H, 0)
     c.saveState()
     set_alpha_fill(c, BLACK, 0.3)
     c.rect(700, 0, 700, H, fill=1, stroke=0)
     c.restoreState()
-    cap(c, "32 / CONTACT", 54, 720, MINT, 9)
+    cap(c, "33 / CONTACT", 54, 720, MINT, 9)
     heading(c, "LET'S TURN THE NEXT SIGNAL INTO A PRODUCT", 54, 635, 690, 60)
     copy(c, "Strategy, interface, automation and growth - connected in one delivery logic.", 58, 400, 540, 17, 24, GRAY, BODY, 5)
     selection_frame(c, 58, 244, 520, 92, BLUE)
@@ -1520,10 +1681,10 @@ def contact(c: canvas.Canvas) -> None:
 
 
 def final(c: canvas.Canvas) -> None:
-    page_base(c, 34, "FINAL POSTER", field=False)
+    page_base(c, 35, "FINAL POSTER", field=False)
     glow(c, 700, 390, 520, MINT, 0.19)
-    tile_field(c, 0, 0, W, H, 34, MINT, 25, 0.06)
-    grain(c, 34, 1400)
+    tile_field(c, 0, 0, W, H, 35, MINT, 25, 0.06)
+    grain(c, 35, 1400)
     wordmark(c, 54, 636, 78, WHITE)
     copy(c, "NOT CONTENT.", 54, 474, 900, 64, 65, WHITE, DISPLAY, 1)
     selection_frame(c, 48, 378, 760, 78, BLUE)
@@ -1557,6 +1718,7 @@ def build_pages():
         personal_brand_concept,
         technology_layer,
         client_outcomes,
+        website_direction,
         calorie_hero,
         calorie_system,
         stylist_hero,
