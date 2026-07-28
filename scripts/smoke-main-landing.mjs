@@ -74,6 +74,20 @@ async function verify(viewport, filename) {
     audiences: await page.locator('[class*="audienceGrid"] > span').count(),
     processSteps: await page.locator("#process ol li").count(),
     heroImages: await page.locator('[class*="heroScene"] > img').count(),
+    heroAsset: await page.locator('[class*="heroScene"] > img').getAttribute("src"),
+    marqueeGroups: await page.locator('[data-testid="seamless-marquee"] [class*="marqueeGroup"]').count(),
+    marqueeItems: await page.locator('[data-testid="seamless-marquee"] [class*="marqueeGroup"] > span').count(),
+    marquee: await page.locator('[data-testid="seamless-marquee"] [class*="marqueeTrack"]').evaluate((track) => {
+      const groups = [...track.children];
+      const style = getComputedStyle(track);
+      return {
+        animationName: style.animationName,
+        groupWidthDelta: groups.length === 2
+          ? Math.abs(groups[0].getBoundingClientRect().width - groups[1].getBoundingClientRect().width)
+          : -1,
+      };
+    }),
+    productDescriptions: await page.locator('#products [class*="productGrid"] article p').count(),
     portfolioLinks: await page.locator('a[href$="/portfolio/"]').count(),
     brandbookLinks: await page.locator('a[href$="dimkoff-brandbook-2026-visual-v2.pdf"]').count(),
     telegramLinks: await page.locator('a[href="https://t.me/AIStudioDimkoFF"]').count(),
@@ -92,6 +106,14 @@ async function verify(viewport, filename) {
     headerPosition: await page.locator("header").evaluate(
       (element) => getComputedStyle(element).position,
     ),
+    heroTypography: await h1.evaluate((element) => {
+      const style = getComputedStyle(element);
+      return {
+        fontSize: Number.parseFloat(style.fontSize),
+        lineHeight: Number.parseFloat(style.lineHeight),
+        width: element.getBoundingClientRect().width,
+      };
+    }),
   };
 
   if (!checks.title.includes("DimkoFF")) throw new Error("Missing DimkoFF title");
@@ -114,6 +136,24 @@ async function verify(viewport, filename) {
   if (checks.audiences !== 8) throw new Error(`Expected 8 audiences, got ${checks.audiences}`);
   if (checks.processSteps !== 5) throw new Error(`Expected 5 process steps, got ${checks.processSteps}`);
   if (checks.heroImages !== 1) throw new Error("3D hero object is missing");
+  if (!checks.heroAsset?.includes("dimkoff-hero-monolith-v2.webp")) {
+    throw new Error(`Premium hero asset is missing: ${checks.heroAsset}`);
+  }
+  if (checks.marqueeGroups !== 2 || checks.marqueeItems !== 24) {
+    throw new Error(`Seamless marquee is incomplete: ${checks.marqueeGroups} groups / ${checks.marqueeItems} items`);
+  }
+  if (checks.marquee.animationName === "none" || checks.marquee.groupWidthDelta > 1) {
+    throw new Error(`Seamless marquee motion failed: ${JSON.stringify(checks.marquee)}`);
+  }
+  if (checks.productDescriptions !== 4) {
+    throw new Error(`Product proof lacks depth: ${checks.productDescriptions} descriptions`);
+  }
+  if (checks.heroTypography.lineHeight < checks.heroTypography.fontSize) {
+    throw new Error(`Hero typography overlaps: ${JSON.stringify(checks.heroTypography)}`);
+  }
+  if (checks.heroTypography.width > 720) {
+    throw new Error(`Hero copy is too wide: ${checks.heroTypography.width}px`);
+  }
   if (checks.portfolioLinks < 2 || checks.brandbookLinks < 2) {
     throw new Error("Portfolio or brandbook routes are incomplete");
   }

@@ -137,13 +137,67 @@ const benefits: Localized[] = [
 ];
 
 const realProducts = [
-  { name: 'CaloriePT AI 2.0', type: 'AI NUTRITION / LIVE', tone: 'mint' },
-  { name: 'Stylist AI', type: 'FASHION MINI APP / BUILD', tone: 'gold' },
-  { name: 'AI Bot Portfolio', type: '3 НИШИ / TELEGRAM', tone: 'blue' },
-  { name: 'Visual Brandbook', type: '35 PAGES / VISUAL SYSTEM', tone: 'mint' },
+  {
+    name: 'CaloriePT AI 2.0',
+    type: 'AI NUTRITION / LIVE',
+    tone: 'mint',
+    body: {
+      ru: 'Telegram AI-продукт: питание, распознавание, база продуктов и ежедневные сценарии.',
+      en: 'A Telegram AI product for nutrition, recognition, product data and daily routines.',
+    },
+  },
+  {
+    name: 'Stylist AI',
+    type: 'FASHION MINI APP / BUILD',
+    tone: 'gold',
+    body: {
+      ru: 'Персональный стилист, гардероб, цветовая система и продуктовый маршрут внутри Mini App.',
+      en: 'A personal stylist, wardrobe, color system and product journey inside a Mini App.',
+    },
+  },
+  {
+    name: 'AI Bot Portfolio',
+    type: '3 НИШИ / TELEGRAM',
+    tone: 'blue',
+    body: {
+      ru: 'Линейка нишевых AI-ботов для психологии, бизнес-образования и performance coaching.',
+      en: 'A suite of niche AI bots for psychology, business education and performance coaching.',
+    },
+  },
+  {
+    name: 'Visual Brandbook',
+    type: '35 PAGES / VISUAL SYSTEM',
+    tone: 'mint',
+    body: {
+      ru: 'Цельная бренд-система: позиционирование, digital experiences, интерфейсы и визуальный язык.',
+      en: 'A complete brand system: positioning, digital experiences, interfaces and visual language.',
+    },
+  },
 ];
 
-const conceptProducts = ['AI Director', 'ExpertOS', 'BriefPilot', 'LaunchKit', 'Signal House', 'Signal Field 3D'];
+const conceptProducts = [
+  { name: 'AI Director', body: { ru: 'AI-операционная система для контента и команд.', en: 'An AI operating system for content and teams.' } },
+  { name: 'ExpertOS', body: { ru: 'Продуктовая среда для эксперта и его методики.', en: 'A product environment for experts and their methods.' } },
+  { name: 'BriefPilot', body: { ru: 'Умный брифинг, квалификация и сбор вводных.', en: 'Smart briefing, qualification and input collection.' } },
+  { name: 'LaunchKit', body: { ru: 'Launch-маршрут от оффера до первых заявок.', en: 'A launch journey from offer to first leads.' } },
+  { name: 'Signal House', body: { ru: 'Система контента, сигналов и точек контакта.', en: 'A system of content, signals and touchpoints.' } },
+  { name: 'Signal Field 3D', body: { ru: 'Интерактивная 3D-витрина продукта или бренда.', en: 'An interactive 3D showcase for a product or brand.' } },
+];
+
+const marqueeItems = [
+  'AI PRODUCTS',
+  'TELEGRAM MINI APPS',
+  'SMM SYSTEMS',
+  'DIGITAL EXPERIENCES',
+  'AI BOTS',
+  'PRODUCT THINKING',
+  'FULL CYCLE LAUNCH',
+  'BRAND SYSTEMS',
+  'SALES FUNNELS',
+  'AUTOMATION',
+  'PREMIUM WEB',
+  'CASE LAB',
+];
 
 const audiences: Localized[] = [
   { ru: 'Малый и средний бизнес', en: 'Small and medium businesses' },
@@ -177,7 +231,7 @@ export function DimkoffLandingScreen() {
     () => ({
       portfolio: `${baseUrl}portfolio/`,
       brandbook: `${baseUrl}portfolio/dimkoff-brandbook-2026-visual-v2.pdf`,
-      hero: `${baseUrl}portfolio/assets/dimkoff-hero-sculpture.webp`,
+      hero: `${baseUrl}portfolio/assets/dimkoff-hero-monolith-v2.webp`,
       brandbookPreview: `${baseUrl}portfolio/assets/brandbook-founder-site.webp`,
       calorie: `${baseUrl}portfolio/assets/caloriept-ai-live.webp`,
       stylist: `${baseUrl}portfolio/assets/stylist-ai-showcase.webp`,
@@ -332,14 +386,12 @@ export function DimkoffLandingScreen() {
             <div className={styles.heroGlow} aria-hidden="true" />
             <div className={`${styles.orbit} ${styles.orbitOne}`} aria-hidden="true" />
             <div className={`${styles.orbit} ${styles.orbitTwo}`} aria-hidden="true" />
-            <svg className={styles.mesh} viewBox="0 0 680 620" aria-hidden="true">
-              <path d="M42 164 170 64 306 122 466 46 628 142 650 310 560 504 368 570 186 516 50 366Z" />
-              <path d="M42 164 306 122 560 504M170 64 186 516M466 46 368 570M628 142 50 366M170 64 466 46 650 310 368 570 50 366Z" />
-              {[['42','164'],['170','64'],['306','122'],['466','46'],['628','142'],['650','310'],['560','504'],['368','570'],['186','516'],['50','366']].map(([cx, cy]) => (
-                <circle key={`${cx}-${cy}`} cx={cx} cy={cy} r="5" />
-              ))}
-            </svg>
             <img src={links.hero} alt="3D-скульптура DimkoFF" width="1672" height="941" fetchPriority="high" />
+            <div className={styles.lightSweep} aria-hidden="true" />
+            <div className={styles.sceneStatus}>
+              <span><i /> SYSTEM ONLINE</span>
+              <strong>DIMKOFF / PRODUCT ENGINE</strong>
+            </div>
             <div className={`${styles.floatingCard} ${styles.cardIdea}`}>
               <span>01 / SIGNAL</span><strong>IDEA → PRODUCT</strong>
               <small>{language === 'ru' ? 'Смысл до инструмента' : 'Meaning before tools'}</small>
@@ -355,8 +407,16 @@ export function DimkoffLandingScreen() {
           </div>
         </section>
 
-        <div className={styles.signalLine} aria-hidden="true">
-          <div><span>AI PRODUCTS</span><i>+</i><span>TELEGRAM MINI APPS</span><i>+</i><span>SMM SYSTEMS</span><i>+</i><span>DIGITAL EXPERIENCES</span></div>
+        <div className={styles.signalLine} data-testid="seamless-marquee" aria-hidden="true">
+          <div className={styles.marqueeTrack}>
+            {[0, 1].map((group) => (
+              <div className={styles.marqueeGroup} key={group}>
+                {marqueeItems.map((item) => (
+                  <span key={`${group}-${item}`}>{item}<i>+</i></span>
+                ))}
+              </div>
+            ))}
+          </div>
         </div>
 
         <section id="capabilities" className={`${styles.section} ${styles.shell}`}>
@@ -417,6 +477,7 @@ export function DimkoffLandingScreen() {
                 <div>
                   <span>{String(index + 1).padStart(2, '0')} / {product.type}</span>
                   <h3>{product.name}</h3>
+                  <p>{localize(product.body, language)}</p>
                 </div>
                 {index < 2 && <img src={index === 0 ? links.calorie : links.stylist} alt="" loading="lazy" />}
                 <i>↗</i>
@@ -427,10 +488,10 @@ export function DimkoffLandingScreen() {
           <p className={styles.groupLabel}><span>B</span>{localize(copy.concepts, language)}</p>
           <div className={styles.conceptRail}>
             {conceptProducts.map((product, index) => (
-              <article key={product}>
+              <article key={product.name}>
                 <span>{String(index + 1).padStart(2, '0')} / CONCEPT</span>
-                <strong>{product}</strong>
-                <small>{language === 'ru' ? 'Направление для адаптации под нишу' : 'A direction to adapt to a niche'}</small>
+                <strong>{product.name}</strong>
+                <small>{localize(product.body, language)}</small>
               </article>
             ))}
           </div>
