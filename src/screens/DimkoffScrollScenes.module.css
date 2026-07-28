@@ -1,0 +1,787 @@
+.introSection,
+.shatterSection,
+.phoneSection,
+.stackSection,
+.collageSection {
+  --scene-bg: #05080a;
+  position: relative;
+  width: 100%;
+  background: var(--scene-bg);
+  color: #f5f1e9;
+  isolation: isolate;
+}
+
+.introSection {
+  height: 190vh;
+  min-height: 1240px;
+}
+
+.shatterSection {
+  height: 330vh;
+  min-height: 2200px;
+  background:
+    radial-gradient(circle at 50% 45%, rgba(22, 229, 186, 0.08), transparent 34%),
+    #f2f4f7;
+  color: #0a0c0d;
+}
+
+.phoneSection {
+  height: 300vh;
+  min-height: 2100px;
+  background:
+    radial-gradient(circle at 50% 52%, rgba(14, 220, 177, 0.13), transparent 31%),
+    linear-gradient(180deg, #050709, #07100f 52%, #050709);
+}
+
+.stackSection {
+  height: 440vh;
+  min-height: 3000px;
+  background:
+    radial-gradient(circle at 50% 46%, rgba(207, 169, 84, 0.09), transparent 32%),
+    #090a0d;
+}
+
+.collageSection {
+  height: 280vh;
+  min-height: 1900px;
+  overflow: clip;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(29, 229, 187, 0.09), transparent 31%),
+    #08090c;
+}
+
+.stickyViewport {
+  position: sticky;
+  top: 0;
+  width: 100%;
+  height: 100vh;
+  min-height: 680px;
+  overflow: hidden;
+}
+
+.canvasFallback,
+.canvasLayer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.canvasFallback {
+  z-index: -2;
+  object-fit: cover;
+  object-position: center;
+  opacity: 0.34;
+  filter: saturate(0.75) contrast(1.18);
+  mask-image: radial-gradient(circle at 54% 50%, black, transparent 64%);
+}
+
+.canvasLayer {
+  z-index: 1;
+}
+
+.canvasLayer canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.sceneMesh {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.028) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.028) 1px, transparent 1px),
+    radial-gradient(circle at 51% 50%, transparent 0 22%, rgba(5, 8, 10, 0.14) 55%, #05080a 100%);
+  background-size: 88px 88px, 88px 88px, auto;
+  mask-image: linear-gradient(to bottom, transparent, black 16%, black 84%, transparent);
+}
+
+.introTitle {
+  position: absolute;
+  z-index: 4;
+  top: clamp(112px, 13vh, 148px);
+  left: clamp(24px, 4vw, 76px);
+  width: min(760px, 59vw);
+  pointer-events: none;
+}
+
+.introTitle > p,
+.shatterCopy > p,
+.phoneHeading > p,
+.stackHeading > p,
+.collageWord > span {
+  margin: 0 0 18px;
+  color: #e0bd67;
+  font: 700 11px/1.2 "SFMono-Regular", Consolas, monospace;
+  letter-spacing: 0.17em;
+}
+
+.titleSwitcher {
+  position: relative;
+  height: clamp(260px, 29vw, 470px);
+}
+
+.titleSwitcher h1,
+.titleSwitcher h2 {
+  position: absolute;
+  top: 0;
+  left: 0;
+  max-width: min(980px, 79vw);
+  margin: 0;
+  color: #f7f4ed;
+  font-family: Inter, Arial, sans-serif;
+  font-size: clamp(78px, 13.3vw, 252px);
+  font-weight: 570;
+  line-height: 0.8;
+  letter-spacing: -0.075em;
+  text-transform: uppercase;
+  transform-origin: left top;
+  transition:
+    opacity 160ms ease,
+    transform 210ms cubic-bezier(0.2, 0.75, 0.3, 1),
+    filter 160ms ease;
+}
+
+.titleSwitcher h2 {
+  width: min(1100px, 80vw);
+  font-size: clamp(52px, 8.7vw, 164px);
+  line-height: 0.86;
+}
+
+.titleActive {
+  opacity: 1;
+  filter: blur(0);
+  transform: translateY(0) skewY(0);
+}
+
+.titleAway {
+  opacity: 0;
+  filter: blur(10px);
+  transform: translateY(-26px) skewY(-2deg);
+}
+
+.introTitle > span {
+  display: block;
+  width: min(490px, 44vw);
+  color: rgba(239, 240, 238, 0.66);
+  font-size: clamp(14px, 1.15vw, 18px);
+  line-height: 1.55;
+}
+
+.introActions {
+  position: absolute;
+  z-index: 4;
+  right: clamp(24px, 4vw, 76px);
+  bottom: 64px;
+  display: flex;
+  gap: 10px;
+}
+
+.introActions a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 48px;
+  padding: 0 20px;
+  border: 1px solid rgba(231, 194, 104, 0.48);
+  border-radius: 999px;
+  color: #f4d27c;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-decoration: none;
+  background: rgba(5, 9, 11, 0.72);
+  backdrop-filter: blur(16px);
+  transition: color 180ms ease, border-color 180ms ease, background 180ms ease;
+}
+
+.introActions a:first-child {
+  color: #08100e;
+  background: #e9c76f;
+}
+
+.introActions a:hover {
+  color: #07100e;
+  border-color: #18e3ba;
+  background: #18e3ba;
+}
+
+.sceneReadout {
+  position: absolute;
+  z-index: 4;
+  right: clamp(24px, 4vw, 76px);
+  top: 124px;
+  display: grid;
+  justify-items: end;
+  gap: 6px;
+  color: #17e1b8;
+  font: 700 10px/1.2 "SFMono-Regular", Consolas, monospace;
+  letter-spacing: 0.12em;
+}
+
+.sceneReadout strong {
+  font-size: clamp(32px, 4vw, 70px);
+  font-weight: 400;
+  letter-spacing: -0.06em;
+}
+
+.shatterCopy {
+  position: absolute;
+  z-index: 4;
+  top: 50%;
+  left: 50%;
+  width: min(820px, 80vw);
+  text-align: center;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.shatterCopy > p {
+  color: #86713f;
+}
+
+.shatterCopy h2 {
+  margin: 0;
+  color: rgba(8, 10, 11, 0.88);
+  font-size: clamp(76px, 14vw, 258px);
+  font-weight: 520;
+  line-height: 0.82;
+  letter-spacing: -0.08em;
+  mix-blend-mode: multiply;
+}
+
+.shatterCopy span {
+  display: block;
+  max-width: 600px;
+  margin: 36px auto 0;
+  color: rgba(12, 14, 16, 0.62);
+  font-size: clamp(16px, 1.4vw, 22px);
+  line-height: 1.45;
+}
+
+.shatterCounter {
+  position: absolute;
+  z-index: 4;
+  right: clamp(22px, 4vw, 72px);
+  bottom: 52px;
+  display: grid;
+  justify-items: end;
+  color: #56605e;
+  font: 700 10px/1.2 "SFMono-Regular", Consolas, monospace;
+  letter-spacing: 0.14em;
+}
+
+.shatterCounter strong {
+  color: #111616;
+  font-size: clamp(30px, 4vw, 62px);
+  font-weight: 400;
+  letter-spacing: -0.05em;
+}
+
+.phoneHeading,
+.stackHeading {
+  position: absolute;
+  z-index: 8;
+  top: 94px;
+  left: 50%;
+  width: min(760px, calc(100% - 48px));
+  text-align: center;
+  transform: translateX(-50%);
+}
+
+.phoneHeading h2,
+.stackHeading h2 {
+  margin: 0;
+  font-size: clamp(38px, 5.4vw, 86px);
+  font-weight: 540;
+  line-height: 0.96;
+  letter-spacing: -0.055em;
+}
+
+.phone {
+  position: absolute;
+  width: clamp(232px, 22vw, 360px);
+  aspect-ratio: 0.49;
+  padding: 11px;
+  overflow: hidden;
+  border: 1px solid rgba(228, 203, 134, 0.42);
+  border-radius: clamp(34px, 3vw, 52px);
+  background: linear-gradient(145deg, #28312f, #050707 36%, #18201e);
+  box-shadow:
+    0 40px 90px rgba(0, 0, 0, 0.58),
+    inset 0 0 0 2px rgba(255, 255, 255, 0.05),
+    0 0 46px rgba(16, 228, 184, 0.09);
+  transform-style: preserve-3d;
+}
+
+.phoneScreen {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: inherit;
+  background: #080b0d;
+}
+
+.phoneScreen img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transform: scale(1.05);
+  transition: opacity 220ms ease, transform 580ms ease;
+}
+
+.phoneScreen img.phoneScreenActive {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.phoneSpeaker {
+  position: absolute;
+  z-index: 4;
+  top: 17px;
+  left: 50%;
+  width: 34%;
+  height: 22px;
+  border-radius: 999px;
+  background: #020303;
+  transform: translateX(-50%);
+}
+
+.phoneReflection {
+  position: absolute;
+  z-index: 3;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(112deg, transparent 18%, rgba(255, 255, 255, 0.18) 34%, transparent 48%);
+  mix-blend-mode: screen;
+}
+
+.phoneLeft,
+.phoneRight {
+  z-index: 2;
+  top: 48%;
+  opacity: 0.5;
+  filter: saturate(0.72) brightness(0.7);
+}
+
+.phoneLeft {
+  left: 0;
+  transform: translate(-54%, -38%) rotateY(25deg) rotateZ(-3deg);
+}
+
+.phoneRight {
+  right: 0;
+  transform: translate(54%, -38%) rotateY(-25deg) rotateZ(3deg);
+}
+
+.phoneCenterWrap {
+  position: absolute;
+  z-index: 5;
+  top: 51%;
+  left: 50%;
+  width: clamp(232px, 22vw, 360px);
+  aspect-ratio: 0.49;
+  transform:
+    translate3d(-50%, calc(-42% + var(--phone-rise)), 0)
+    perspective(1400px)
+    rotateY(var(--phone-turn))
+    scale(var(--phone-scale));
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.phoneCenter {
+  inset: 0;
+  width: 100%;
+}
+
+.phoneMeta {
+  position: absolute;
+  z-index: 7;
+  right: clamp(24px, 7vw, 130px);
+  bottom: 88px;
+  display: grid;
+  min-width: 230px;
+  padding: 18px;
+  border-left: 1px solid rgba(20, 226, 185, 0.46);
+  color: rgba(235, 239, 237, 0.62);
+  background: linear-gradient(90deg, rgba(8, 14, 14, 0.82), transparent);
+}
+
+.phoneMeta span,
+.phoneMeta small {
+  font: 700 9px/1.4 "SFMono-Regular", Consolas, monospace;
+  letter-spacing: 0.13em;
+}
+
+.phoneMeta strong {
+  margin: 8px 0;
+  color: #f4f0e7;
+  font-size: 22px;
+}
+
+.stackFrame {
+  position: absolute;
+  z-index: 3;
+  top: 50%;
+  left: 50%;
+  width: min(1020px, calc(100% - 64px));
+  height: min(610px, 62vh);
+  overflow: hidden;
+  border: 1px solid rgba(235, 199, 108, 0.28);
+  border-radius: 30px;
+  background: #0c0f13;
+  box-shadow:
+    0 60px 160px rgba(0, 0, 0, 0.55),
+    0 0 80px rgba(224, 182, 80, 0.05);
+  transform: translate(-50%, -31%);
+}
+
+.stackCard {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  padding: clamp(28px, 5vw, 72px);
+  transform:
+    translateY(var(--card-y))
+    scale(var(--card-scale));
+  transform-origin: center top;
+  filter: brightness(var(--card-dim));
+  will-change: transform;
+}
+
+.stackCard img,
+.stackShade {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.stackCard img {
+  object-fit: cover;
+}
+
+.stackShade {
+  background:
+    linear-gradient(90deg, rgba(7, 9, 12, 0.97) 0%, rgba(7, 9, 12, 0.82) 43%, rgba(7, 9, 12, 0.2) 100%),
+    linear-gradient(0deg, rgba(7, 9, 12, 0.82), transparent 65%);
+}
+
+.stackCard > span,
+.stackCard h3,
+.stackCard p {
+  position: relative;
+  z-index: 2;
+}
+
+.stackCard > span {
+  color: #e6c46f;
+  font: 700 10px/1.2 "SFMono-Regular", Consolas, monospace;
+  letter-spacing: 0.16em;
+}
+
+.stackCard h3 {
+  max-width: 80%;
+  margin: clamp(80px, 12vh, 150px) 0 18px;
+  font-size: clamp(64px, 10vw, 150px);
+  font-weight: 520;
+  line-height: 0.82;
+  letter-spacing: -0.075em;
+}
+
+.stackCard p {
+  max-width: 490px;
+  margin: 0;
+  color: rgba(238, 238, 234, 0.7);
+  font-size: clamp(15px, 1.35vw, 21px);
+  line-height: 1.5;
+}
+
+.stackProgress {
+  position: absolute;
+  z-index: 7;
+  right: 50%;
+  bottom: 42px;
+  width: min(1020px, calc(100% - 64px));
+  height: 2px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.08);
+  transform: translateX(50%);
+}
+
+.stackProgress i {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, #e4bf62, #17e0b7);
+}
+
+.collageWord {
+  position: absolute;
+  z-index: 4;
+  top: 50%;
+  left: 50%;
+  width: min(1160px, 92vw);
+  text-align: center;
+  transform: translate(-50%, -50%);
+}
+
+.collageWord h2 {
+  margin: 0;
+  color: rgba(238, 239, 237, 0.9);
+  font-size: clamp(92px, 18vw, 330px);
+  font-weight: 500;
+  line-height: 0.76;
+  letter-spacing: -0.085em;
+}
+
+.collageWord p {
+  margin: 32px auto 0;
+  color: rgba(232, 235, 232, 0.58);
+  font-size: clamp(15px, 1.25vw, 20px);
+}
+
+.collageField {
+  position: absolute;
+  z-index: 5;
+  inset: 0;
+  perspective: 1600px;
+  pointer-events: none;
+}
+
+.collageField figure {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: clamp(210px, 22vw, 390px);
+  aspect-ratio: 1.42;
+  margin: 0;
+  overflow: hidden;
+  border: 1px solid rgba(181, 211, 204, 0.2);
+  border-radius: 3px;
+  opacity: var(--tile-opacity);
+  box-shadow: 0 28px 70px rgba(0, 0, 0, 0.42);
+  transform:
+    translate3d(calc(-50% + var(--tile-x)), calc(-50% + var(--tile-y)), var(--tile-z))
+    rotate(var(--tile-r));
+  will-change: transform;
+}
+
+.collageField figure:nth-child(2n) {
+  width: clamp(180px, 18vw, 330px);
+}
+
+.collageField img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.collageHint {
+  position: absolute;
+  z-index: 8;
+  right: 38px;
+  bottom: 30px;
+  color: rgba(232, 234, 230, 0.42);
+  font: 700 9px/1.2 "SFMono-Regular", Consolas, monospace;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 900px) {
+  .stickyViewport {
+    min-height: 620px;
+  }
+
+  .introSection {
+    height: 170vh;
+    min-height: 1160px;
+  }
+
+  .introTitle {
+    top: 104px;
+    left: 18px;
+    width: calc(100% - 36px);
+  }
+
+  .titleSwitcher {
+    height: 248px;
+  }
+
+  .titleSwitcher h1 {
+    font-size: clamp(66px, 20vw, 102px);
+  }
+
+  .titleSwitcher h2 {
+    width: 94vw;
+    font-size: clamp(40px, 11.5vw, 68px);
+  }
+
+  .introTitle > span {
+    width: min(350px, 86vw);
+    font-size: 13px;
+  }
+
+  .sceneReadout {
+    top: auto;
+    right: 18px;
+    bottom: 92px;
+  }
+
+  .sceneReadout span {
+    display: none;
+  }
+
+  .introActions {
+    right: auto;
+    bottom: 22px;
+    left: 18px;
+    width: calc(100% - 36px);
+  }
+
+  .introActions a {
+    flex: 1;
+    justify-content: center;
+    padding-inline: 10px;
+    font-size: 10px;
+  }
+
+  .canvasLayer {
+    transform: scale(0.88);
+  }
+
+  .shatterSection {
+    height: 300vh;
+    min-height: 1900px;
+  }
+
+  .shatterCopy {
+    width: 92vw;
+  }
+
+  .shatterCopy h2 {
+    font-size: clamp(66px, 22vw, 118px);
+  }
+
+  .shatterCopy span {
+    max-width: 330px;
+    margin-top: 24px;
+    font-size: 14px;
+  }
+
+  .phoneSection {
+    height: 270vh;
+    min-height: 1850px;
+  }
+
+  .phoneHeading,
+  .stackHeading {
+    top: 88px;
+    width: calc(100% - 34px);
+  }
+
+  .phoneHeading h2,
+  .stackHeading h2 {
+    font-size: clamp(34px, 10vw, 50px);
+  }
+
+  .phone {
+    width: 222px;
+  }
+
+  .phoneLeft {
+    left: -44px;
+    transform: translate(-68%, -30%) rotateY(25deg);
+  }
+
+  .phoneRight {
+    right: -44px;
+    transform: translate(68%, -30%) rotateY(-25deg);
+  }
+
+  .phoneCenterWrap {
+    width: 224px;
+  }
+
+  .phoneMeta {
+    right: 18px;
+    bottom: 24px;
+    left: 18px;
+    min-width: 0;
+  }
+
+  .stackSection {
+    height: 400vh;
+    min-height: 2600px;
+  }
+
+  .stackFrame {
+    width: calc(100% - 24px);
+    height: min(570px, 66vh);
+    border-radius: 20px;
+    transform: translate(-50%, -27%);
+  }
+
+  .stackCard {
+    padding: 24px;
+  }
+
+  .stackCard h3 {
+    margin-top: 45%;
+    font-size: clamp(54px, 18vw, 88px);
+  }
+
+  .stackCard p {
+    font-size: 14px;
+  }
+
+  .stackProgress {
+    bottom: 24px;
+    width: calc(100% - 24px);
+  }
+
+  .collageSection {
+    height: 250vh;
+    min-height: 1700px;
+  }
+
+  .collageWord h2 {
+    font-size: clamp(74px, 25vw, 118px);
+  }
+
+  .collageField figure {
+    width: 230px;
+  }
+
+  .collageField figure:nth-child(2n) {
+    width: 190px;
+  }
+
+  .collageHint {
+    right: 18px;
+    bottom: 18px;
+    left: 18px;
+    text-align: center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .titleSwitcher h1,
+  .titleSwitcher h2,
+  .phoneScreen img {
+    transition: none;
+  }
+
+  .phoneCenterWrap,
+  .stackCard,
+  .collageField figure {
+    will-change: auto;
+  }
+}

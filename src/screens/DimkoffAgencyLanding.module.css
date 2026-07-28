@@ -13,7 +13,7 @@
   --max: 1320px;
   position: relative;
   min-height: 100dvh;
-  overflow: hidden;
+  overflow: clip;
   color: var(--text);
   background:
     radial-gradient(circle at 82% 6%, rgba(0, 232, 189, 0.07), transparent 29rem),
@@ -41,6 +41,16 @@
 .shell {
   width: min(calc(100% - 64px), var(--max));
   margin-inline: auto;
+}
+
+.sceneFallback {
+  display: grid;
+  min-height: 100vh;
+  place-items: center;
+  color: rgba(240, 208, 128, 0.72);
+  background: #05080a;
+  font: 700 11px/1.2 "SFMono-Regular", Consolas, monospace;
+  letter-spacing: 0.18em;
 }
 
 .pageNoise {

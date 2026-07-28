@@ -1,4 +1,6 @@
 import {
+  lazy,
+  Suspense,
   useEffect,
   useMemo,
   useState,
@@ -6,6 +8,32 @@ import {
   type PointerEventHandler,
 } from 'react';
 import styles from './DimkoffAgencyLanding.module.css';
+
+const PortalIntroScene = lazy(() =>
+  import('./DimkoffScrollScenes').then((module) => ({
+    default: module.PortalIntroScene,
+  })),
+);
+const CrystalShatterScene = lazy(() =>
+  import('./DimkoffScrollScenes').then((module) => ({
+    default: module.CrystalShatterScene,
+  })),
+);
+const PhoneShowcaseScene = lazy(() =>
+  import('./DimkoffScrollScenes').then((module) => ({
+    default: module.PhoneShowcaseScene,
+  })),
+);
+const CardStackScene = lazy(() =>
+  import('./DimkoffScrollScenes').then((module) => ({
+    default: module.CardStackScene,
+  })),
+);
+const CollageScatterScene = lazy(() =>
+  import('./DimkoffScrollScenes').then((module) => ({
+    default: module.CollageScatterScene,
+  })),
+);
 
 type Language = 'ru' | 'en';
 type Localized = { ru: string; en: string };
@@ -426,20 +454,6 @@ export function DimkoffAgencyLanding() {
     event.currentTarget.style.setProperty('--agency-ry', '0deg');
   };
 
-  const handleHeroMove: PointerEventHandler<HTMLDivElement> = (event) => {
-    if (window.matchMedia('(pointer: coarse)').matches) return;
-    const bounds = event.currentTarget.getBoundingClientRect();
-    const x = (event.clientX - bounds.left) / bounds.width - 0.5;
-    const y = (event.clientY - bounds.top) / bounds.height - 0.5;
-    event.currentTarget.style.setProperty('--agency-mx', `${x * 18}px`);
-    event.currentTarget.style.setProperty('--agency-my', `${y * 13}px`);
-  };
-
-  const resetHero: PointerEventHandler<HTMLDivElement> = (event) => {
-    event.currentTarget.style.setProperty('--agency-mx', '0px');
-    event.currentTarget.style.setProperty('--agency-my', '0px');
-  };
-
   return (
     <div className={styles.agency} data-testid="dimkoff-main-landing">
       {loaderVisible && (
@@ -509,43 +523,9 @@ export function DimkoffAgencyLanding() {
       </header>
 
       <main>
-        <section id="top" className={`${styles.hero} ${styles.shell}`}>
-          <div className={styles.heroCopy}>
-            <p className={styles.kicker}><i /> SMM + AI PRODUCT BUILDER</p>
-              <h1>
-                <span>{language === 'ru' ? 'AI-продукты' : 'AI products'}</span>
-                {language === 'ru'
-                  ? ' и digital-сцены, которые превращают внимание в систему'
-                  : ' and digital scenes that turn attention into a system'}
-              </h1>
-            <p className={styles.heroLead}>{t(copy.heroLead, language)}</p>
-            <div className={styles.heroActions}>
-              <a className={styles.buttonGold} href="https://t.me/AIStudioDimkoFF" target="_blank" rel="noreferrer">
-                {t(copy.discuss, language)} <i>↗</i>
-              </a>
-              <a className={styles.buttonGlass} href="#projects">{t(copy.projects, language)} <i>↓</i></a>
-              <a className={styles.buttonText} href={links.brandbook}>{t(copy.brandbook, language)} <i>↗</i></a>
-            </div>
-            <div className={styles.heroSystem}>
-              <span>SIGNAL</span><i>→</i><span>SYSTEM</span><i>→</i><span>PRODUCT</span><i>→</i><span>GROWTH</span>
-            </div>
-          </div>
-          <div className={styles.heroScene} onPointerMove={handleHeroMove} onPointerLeave={resetHero}>
-            <div className={styles.sceneGlow} />
-            <img src={links.hero} alt="3D-символ DimkoFF — Цифровой портал" width="1672" height="941" fetchPriority="high" />
-            <div className={`${styles.orbit} ${styles.orbitOne}`} />
-            <div className={`${styles.orbit} ${styles.orbitTwo}`} />
-            <div className={styles.lightSweep} />
-            <div className={`${styles.signalCard} ${styles.signalCardOne}`}>
-              <span>01 / INPUT</span><strong>ATTENTION</strong><small>SMM SIGNAL</small>
-            </div>
-            <div className={`${styles.signalCard} ${styles.signalCardTwo}`}>
-              <span>02 / CORE</span><strong>AI + DEV</strong><small>PRODUCT LOGIC</small>
-            </div>
-            <div className={styles.sceneCaption}><i /> DIGITAL PORTAL / SYSTEM ONLINE</div>
-          </div>
-          <div className={styles.scrollHint}><span>SCROLL TO EXPLORE</span><i>↓</i></div>
-        </section>
+        <Suspense fallback={<div className={styles.sceneFallback}>DIMKOFF / DIGITAL PORTAL</div>}>
+          <PortalIntroScene language={language} baseUrl={baseUrl} />
+        </Suspense>
 
         <div className={styles.marquee} data-testid="seamless-marquee" aria-hidden="true">
           <div className={styles.marqueeTrack}>
@@ -582,6 +562,10 @@ export function DimkoffAgencyLanding() {
           </div>
         </section>
 
+        <Suspense fallback={<div className={styles.sceneFallback}>CRYSTAL FIELD / LOADING</div>}>
+          <CrystalShatterScene language={language} baseUrl={baseUrl} />
+        </Suspense>
+
         <section id="projects" className={styles.projectsSection}>
           <div className={styles.shell}>
             <div className={styles.sectionIntro} data-agency-reveal>
@@ -604,6 +588,10 @@ export function DimkoffAgencyLanding() {
             </div>
           </div>
         </section>
+
+        <Suspense fallback={<div className={styles.sceneFallback}>PRODUCTS IN MOTION / LOADING</div>}>
+          <PhoneShowcaseScene language={language} baseUrl={baseUrl} />
+        </Suspense>
 
         <section id="concepts" className={`${styles.section} ${styles.shell}`}>
           <div className={styles.sectionIntro} data-agency-reveal>
@@ -628,6 +616,10 @@ export function DimkoffAgencyLanding() {
             ))}
           </div>
         </section>
+
+        <Suspense fallback={<div className={styles.sceneFallback}>PRODUCT LAYERS / LOADING</div>}>
+          <CardStackScene language={language} baseUrl={baseUrl} />
+        </Suspense>
 
         <section className={styles.experienceSection}>
           <div className={styles.shell}>
@@ -658,6 +650,10 @@ export function DimkoffAgencyLanding() {
             </a>
           </div>
         </section>
+
+        <Suspense fallback={<div className={styles.sceneFallback}>REAL SYSTEMS / LOADING</div>}>
+          <CollageScatterScene language={language} baseUrl={baseUrl} />
+        </Suspense>
 
         <section id="process" className={`${styles.section} ${styles.shell}`}>
           <div className={styles.sectionIntro} data-agency-reveal>
