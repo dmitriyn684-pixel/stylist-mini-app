@@ -114,6 +114,17 @@ async function verify(viewport, filename) {
         width: element.getBoundingClientRect().width,
       };
     }),
+    heroComposition: await page.locator('[class*="heroScene"]').evaluate((scene) => {
+      const hero = scene.closest("section");
+      const image = scene.querySelector("img");
+      const sceneRect = scene.getBoundingClientRect();
+      const heroRect = hero?.getBoundingClientRect();
+      return {
+        position: getComputedStyle(scene).position,
+        widthRatio: heroRect ? sceneRect.width / heroRect.width : 0,
+        imageRadius: image ? Number.parseFloat(getComputedStyle(image).borderRadius) : -1,
+      };
+    }),
   };
 
   if (!checks.title.includes("DimkoFF")) throw new Error("Missing DimkoFF title");
@@ -153,6 +164,13 @@ async function verify(viewport, filename) {
   }
   if (checks.heroTypography.width > 720) {
     throw new Error(`Hero copy is too wide: ${checks.heroTypography.width}px`);
+  }
+  if (
+    checks.heroComposition.position !== "absolute"
+    || checks.heroComposition.widthRatio < 0.75
+    || checks.heroComposition.imageRadius !== 0
+  ) {
+    throw new Error(`Hero is not a monolithic scene: ${JSON.stringify(checks.heroComposition)}`);
   }
   if (checks.portfolioLinks < 2 || checks.brandbookLinks < 2) {
     throw new Error("Portfolio or brandbook routes are incomplete");
