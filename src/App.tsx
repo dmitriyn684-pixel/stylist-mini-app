@@ -5,6 +5,7 @@ import { useOnboarding } from './hooks/useOnboarding';
 import { Layout } from './components/ui/Layout';
 import { PlaceholderScreen } from './components/ui/PlaceholderScreen';
 import { SuitcaseIcon, ProfileIcon } from './components/ui/icons';
+import { DimkoffLandingScreen } from './screens/DimkoffLandingScreen';
 
 const OnboardingScreen = lazy(() =>
   import('./components/onboarding/OnboardingScreen').then((module) => ({ default: module.OnboardingScreen }))
@@ -100,9 +101,10 @@ function App() {
   return (
     <Suspense fallback={<RouteFallback />}>
       <Routes>
+      <Route path="/" element={<DimkoffLandingScreen />} />
       <Route
         path="/onboarding"
-        element={seen ? <Navigate to="/" replace /> : <OnboardingScreen onFinish={markSeen} />}
+        element={seen ? <Navigate to="/app" replace /> : <OnboardingScreen onFinish={markSeen} />}
       />
       {!seen ? (
         <Route path="*" element={<Navigate to="/onboarding" replace />} />
@@ -118,7 +120,7 @@ function App() {
           <Route path="/chat" element={<ChatScreen />} />
           <Route path="/premium" element={<PremiumScreen />} />
           <Route element={<Layout />}>
-            <Route path="/" element={<HomeScreen />} />
+            <Route path="/app" element={<HomeScreen />} />
             <Route path="/wardrobe" element={<WardrobeScreen />} />
             <Route path="/wardrobe-premium" element={<WardrobePremiumScreen />} />
             <Route path="/wardrobe/item/:id" element={<ItemDetailScreen />} />

@@ -13,7 +13,7 @@ interface Tab {
 // тот же самый переход, что раньше делал отдельный плавающий ChatFab,
 // просто теперь встроен в общий стеклянный бар, как в макете Части 7.
 const leftTabs: Tab[] = [
-  { to: '/', label: 'Главная', Icon: HomeIcon, end: true },
+  { to: '/app', label: 'Главная', Icon: HomeIcon, end: true },
   { to: '/wardrobe', label: 'Гардероб', Icon: WardrobeIcon, end: false },
 ];
 
