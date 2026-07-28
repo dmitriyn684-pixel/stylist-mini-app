@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title">
+  <title id="title">DimkoFF Digital Portal</title>
+  <defs>
+    <linearGradient id="portal-shell" x1="9" y1="7" x2="54" y2="57" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F1D081"/>
+      <stop offset=".28" stop-color="#60706D"/>
+      <stop offset=".7" stop-color="#17E6BC"/>
+      <stop offset="1" stop-color="#769C92"/>
+    </linearGradient>
+    <linearGradient id="portal-core" x1="20" y1="48" x2="47" y2="18" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0A433B"/>
+      <stop offset=".52" stop-color="#11E1B7"/>
+      <stop offset="1" stop-color="#EBC874"/>
+    </linearGradient>
+    <filter id="portal-glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="1.8" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <rect width="64" height="64" rx="15" fill="#070B0E"/>
+  <path d="M15 11h17.5C45.5 11 54 19.1 54 32S45.5 53 32.5 53H15V11Zm10 9v24h7.2C39.7 44 44 39.5 44 32s-4.3-12-11.8-12H25Z" fill="url(#portal-shell)"/>
+  <path d="m25 43 18.8-23H51L32.2 43H25Z" fill="url(#portal-core)" filter="url(#portal-glow)"/>
+  <path d="M15.5 11.5h17C45.2 11.5 53.5 19.4 53.5 32S45.2 52.5 32.5 52.5h-17v-41Z" fill="none" stroke="#F2D27E" stroke-opacity=".42"/>
+</svg>
