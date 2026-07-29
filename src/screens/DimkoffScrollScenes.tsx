@@ -6,6 +6,10 @@ import {
   type CSSProperties,
   type RefObject,
 } from 'react';
+import {
+  Environment,
+  Lightformer,
+} from '@react-three/drei';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 import styles from './DimkoffScrollScenes.module.css';
@@ -17,10 +21,11 @@ type SceneProps = {
   baseUrl: string;
 };
 
-type Seed = {
+type ShardSeed = {
   position: THREE.Vector3;
   scatter: THREE.Vector3;
   rotation: THREE.Euler;
+  rotationVelocity: THREE.Vector3;
   scale: number;
   phase: number;
 };
@@ -41,36 +46,44 @@ function seededRandom(seed: number) {
   };
 }
 
-function makeDSeeds(count: number, seed = 684): Seed[] {
+function makeCrystalSeeds(count: number, seed = 684): ShardSeed[] {
   const random = seededRandom(seed);
-  const result: Seed[] = [];
-  let attempts = 0;
+  const result: ShardSeed[] = [];
 
-  while (result.length < count && attempts < count * 90) {
-    attempts += 1;
-    const x = -1.45 + random() * 3;
-    const y = -2.05 + random() * 4.1;
-    const outer = ((x + 0.35) / 1.72) ** 2 + (y / 2.08) ** 2 <= 1;
-    const inner = ((x + 0.25) / 0.82) ** 2 + (y / 1.12) ** 2 < 1;
-    const stem = x < -0.92 && Math.abs(y) < 2.03;
-    if (!(stem || (outer && !inner && x > -1.18))) continue;
-
-    const z = (random() - 0.5) * 0.72;
-    const direction = new THREE.Vector3(
-      x * (1.1 + random() * 0.9) + (random() - 0.5) * 2.5,
-      y * (0.8 + random() * 1.1) + (random() - 0.5) * 2.1,
-      (random() - 0.5) * 8,
-    ).normalize();
+  for (let index = 0; index < count; index += 1) {
+    const theta = random() * Math.PI * 2;
+    const phi = Math.acos(2 * random() - 1);
+    const radius = 0.35 + Math.cbrt(random()) * 1.55;
+    const position = new THREE.Vector3(
+      Math.sin(phi) * Math.cos(theta) * radius * 1.05,
+      Math.cos(phi) * radius * 1.12,
+      Math.sin(phi) * Math.sin(theta) * radius * 0.78,
+    );
+    const direction = position
+      .clone()
+      .normalize()
+      .multiplyScalar(2.2 + random() * 3.2);
+    direction.x += (random() - 0.5) * 1.8;
+    direction.y += (random() - 0.5) * 1.5;
+    direction.z =
+      random() < 0.52
+        ? 2.3 + random() * 3.4
+        : -2 + random() * 3.2;
 
     result.push({
-      position: new THREE.Vector3(x, y, z),
-      scatter: direction.multiplyScalar(3 + random() * 5.5),
+      position,
+      scatter: direction,
       rotation: new THREE.Euler(
         random() * Math.PI,
         random() * Math.PI,
         random() * Math.PI,
       ),
-      scale: 0.075 + random() * 0.145,
+      rotationVelocity: new THREE.Vector3(
+        (random() - 0.5) * 1.8,
+        (random() - 0.5) * 2.2,
+        (random() - 0.5) * 1.6,
+      ),
+      scale: 0.22 + random() * 0.58,
       phase: random() * Math.PI * 2,
     });
   }
@@ -127,104 +140,253 @@ function useSceneActive(ref: RefObject<HTMLElement | null>) {
   return active;
 }
 
-function CrystalD({
-  progress,
-  shatter = false,
-}: {
-  progress: number;
-  shatter?: boolean;
-}) {
-  const group = useRef<THREE.Group>(null);
-  const mesh = useRef<THREE.InstancedMesh>(null);
-  const { size } = useThree();
-  const count = size.width < 640 ? (shatter ? 190 : 125) : shatter ? 380 : 180;
-  const seeds = useMemo(
-    () => makeDSeeds(count, shatter ? 2026 : 684),
-    [count, shatter],
-  );
-  const helper = useMemo(() => new THREE.Object3D(), []);
+function makeLetterDGeometry() {
+  const shape = new THREE.Shape();
+  shape.moveTo(-1.42, -2.06);
+  shape.lineTo(-0.43, -2.06);
+  shape.bezierCurveTo(1.38, -2.06, 2.28, -1.12, 2.28, 0);
+  shape.bezierCurveTo(2.28, 1.12, 1.38, 2.06, -0.43, 2.06);
+  shape.lineTo(-1.42, 2.06);
+  shape.closePath();
 
-  useEffect(() => {
-    if (!mesh.current) return;
-    const graphite = new THREE.Color('#8fa3a0');
-    const mint = new THREE.Color('#4ee0c2');
-    const gold = new THREE.Color('#ddb969');
-    seeds.forEach((seed, index) => {
-      const color =
-        index % 13 === 0 ? gold : index % 4 === 0 ? mint : graphite;
-      mesh.current?.setColorAt(index, color);
-      helper.position.copy(seed.position);
-      helper.rotation.copy(seed.rotation);
-      helper.scale.setScalar(seed.scale);
-      helper.updateMatrix();
-      mesh.current?.setMatrixAt(index, helper.matrix);
-    });
-    if (mesh.current.instanceColor) mesh.current.instanceColor.needsUpdate = true;
-    mesh.current.instanceMatrix.needsUpdate = true;
-  }, [helper, seeds]);
+  const opening = new THREE.Path();
+  opening.moveTo(-0.38, -1.18);
+  opening.lineTo(-0.38, 1.18);
+  opening.bezierCurveTo(0.66, 1.18, 1.18, 0.7, 1.18, 0);
+  opening.bezierCurveTo(1.18, -0.7, 0.66, -1.18, -0.38, -1.18);
+  opening.closePath();
+  shape.holes.push(opening);
+
+  const geometry = new THREE.ExtrudeGeometry(shape, {
+    depth: 0.72,
+    bevelEnabled: true,
+    bevelSize: 0.1,
+    bevelThickness: 0.14,
+    bevelSegments: 5,
+    curveSegments: 36,
+    steps: 1,
+  });
+  geometry.center();
+  geometry.computeVertexNormals();
+  return geometry;
+}
+
+function PortalLetterD({ progress }: { progress: number }) {
+  const group = useRef<THREE.Group>(null);
+  const inner = useRef<THREE.Group>(null);
+  const geometry = useMemo(makeLetterDGeometry, []);
+
+  useEffect(() => () => geometry.dispose(), [geometry]);
 
   useFrame((state) => {
-    if (!group.current || !mesh.current) return;
+    if (!group.current || !inner.current) return;
     const time = state.clock.elapsedTime;
-    const explosion = shatter ? smooth((progress - 0.18) / 0.72) : 0;
     group.current.rotation.y =
-      Math.sin(time * (shatter ? 0.17 : 0.22)) * (shatter ? 0.34 : 0.42) +
-      progress * (shatter ? 0.24 : 0.34);
+      Math.sin(time * 0.22) * 0.24 + progress * 0.38;
     group.current.rotation.x = THREE.MathUtils.lerp(
       group.current.rotation.x,
-      state.pointer.y * 0.12 + Math.sin(time * 0.35) * 0.035,
+      state.pointer.y * 0.1 + Math.sin(time * 0.31) * 0.05,
       0.045,
     );
     group.current.rotation.z = THREE.MathUtils.lerp(
       group.current.rotation.z,
-      -state.pointer.x * 0.08,
+      -state.pointer.x * 0.07 + Math.sin(time * 0.2) * 0.025,
       0.04,
     );
+    inner.current.rotation.x = time * 0.21;
+    inner.current.rotation.y = -time * 0.29;
+    inner.current.rotation.z = Math.sin(time * 0.5) * 0.24;
+  });
+
+  return (
+    <group ref={group} scale={[0.72, 0.72, 0.72]} position={[0.28, -0.04, 0]}>
+      <mesh geometry={geometry}>
+        <meshPhysicalMaterial
+          color="#cafff5"
+          transparent
+          opacity={0.52}
+          metalness={0.12}
+          roughness={0.06}
+          clearcoat={1}
+          clearcoatRoughness={0.04}
+          iridescence={0.72}
+          iridescenceIOR={1.7}
+          emissive="#0d5b4d"
+          emissiveIntensity={0.12}
+          side={THREE.DoubleSide}
+        />
+      </mesh>
+      <group ref={inner} position={[0.34, 0, 0.08]}>
+        <mesh position={[0.16, 0.2, 0.2]} scale={0.62}>
+          <icosahedronGeometry args={[0.78, 2]} />
+          <meshPhysicalMaterial
+            color="#e8ffff"
+            transparent
+            opacity={0.72}
+            metalness={0.08}
+            roughness={0.05}
+            clearcoat={1}
+            clearcoatRoughness={0.03}
+            iridescence={0.72}
+            iridescenceIOR={1.7}
+          />
+        </mesh>
+        <mesh position={[0.25, -0.72, -0.06]} rotation={[0.4, 0.2, 0.5]}>
+          <torusKnotGeometry args={[0.42, 0.11, 96, 16]} />
+          <meshPhysicalMaterial
+            color="#e4bd62"
+            metalness={0.56}
+            roughness={0.16}
+            emissive="#4b3210"
+            emissiveIntensity={0.32}
+          />
+        </mesh>
+        <mesh
+          position={[0.2, 0.84, -0.18]}
+          rotation={[0.3, 0.7, 0.1]}
+          scale={0.42}
+        >
+          <boxGeometry args={[1, 1, 1]} />
+          <meshPhysicalMaterial
+            color="#34e9c3"
+            transparent
+            opacity={0.68}
+            metalness={0.16}
+            roughness={0.08}
+            clearcoat={1}
+            clearcoatRoughness={0.04}
+          />
+        </mesh>
+      </group>
+      <mesh rotation={[Math.PI / 2.38, 0.24, 0]}>
+        <torusGeometry args={[2.62, 0.018, 8, 160]} />
+        <meshBasicMaterial color="#75f7df" transparent opacity={0.5} />
+      </mesh>
+      <mesh rotation={[Math.PI / 2.04, -0.28, Math.PI / 2]}>
+        <torusGeometry args={[2.24, 0.012, 8, 160]} />
+        <meshBasicMaterial color="#e9c66d" transparent opacity={0.42} />
+      </mesh>
+    </group>
+  );
+}
+
+function CrystalShards({ progress }: { progress: number }) {
+  const group = useRef<THREE.Group>(null);
+  const solid = useRef<THREE.Mesh>(null);
+  const mesh = useRef<THREE.InstancedMesh>(null);
+  const material = useRef<THREE.MeshPhongMaterial>(null);
+  const { size } = useThree();
+  const count = size.width < 640 ? 46 : 82;
+  const seeds = useMemo(() => makeCrystalSeeds(count, 2026), [count]);
+  const helper = useMemo(() => new THREE.Object3D(), []);
+
+  useEffect(() => {
+    if (!mesh.current) return;
+    const ice = new THREE.Color('#dffeff');
+    const blue = new THREE.Color('#8bc9ff');
+    const mint = new THREE.Color('#8fffe7');
+    const rose = new THREE.Color('#ffd4e8');
+    const gold = new THREE.Color('#ffe2a0');
+    seeds.forEach((_, index) => {
+      mesh.current?.setColorAt(
+        index,
+        index % 13 === 0
+          ? gold
+          : index % 9 === 0
+            ? rose
+            : index % 7 === 0
+              ? mint
+              : index % 4 === 0
+                ? blue
+                : ice,
+      );
+    });
+    if (mesh.current.instanceColor) mesh.current.instanceColor.needsUpdate = true;
+  }, [seeds]);
+
+  useFrame((state) => {
+    if (!group.current || !mesh.current || !solid.current) return;
+    const time = state.clock.elapsedTime;
+    const explosion = smooth((progress - 0.13) / 0.68);
+    const reveal = smooth(explosion / 0.24);
+
+    group.current.rotation.y =
+      Math.sin(time * 0.15) * 0.16 + progress * 0.08;
+    group.current.rotation.x =
+      Math.sin(time * 0.19) * 0.055 + state.pointer.y * 0.035;
+    solid.current.rotation.y = time * 0.11;
+    solid.current.rotation.x = time * 0.075;
+    solid.current.scale.setScalar(1 - explosion * 0.18);
+    solid.current.visible = explosion < 0.84;
 
     seeds.forEach((seed, index) => {
-      const pulse = Math.sin(time * 0.8 + seed.phase) * 0.025;
+      const drift = Math.sin(time * 0.34 + seed.phase) * 0.045;
       helper.position
         .copy(seed.position)
+        .multiplyScalar(0.34 + reveal * 0.66)
         .addScaledVector(seed.scatter, explosion);
-      helper.position.z += Math.sin(time * 0.55 + seed.phase) * 0.08;
+      helper.position.x += drift;
+      helper.position.y += Math.cos(time * 0.29 + seed.phase) * 0.04;
       helper.rotation.set(
-        seed.rotation.x + time * 0.08 + explosion * seed.phase,
-        seed.rotation.y + time * 0.13 + explosion * seed.phase * 1.4,
-        seed.rotation.z + time * 0.06 + explosion * seed.phase * 0.7,
+        seed.rotation.x +
+          time * seed.rotationVelocity.x * 0.12 +
+          explosion * seed.rotationVelocity.x * 1.9,
+        seed.rotation.y +
+          time * seed.rotationVelocity.y * 0.12 +
+          explosion * seed.rotationVelocity.y * 1.9,
+        seed.rotation.z +
+          time * seed.rotationVelocity.z * 0.12 +
+          explosion * seed.rotationVelocity.z * 1.9,
       );
-      const scale = seed.scale * (1 + pulse) * (1 - explosion * 0.18);
-      helper.scale.setScalar(scale);
+      const scale =
+        seed.scale *
+        (0.08 + reveal * 0.92) *
+        (1 + Math.sin(time * 0.42 + seed.phase) * 0.025);
+      helper.scale.set(scale * 0.72, scale * 1.34, scale);
       helper.updateMatrix();
       mesh.current?.setMatrixAt(index, helper.matrix);
     });
     mesh.current.instanceMatrix.needsUpdate = true;
+    if (material.current) {
+      material.current.opacity = clamp(explosion * 3.2) * 0.64;
+    }
   });
 
   return (
-    <group ref={group} scale={shatter ? [1.08, 1.08, 1.08] : [1.34, 1.16, 1.18]}>
+    <group ref={group}>
+      <mesh ref={solid}>
+        <dodecahedronGeometry args={[1.38, 0]} />
+        <meshPhysicalMaterial
+          color="#e8fbff"
+          transparent
+          opacity={0.56}
+          metalness={0.1}
+          roughness={0.045}
+          clearcoat={1}
+          clearcoatRoughness={0.02}
+          iridescence={0.8}
+          iridescenceIOR={1.7}
+          flatShading
+          side={THREE.DoubleSide}
+        />
+      </mesh>
       <instancedMesh ref={mesh} args={[undefined, undefined, seeds.length]}>
-        <icosahedronGeometry args={[1, 0]} />
+        <tetrahedronGeometry args={[1, 0]} />
         <meshPhongMaterial
+          ref={material}
           vertexColors
           flatShading
-          shininess={150}
+          transparent
+          opacity={0}
+          color="#eaffff"
+          emissive="#edfaff"
+          emissiveIntensity={0.18}
+          shininess={180}
           specular="#ffffff"
-          emissive="#233e39"
-          emissiveIntensity={0.55}
+          depthWrite={false}
+          side={THREE.DoubleSide}
         />
       </instancedMesh>
-      {!shatter && (
-        <>
-          <mesh rotation={[Math.PI / 2.45, 0.3, 0]}>
-            <torusGeometry args={[2.65, 0.014, 8, 128]} />
-            <meshBasicMaterial color="#19e6bd" transparent opacity={0.55} />
-          </mesh>
-          <mesh rotation={[Math.PI / 2.1, -0.35, Math.PI / 2]}>
-            <torusGeometry args={[2.28, 0.009, 8, 128]} />
-            <meshBasicMaterial color="#e8c56e" transparent opacity={0.38} />
-          </mesh>
-        </>
-      )}
     </group>
   );
 }
@@ -253,7 +415,7 @@ function DiamondDust({ progress }: { progress: number }) {
 
   useFrame((state) => {
     if (!points.current) return;
-    const explosion = smooth((progress - 0.18) / 0.72);
+    const explosion = smooth((progress - 0.13) / 0.68);
     const attribute = points.current.geometry.getAttribute(
       'position',
     ) as THREE.BufferAttribute;
@@ -281,9 +443,9 @@ function DiamondDust({ progress }: { progress: number }) {
       </bufferGeometry>
       <pointsMaterial
         color="#dffcf7"
-        size={0.06}
+        size={0.035}
         transparent
-        opacity={0.82}
+        opacity={0.28}
         sizeAttenuation
         depthWrite={false}
       />
@@ -312,12 +474,41 @@ function PortalCanvas({
         toneMapping: THREE.ACESFilmicToneMapping,
       }}
     >
-      <ambientLight intensity={shatter ? 1.35 : 1.05} />
-      <directionalLight position={[4, 5, 6]} intensity={6.5} color="#effffb" />
-      <pointLight position={[-4, -2, 3]} intensity={18} color="#12e5b9" />
-      <pointLight position={[4, 1, 2]} intensity={15} color="#dcb659" />
-      <CrystalD progress={progress} shatter={shatter} />
-      {shatter && <DiamondDust progress={progress} />}
+      <ambientLight intensity={shatter ? 0.85 : 0.7} />
+      <directionalLight position={[4, 5, 7]} intensity={4.8} color="#effffb" />
+      <pointLight position={[-4, -2, 4]} intensity={14} color="#32f1cb" />
+      <pointLight position={[4, 1, 3]} intensity={11} color="#e4bd68" />
+      <Environment resolution={128}>
+        <Lightformer
+          intensity={4.5}
+          color="#ffffff"
+          position={[0, 5, 3]}
+          rotation={[Math.PI / 2, 0, 0]}
+          scale={[8, 2, 1]}
+        />
+        <Lightformer
+          intensity={3}
+          color={shatter ? '#9fc7ff' : '#43f0cc'}
+          position={[-4, 0, 4]}
+          rotation={[0, Math.PI / 2, 0]}
+          scale={[5, 5, 1]}
+        />
+        <Lightformer
+          intensity={2.4}
+          color="#f0c76f"
+          position={[4, -1, 2]}
+          rotation={[0, -Math.PI / 2, 0]}
+          scale={[4, 3, 1]}
+        />
+      </Environment>
+      {shatter ? (
+        <>
+          <CrystalShards progress={progress} />
+          <DiamondDust progress={progress} />
+        </>
+      ) : (
+        <PortalLetterD progress={progress} />
+      )}
     </Canvas>
   );
 }
@@ -326,7 +517,7 @@ export function PortalIntroScene({ language, baseUrl }: SceneProps) {
   const sectionRef = useRef<HTMLElement>(null);
   const progress = useSectionProgress(sectionRef);
   const active = useSceneActive(sectionRef);
-  const switched = progress > 0.075;
+  const switched = progress > 0.055;
 
   return (
     <section
@@ -391,9 +582,9 @@ export function CrystalShatterScene({ language }: SceneProps) {
   const sectionRef = useRef<HTMLElement>(null);
   const progress = useSectionProgress(sectionRef);
   const active = useSceneActive(sectionRef);
-  const stage =
-    progress < 0.22 ? 0 : progress < 0.52 ? 1 : progress < 0.82 ? 2 : 3;
-  const words = ['SIGNAL', 'SYSTEM', 'PRODUCT', 'GROWTH'];
+  const explosion = smooth((progress - 0.13) / 0.68);
+  const assembledOpacity = 1 - smooth((progress - 0.1) / 0.16);
+  const messageOpacity = smooth((progress - 0.18) / 0.18);
 
   return (
     <section
@@ -407,17 +598,24 @@ export function CrystalShatterScene({ language }: SceneProps) {
           <PortalCanvas progress={progress} shatter active={active} />
         </div>
         <div className={styles.shatterCopy}>
-          <p>01 / TRANSFORMATION</p>
-          <h2>{words[stage]}</h2>
-          <span>
+          <p>01 / CRYSTAL SYSTEM</p>
+          <div className={styles.shatterTitleSwitcher}>
+            <h2 style={{ opacity: assembledOpacity }}>DIMKOFF</h2>
+            <h3 style={{ opacity: messageOpacity }}>
+              {language === 'ru'
+                ? 'ИЗ ИДЕИ — В РАБОТАЮЩУЮ DIGITAL-СИСТЕМУ'
+                : 'FROM AN IDEA TO A WORKING DIGITAL SYSTEM'}
+            </h3>
+          </div>
+          <span style={{ opacity: messageOpacity }}>
             {language === 'ru'
-              ? 'Одна идея раскрывается в систему касаний, интерфейсов и действий.'
-              : 'One idea unfolds into a system of touchpoints, interfaces and actions.'}
+              ? 'AI-продукт, Telegram, интерфейс и запуск соединяются в одну систему роста.'
+              : 'AI product, Telegram, interface and launch connect into one growth system.'}
           </span>
         </div>
         <div className={styles.shatterCounter}>
-          <span>CRYSTAL FIELD</span>
-          <strong>{Math.round(1500 * progress).toLocaleString('ru-RU')}</strong>
+          <span>FACETS / DEPTH</span>
+          <strong>{Math.round(1500 * explosion).toLocaleString('ru-RU')}</strong>
         </div>
       </div>
     </section>

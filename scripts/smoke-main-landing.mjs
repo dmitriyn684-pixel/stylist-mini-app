@@ -292,7 +292,8 @@ async function verify(viewport, filename) {
   }
   if (
     !checks.switchedTitle.includes("SMM + AI PRODUCT BUILDER") ||
-    !checks.switchedClass?.includes("titleActive")
+    !checks.switchedClass?.includes("titleActive") ||
+    checks.switchedOpacity < 0.9
   ) {
     throw new Error(
       `Instant scroll title switch failed: ${checks.switchedTitle}/${checks.switchedClass}/${checks.switchedOpacity}`,
