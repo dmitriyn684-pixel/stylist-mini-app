@@ -24,6 +24,11 @@ const PhoneShowcaseScene = lazy(() =>
     default: module.PhoneShowcaseScene,
   })),
 );
+const FoldScreenScene = lazy(() =>
+  import('./DimkoffScrollScenes').then((module) => ({
+    default: module.FoldScreenScene,
+  })),
+);
 const CardStackScene = lazy(() =>
   import('./DimkoffScrollScenes').then((module) => ({
     default: module.CardStackScene,
@@ -572,22 +577,28 @@ export function DimkoffAgencyLanding() {
               <div><p className={styles.eyebrow}>02 / REAL PRODUCTS</p><h2>{t(copy.projectsTitle, language)}</h2></div>
               <p>{t(copy.projectsLead, language)}</p>
             </div>
-            <div className={styles.projectsGrid}>
+            <div className={styles.projectList} data-testid="editorial-project-list">
               {projects.map((project, index) => (
-                <article className={`${styles.projectCard} ${index < 2 ? styles.projectFeatured : ''}`} key={project.name} data-agency-reveal>
-                  <img src={links[project.image]} alt="" loading="lazy" />
-                  <div className={styles.projectShade} />
-                  <div className={styles.projectMeta}>
-                    <span>{String(index + 1).padStart(2, '0')} / {project.label}</span>
+                <article className={styles.projectRow} key={project.name} data-agency-reveal>
+                  <span className={styles.projectNumber}>{String(index + 1).padStart(2, '0')}</span>
+                  <div className={styles.projectRowCopy}>
                     <h3>{project.name}</h3>
                     <p>{t(project.body, language)}</p>
                   </div>
+                  <span className={styles.projectStatus}>{project.label}</span>
+                  <figure className={styles.projectHoverPreview}>
+                    <img src={links[project.image]} alt="" loading="lazy" />
+                  </figure>
                   <a href={`${links.portfolio}#projects`} aria-label={`${project.name} — portfolio`}>↗</a>
                 </article>
               ))}
             </div>
           </div>
         </section>
+
+        <Suspense fallback={<div className={styles.sceneFallback}>SCENE TRANSITION / LOADING</div>}>
+          <FoldScreenScene language={language} baseUrl={baseUrl} />
+        </Suspense>
 
         <Suspense fallback={<div className={styles.sceneFallback}>PRODUCTS IN MOTION / LOADING</div>}>
           <PhoneShowcaseScene language={language} baseUrl={baseUrl} />

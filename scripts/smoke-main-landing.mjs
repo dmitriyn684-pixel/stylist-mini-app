@@ -49,6 +49,38 @@ async function revealInformation(page) {
   await page.waitForTimeout(900);
 }
 
+async function captureHeroMotion() {
+  const videoDir = path.join(output, "video-temp");
+  await mkdir(videoDir, { recursive: true });
+  const context = await browser.newContext({
+    viewport: { width: 1440, height: 900 },
+    deviceScaleFactor: 1,
+    recordVideo: {
+      dir: videoDir,
+      size: { width: 1440, height: 900 },
+    },
+  });
+  const page = await context.newPage();
+  await page.goto(base, { waitUntil: "domcontentloaded", timeout: 45_000 });
+  await page
+    .locator('[data-testid="dimkoff-loader"]')
+    .waitFor({ state: "detached", timeout: 8_000 })
+    .catch(() => {});
+  await page.waitForTimeout(1_000);
+  await scrollScene(page, "portal-intro-scene", 0.18);
+  await page.waitForTimeout(2_200);
+  await scrollScene(page, "portal-intro-scene", 0.48);
+  await page.waitForTimeout(2_200);
+  await scrollScene(page, "portal-intro-scene", 0.08);
+  await page.waitForTimeout(2_200);
+  const video = page.video();
+  await page.close();
+  if (video) {
+    await video.saveAs(path.join(output, "dimkoff-hero-motion-12s.webm"));
+  }
+  await context.close();
+}
+
 async function verify(viewport, filename) {
   const context = await browser.newContext({ viewport, deviceScaleFactor: 1 });
   const page = await context.newPage();
@@ -103,18 +135,16 @@ async function verify(viewport, filename) {
     await page.locator('button[aria-controls="agency-nav"]').click();
   }
 
-  await scrollScene(page, "portal-intro-scene", 0.16);
-  const switchedTitle = (await page.locator("#top h2").innerText()).replace(
-    /\s+/g,
-    " ",
-  );
-  const switchedOpacity = await page
-    .locator("#top h2")
-    .evaluate((element) => Number.parseFloat(getComputedStyle(element).opacity));
-  const switchedClass = await page.locator("#top h2").getAttribute("class");
-  if (filename.includes("desktop")) {
-    await captureStage(page, "scene-01-portal-switched.png");
-  }
+  const heroGeometry = await h1.evaluate((element) => {
+    const bounds = element.getBoundingClientRect();
+    return {
+      width: bounds.width,
+      height: bounds.height,
+      scrollWidth: element.scrollWidth,
+      scrollHeight: element.scrollHeight,
+      fontSize: Number.parseFloat(getComputedStyle(element).fontSize),
+    };
+  });
 
   await scrollScene(page, "crystal-shatter-scene", 0.08);
   if (filename.includes("desktop")) {
@@ -132,6 +162,25 @@ async function verify(viewport, filename) {
   if (filename.includes("desktop")) {
     await captureStage(page, "scene-02-crystal-scattered.png");
   }
+
+  await scrollScene(page, "fold-screen-scene", 0.04);
+  const foldBefore = await page
+    .locator('[data-testid="fold-screen-scene"] [class*="foldDarkLayer"]')
+    .evaluate((element) => getComputedStyle(element).clipPath);
+  await scrollScene(page, "fold-screen-scene", 0.82);
+  const foldAfter = await page
+    .locator('[data-testid="fold-screen-scene"] [class*="foldDarkLayer"]')
+    .evaluate((element) => getComputedStyle(element).clipPath);
+  const foldBands = await page
+    .locator('[data-testid="fold-screen-scene"] [class*="foldShutters"] i')
+    .count();
+  if (filename.includes("desktop")) {
+    await captureStage(page, "scene-03-fold-transition.png");
+  }
+  await scrollScene(page, "fold-screen-scene", 0.04);
+  const foldReversed = await page
+    .locator('[data-testid="fold-screen-scene"] [class*="foldDarkLayer"]')
+    .evaluate((element) => getComputedStyle(element).clipPath);
 
   await scrollScene(page, "phone-showcase-scene", 0.14);
   const phoneBefore = await page
@@ -158,7 +207,7 @@ async function verify(viewport, filename) {
       };
     });
   if (filename.includes("desktop")) {
-    await captureStage(page, "scene-03-phones.png");
+    await captureStage(page, "scene-04-phones.png");
   }
 
   await scrollScene(page, "card-stack-scene", 0.14);
@@ -175,7 +224,7 @@ async function verify(viewport, filename) {
     .locator('[data-testid="card-stack-scene"] [class*="stackFrame"]')
     .evaluate((element) => getComputedStyle(element).overflow);
   if (filename.includes("desktop")) {
-    await captureStage(page, "scene-04-card-stack.png");
+    await captureStage(page, "scene-05-card-stack.png");
   }
 
   await scrollScene(page, "collage-scatter-scene", 0.05);
@@ -189,7 +238,7 @@ async function verify(viewport, filename) {
     .first()
     .evaluate((element) => getComputedStyle(element).transform);
   if (filename.includes("desktop")) {
-    await captureStage(page, "scene-05-collage-scattered.png");
+    await captureStage(page, "scene-06-collage-scattered.png");
   }
   await scrollScene(page, "collage-scatter-scene", 0.05);
   const collageReassembled = await page
@@ -208,9 +257,8 @@ async function verify(viewport, filename) {
     initialH1,
     englishLanguage,
     englishCopy,
-    switchedTitle,
-    switchedOpacity,
-    switchedClass,
+    heroGeometry,
+    heroSquareFallbacks: await page.locator("#top img").count(),
     sceneCount: await page.locator("section[data-testid$='scene']").count(),
     canvases: await page.locator("canvas").count(),
     canvasSizes: await page.locator("canvas").evaluateAll((canvases) =>
@@ -220,14 +268,30 @@ async function verify(viewport, filename) {
       })),
     ),
     crystalCount,
+    foldBefore,
+    foldAfter,
+    foldReversed,
+    foldBands,
     phoneBefore,
     phoneAfter,
+    phoneChassis: await page
+      .locator('[data-testid="phone-showcase-scene"] [class*="phoneChassis"]')
+      .count(),
+    phoneGlass: await page
+      .locator('[data-testid="phone-showcase-scene"] [class*="phoneGlass"]')
+      .count(),
     stackCards: await page
       .locator('[data-testid="card-stack-scene"] article')
       .count(),
     stackBefore,
     stackAfter,
     stackOverflow,
+    stackObjects: await page
+      .locator('[data-testid="card-stack-scene"] [class*="serviceObject_"]')
+      .count(),
+    stackGlassStrips: await page
+      .locator('[data-testid="card-stack-scene"] [class*="stackGlassStrip"]')
+      .count(),
     collageTiles: await page
       .locator('[data-testid="collage-scatter-scene"] figure')
       .count(),
@@ -244,6 +308,9 @@ async function verify(viewport, filename) {
     marqueeGroups: await page
       .locator('[data-testid="seamless-marquee"] [class*="marqueeGroup"]')
       .count(),
+    marqueeDuration: await page
+      .locator('[data-testid="seamless-marquee"] [class*="marqueeTrack"]')
+      .evaluate((element) => getComputedStyle(element).animationDuration),
     portfolioLinks: await page
       .locator('a[href*="/portfolio/"]:not([href$=".pdf"])')
       .count(),
@@ -257,6 +324,7 @@ async function verify(viewport, filename) {
       images
         .filter(
           (image) =>
+            image.offsetParent !== null &&
             image.currentSrc &&
             (!image.complete || image.naturalWidth === 0),
         )
@@ -281,31 +349,37 @@ async function verify(viewport, filename) {
 
   if (!checks.title.includes("DimkoFF")) throw new Error("Missing DimkoFF title");
   if (!checks.loaderWasVisible) throw new Error("Opening loader was not visible");
-  if (checks.initialLanguage !== "ru" || checks.initialH1 !== "DIMKOFF") {
+  if (
+    checks.initialLanguage !== "ru" ||
+    !checks.initialH1.includes("AI-продукты") ||
+    !checks.initialH1.includes("для роста бизнеса")
+  ) {
     throw new Error(`Opening title is incorrect: ${checks.initialH1}`);
   }
   if (
     checks.englishLanguage !== "en" ||
-    !checks.englishCopy.includes("Building AI products")
+    !checks.englishCopy.includes("DimkoFF connects SMM")
   ) {
     throw new Error("RU/EN toggle failed in the portal scene");
   }
   if (
-    !checks.switchedTitle.includes("SMM + AI PRODUCT BUILDER") ||
-    !checks.switchedClass?.includes("titleActive") ||
-    checks.switchedOpacity < 0.9
+    checks.heroGeometry.scrollWidth > checks.heroGeometry.width + 2 ||
+    checks.heroGeometry.scrollHeight > checks.heroGeometry.height + 16 ||
+    checks.heroSquareFallbacks !== 0
   ) {
-    throw new Error(
-      `Instant scroll title switch failed: ${checks.switchedTitle}/${checks.switchedClass}/${checks.switchedOpacity}`,
-    );
+    throw new Error(`Hero typography or square fallback failed: ${JSON.stringify(checks.heroGeometry)}`);
   }
-  if (checks.sceneCount !== 5 || checks.canvases !== 2) {
+  if (checks.sceneCount !== 6 || checks.canvases !== 2) {
     throw new Error(
       `Interactive scenes are incomplete: ${checks.sceneCount}/${checks.canvases}`,
     );
   }
   if (
-    checks.canvasSizes.some((canvas) => canvas.width < 300 || canvas.height < 300)
+    checks.canvasSizes.some(
+      (canvas) =>
+        canvas.width < (isMobile ? 260 : 300) ||
+        canvas.height < (isMobile ? 520 : 300),
+    )
   ) {
     throw new Error(`WebGL canvas is undersized: ${JSON.stringify(checks.canvasSizes)}`);
   }
@@ -313,15 +387,26 @@ async function verify(viewport, filename) {
     throw new Error(`Crystal field did not unfold: ${checks.crystalCount}`);
   }
   if (
+    checks.foldBands !== 6 ||
+    checks.foldBefore === checks.foldAfter ||
+    checks.foldBefore !== checks.foldReversed
+  ) {
+    throw new Error("Reversible folding screen failed");
+  }
+  if (
     checks.phoneBefore.left !== checks.phoneAfter.left ||
-    checks.phoneBefore.center === checks.phoneAfter.center
+    checks.phoneBefore.center === checks.phoneAfter.center ||
+    checks.phoneChassis !== 3 ||
+    checks.phoneGlass !== 3
   ) {
     throw new Error("Phone scene motion contract failed");
   }
   if (
     checks.stackCards !== 5 ||
     checks.stackBefore === checks.stackAfter ||
-    checks.stackOverflow !== "hidden"
+    checks.stackOverflow !== "hidden" ||
+    checks.stackObjects !== 5 ||
+    checks.stackGlassStrips !== 5
   ) {
     throw new Error("Card stack does not move inside the fixed frame");
   }
@@ -341,7 +426,9 @@ async function verify(viewport, filename) {
   ) {
     throw new Error("An informational floor is incomplete");
   }
-  if (checks.marqueeGroups !== 3) throw new Error("Marquee is incomplete");
+  if (checks.marqueeGroups !== 3 || checks.marqueeDuration !== "36s") {
+    throw new Error(`Marquee is incomplete: ${checks.marqueeGroups}/${checks.marqueeDuration}`);
+  }
   if (checks.portfolioLinks < 2 || checks.brandbookLinks < 2) {
     throw new Error("Portfolio or brandbook routes are incomplete");
   }
@@ -420,6 +507,7 @@ if (only !== "mobile") {
     { width: 1440, height: 1000 },
     "main-desktop.png",
   );
+  await captureHeroMotion();
 }
 if (only !== "desktop") {
   results.mobile = await verify(

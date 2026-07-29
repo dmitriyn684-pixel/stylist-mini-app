@@ -199,20 +199,19 @@ function PortalLetterD({ progress }: { progress: number }) {
   });
 
   return (
-    <group ref={group} scale={[0.72, 0.72, 0.72]} position={[0.28, -0.04, 0]}>
+    <group ref={group} scale={[0.76, 0.76, 0.76]} position={[1.18, -0.08, 0]}>
       <mesh geometry={geometry}>
         <meshPhysicalMaterial
-          color="#cafff5"
-          transparent
-          opacity={0.52}
-          metalness={0.12}
-          roughness={0.06}
+          color="#262d38"
+          metalness={0.82}
+          roughness={0.2}
           clearcoat={1}
-          clearcoatRoughness={0.04}
-          iridescence={0.72}
+          clearcoatRoughness={0.12}
+          iridescence={0.34}
           iridescenceIOR={1.7}
-          emissive="#0d5b4d"
-          emissiveIntensity={0.12}
+          emissive="#0b1426"
+          emissiveIntensity={0.18}
+          envMapIntensity={1.8}
           side={THREE.DoubleSide}
         />
       </mesh>
@@ -220,15 +219,18 @@ function PortalLetterD({ progress }: { progress: number }) {
         <mesh position={[0.16, 0.2, 0.2]} scale={0.62}>
           <icosahedronGeometry args={[0.78, 2]} />
           <meshPhysicalMaterial
-            color="#e8ffff"
+            color="#cfe4ff"
             transparent
-            opacity={0.72}
-            metalness={0.08}
-            roughness={0.05}
+            opacity={0.68}
+            metalness={0.12}
+            roughness={0.1}
             clearcoat={1}
-            clearcoatRoughness={0.03}
-            iridescence={0.72}
+            clearcoatRoughness={0.05}
+            iridescence={0.84}
             iridescenceIOR={1.7}
+            transmission={0.42}
+            thickness={0.62}
+            envMapIntensity={1.7}
           />
         </mesh>
         <mesh position={[0.25, -0.72, -0.06]} rotation={[0.4, 0.2, 0.5]}>
@@ -248,9 +250,9 @@ function PortalLetterD({ progress }: { progress: number }) {
         >
           <boxGeometry args={[1, 1, 1]} />
           <meshPhysicalMaterial
-            color="#34e9c3"
+            color="#91c2ff"
             transparent
-            opacity={0.68}
+            opacity={0.62}
             metalness={0.16}
             roughness={0.08}
             clearcoat={1}
@@ -260,12 +262,37 @@ function PortalLetterD({ progress }: { progress: number }) {
       </group>
       <mesh rotation={[Math.PI / 2.38, 0.24, 0]}>
         <torusGeometry args={[2.62, 0.018, 8, 160]} />
-        <meshBasicMaterial color="#75f7df" transparent opacity={0.5} />
+        <meshBasicMaterial color="#9fc7ff" transparent opacity={0.42} />
       </mesh>
       <mesh rotation={[Math.PI / 2.04, -0.28, Math.PI / 2]}>
         <torusGeometry args={[2.24, 0.012, 8, 160]} />
         <meshBasicMaterial color="#e9c66d" transparent opacity={0.42} />
       </mesh>
+      {[
+        [-2.7, 1.7, -0.6, 0.3],
+        [2.9, 1.35, -0.9, 0.22],
+        [2.55, -1.7, 0.25, 0.34],
+        [-2.35, -1.5, -0.2, 0.2],
+        [3.4, 0.1, -1.2, 0.16],
+      ].map(([x, y, z, scale], index) => (
+        <mesh
+          key={`${x}-${y}`}
+          position={[x, y, z]}
+          rotation={[index * 0.42, index * 0.65, index * 0.28]}
+          scale={scale}
+        >
+          <tetrahedronGeometry args={[1, 0]} />
+          <meshPhysicalMaterial
+            color={index % 2 ? '#b9b1ff' : '#bfe9ff'}
+            transparent
+            opacity={0.5}
+            roughness={0.08}
+            clearcoat={1}
+            transmission={0.45}
+            thickness={0.45}
+          />
+        </mesh>
+      ))}
     </group>
   );
 }
@@ -476,8 +503,8 @@ function PortalCanvas({
     >
       <ambientLight intensity={shatter ? 0.85 : 0.7} />
       <directionalLight position={[4, 5, 7]} intensity={4.8} color="#effffb" />
-      <pointLight position={[-4, -2, 4]} intensity={14} color="#32f1cb" />
-      <pointLight position={[4, 1, 3]} intensity={11} color="#e4bd68" />
+      <pointLight position={[-4, -2, 4]} intensity={13} color="#8fb7ff" />
+      <pointLight position={[4, 1, 3]} intensity={4.2} color="#e4bd68" />
       <Environment resolution={128}>
         <Lightformer
           intensity={4.5}
@@ -488,13 +515,13 @@ function PortalCanvas({
         />
         <Lightformer
           intensity={3}
-          color={shatter ? '#9fc7ff' : '#43f0cc'}
+          color="#9fc7ff"
           position={[-4, 0, 4]}
           rotation={[0, Math.PI / 2, 0]}
           scale={[5, 5, 1]}
         />
         <Lightformer
-          intensity={2.4}
+          intensity={1.35}
           color="#f0c76f"
           position={[4, -1, 2]}
           rotation={[0, -Math.PI / 2, 0]}
@@ -513,11 +540,10 @@ function PortalCanvas({
   );
 }
 
-export function PortalIntroScene({ language, baseUrl }: SceneProps) {
+export function PortalIntroScene({ language }: SceneProps) {
   const sectionRef = useRef<HTMLElement>(null);
   const progress = useSectionProgress(sectionRef);
   const active = useSceneActive(sectionRef);
-  const switched = progress > 0.055;
 
   return (
     <section
@@ -528,13 +554,6 @@ export function PortalIntroScene({ language, baseUrl }: SceneProps) {
       style={{ '--scene-progress': progress } as CSSProperties}
     >
       <div className={styles.stickyViewport}>
-        <img
-          className={styles.canvasFallback}
-          src={`${baseUrl}portfolio/assets/dimkoff-digital-portal-v3.webp`}
-          alt=""
-          width="1672"
-          height="941"
-        />
         <div className={styles.canvasLayer}>
           <PortalCanvas progress={progress} active={active} />
         </div>
@@ -542,19 +561,16 @@ export function PortalIntroScene({ language, baseUrl }: SceneProps) {
         <div className={styles.introTitle}>
           <p>00 / DIGITAL PORTAL</p>
           <div className={styles.titleSwitcher}>
-            <h1 className={!switched ? styles.titleActive : styles.titleAway}>
-              DIMKOFF
-            </h1>
-            <h2 className={switched ? styles.titleActive : styles.titleAway}>
+            <h1>
               {language === 'ru'
-                ? 'SMM + AI PRODUCT BUILDER'
-                : 'SMM + AI PRODUCT BUILDER'}
-            </h2>
+                ? <>AI-продукты<br />и digital-сцены<br />для роста бизнеса</>
+                : <>AI products<br />and digital scenes<br />for business growth</>}
+            </h1>
           </div>
           <span>
             {language === 'ru'
-              ? 'Создаю AI-продукты, Telegram Mini Apps и digital-системы под ключ.'
-              : 'Building AI products, Telegram Mini Apps and complete digital systems.'}
+              ? 'DimkoFF соединяет SMM, AI и разработку, чтобы превращать внимание в Telegram Mini Apps, AI-ботов, сайты и продуктовые системы.'
+              : 'DimkoFF connects SMM, AI and development to turn attention into Telegram Mini Apps, AI bots, websites and product systems.'}
           </span>
         </div>
         <div className={styles.introActions}>
@@ -565,8 +581,8 @@ export function PortalIntroScene({ language, baseUrl }: SceneProps) {
           >
             {language === 'ru' ? 'Обсудить проект' : 'Discuss a project'} ↗
           </a>
-          <a href="#services">
-            {language === 'ru' ? 'Смотреть систему' : 'Explore the system'} ↓
+          <a href="#projects">
+            {language === 'ru' ? 'Смотреть проекты' : 'View projects'} ↓
           </a>
         </div>
         <div className={styles.sceneReadout}>
@@ -640,6 +656,73 @@ const phoneScreens = [
   },
 ] as const;
 
+const foldRows = [
+  ['01', 'CaloriePT AI', 'AI NUTRITION / LIVE'],
+  ['02', 'Stylist AI', 'FASHION MINI APP / LIVE'],
+  ['03', 'AI Bot Portfolio', 'TELEGRAM PRODUCTS'],
+  ['04', 'Visual Brandbook', 'VISUAL SYSTEM / 2026'],
+  ['05', 'AI Director', 'CONCEPT / IN DEVELOPMENT'],
+] as const;
+
+export function FoldScreenScene({ language }: SceneProps) {
+  const sectionRef = useRef<HTMLElement>(null);
+  const progress = useSectionProgress(sectionRef);
+  const fold = smooth((progress - 0.08) / 0.74);
+
+  return (
+    <section
+      ref={sectionRef}
+      className={styles.foldSection}
+      data-testid="fold-screen-scene"
+      style={
+        {
+          '--fold-progress': fold,
+          '--fold-inset': `${(1 - fold) * 50}%`,
+        } as CSSProperties
+      }
+    >
+      <div className={styles.stickyViewport}>
+        <div className={styles.foldLightLayer}>
+          <p>03 / CASE LAB</p>
+          <h2>{language === 'ru' ? 'Проекты становятся системой' : 'Projects become a system'}</h2>
+          <div className={styles.foldRows}>
+            {foldRows.map(([number, name, status]) => (
+              <div key={name}>
+                <span>{number}</span>
+                <strong>{name}</strong>
+                <small>{status}</small>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className={styles.foldDarkLayer}>
+          <p>DIMKOFF / PRODUCTS IN MOTION</p>
+          <h2>{language === 'ru' ? 'Интерфейс начинается внутри Telegram' : 'The interface starts inside Telegram'}</h2>
+        </div>
+        <div className={styles.foldShutters} aria-hidden="true">
+          {[0, 1, 2, 3, 4, 5].map((band) => (
+            <i
+              key={band}
+              style={
+                {
+                  '--band-index': band,
+                  '--band-fold': fold,
+                  '--band-rotate': `${(1 - fold) * (68 - band * 5)}deg`,
+                  '--band-scale': 0.04 + fold * 0.96,
+                  '--band-opacity': 0.12 + fold * 0.88,
+                } as CSSProperties
+              }
+            />
+          ))}
+        </div>
+        <div className={styles.foldReadout}>
+          <span>FOLD / {String(Math.round(fold * 100)).padStart(3, '0')}</span>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function PhoneFrame({
   className,
   baseUrl,
@@ -651,19 +734,26 @@ function PhoneFrame({
 }) {
   return (
     <div className={`${styles.phone} ${className}`}>
-      <div className={styles.phoneSpeaker} />
-      <div className={styles.phoneScreen}>
-        {phoneScreens.map((screen, index) => (
-          <img
-            key={screen.name}
-            className={index === active ? styles.phoneScreenActive : ''}
-            src={`${baseUrl}portfolio/assets/${screen.asset}`}
-            alt={screen.name}
-            loading="lazy"
-          />
-        ))}
+      <i className={styles.phoneSideRail} />
+      <i className={styles.phoneVolumeTop} />
+      <i className={styles.phoneVolumeBottom} />
+      <div className={styles.phoneChassis}>
+        <div className={styles.phoneSpeaker}><i /></div>
+        <div className={styles.phoneScreen}>
+          {phoneScreens.map((screen, index) => (
+            <img
+              key={screen.name}
+              className={index === active ? styles.phoneScreenActive : ''}
+              src={`${baseUrl}portfolio/assets/${screen.asset}`}
+              alt={screen.name}
+              loading="lazy"
+            />
+          ))}
+        </div>
+        <i className={styles.phoneGlass} />
+        <i className={styles.phoneReflection} />
       </div>
-      <i className={styles.phoneReflection} />
+      <i className={styles.phoneFloorShadow} />
     </div>
   );
 }
@@ -766,7 +856,19 @@ const stackCards = [
   },
 ] as const;
 
-export function CardStackScene({ language, baseUrl }: SceneProps) {
+function ServiceObject({ index }: { index: number }) {
+  return (
+    <div className={`${styles.serviceObject} ${styles[`serviceObject${index + 1}`]}`} aria-hidden="true">
+      <i className={styles.objectOrb} />
+      <i className={styles.objectRing} />
+      <i className={styles.objectRingSecondary} />
+      <i className={styles.objectGlassStrip} />
+      <i className={styles.objectCore} />
+    </div>
+  );
+}
+
+export function CardStackScene({ language }: SceneProps) {
   const sectionRef = useRef<HTMLElement>(null);
   const progress = useSectionProgress(sectionRef);
 
@@ -812,15 +914,15 @@ export function CardStackScene({ language, baseUrl }: SceneProps) {
                   } as CSSProperties
                 }
               >
-                <img
-                  src={`${baseUrl}portfolio/assets/${card.asset}`}
-                  alt=""
-                  loading="lazy"
-                />
                 <div className={styles.stackShade} />
                 <span>0{index + 1} / {card.code}</span>
                 <h3>{card.code}</h3>
                 <p>{language === 'ru' ? card.ru : card.en}</p>
+                <ServiceObject index={index} />
+                <div className={styles.stackGlassStrip}>
+                  <span>{language === 'ru' ? 'ПРОДУКТОВЫЙ СЛОЙ' : 'PRODUCT LAYER'}</span>
+                  <strong>0{index + 1}</strong>
+                </div>
               </article>
             );
           })}
