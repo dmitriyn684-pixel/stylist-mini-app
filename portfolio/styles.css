@@ -1010,6 +1010,96 @@ h3 {
   border-radius: 24px;
 }
 
+.agency-mockup {
+  position: relative;
+  width: 100%;
+  aspect-ratio: .72;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,.14);
+  border-radius: 24px;
+  color: #f4f1ea;
+  background:
+    radial-gradient(circle at 80% 12%, rgba(93,140,255,.26), transparent 25%),
+    linear-gradient(145deg,#151b24,#080b10 68%);
+  box-shadow: inset 0 1px rgba(255,255,255,.14);
+}
+
+.agency-stylist {
+  background:
+    radial-gradient(circle at 80% 12%, rgba(216,175,86,.25), transparent 24%),
+    linear-gradient(145deg,#241f22,#0c0d11 68%);
+}
+
+.mock-top {
+  display: flex;
+  justify-content: space-between;
+  padding: 13px;
+  color: #8f99a6;
+  font: 700 6px/1 "Dimko Mono", monospace;
+  letter-spacing: .1em;
+}
+.mock-top b { color: var(--gold-soft); font: inherit; }
+.mock-device {
+  position: absolute;
+  right: 10%;
+  bottom: -4%;
+  left: 10%;
+  height: 78%;
+  padding: 13%;
+  border: 1px solid rgba(255,255,255,.14);
+  border-radius: 18px 18px 0 0;
+  background: rgba(3,6,10,.65);
+  box-shadow: 0 28px 70px rgba(0,0,0,.42), inset 0 1px rgba(255,255,255,.12);
+  backdrop-filter: blur(14px);
+}
+.mock-device small { color: #8fb7ff; font: 700 6px/1 "Dimko Mono", monospace; letter-spacing: .1em; }
+.mock-device p { margin: 13px 0 0; font-size: 10px; font-weight: 700; }
+.mock-device em { display: block; margin-top: 12px; color: #727d8a; font: 700 5px/1.3 "Dimko Mono", monospace; letter-spacing: .07em; }
+.mock-ring {
+  display: grid;
+  place-content: center;
+  width: 78%;
+  aspect-ratio: 1;
+  margin: 13px auto 0;
+  border: 7px solid rgba(0,239,194,.12);
+  border-top-color: var(--mint);
+  border-right-color: var(--gold);
+  border-radius: 50%;
+  text-align: center;
+  transform: rotate(-14deg);
+}
+.mock-ring > * { transform: rotate(14deg); }
+.mock-ring strong { font-size: 18px; }
+.mock-ring span { margin-top: 3px; color: #7f8996; font: 700 6px/1 "Dimko Mono", monospace; }
+.mock-bars { display: flex; gap: 4px; margin-top: 8px; }
+.mock-bars i { width: 31%; height: 2px; background: var(--mint); opacity: .35; }
+.fashion-cards { display: grid; grid-template-columns: repeat(3,1fr); gap: 4px; margin-top: 18px; }
+.fashion-cards i { height: 74px; border-radius: 7px; background: linear-gradient(155deg,rgba(255,255,255,.25),rgba(216,175,86,.1)); }
+.fashion-cards i:nth-child(2) { transform: translateY(-8px); background: linear-gradient(155deg,rgba(255,255,255,.18),rgba(93,140,255,.16)); }
+.palette-dots { display: flex; gap: 5px; margin-top: 9px; }
+.palette-dots i { width: 8px; height: 8px; border-radius: 50%; background: #d8bd9d; }
+.palette-dots i:nth-child(2) { background:#394a55; }.palette-dots i:nth-child(3) { background:#a06c65; }.palette-dots i:nth-child(4) { background:#e4d4bb; }
+
+.bot-product-visual {
+  position: relative;
+  display: grid;
+  place-content: center;
+  aspect-ratio: 1.22;
+  overflow: hidden;
+  border-radius: 10px;
+  background: radial-gradient(circle at 70% 20%,rgba(93,140,255,.28),transparent 27%),linear-gradient(145deg,#171d2a,#080b10);
+  text-align: center;
+}
+.bot-product-visual::before,
+.bot-product-visual::after { content:""; position:absolute; inset:18%; border:1px solid rgba(255,255,255,.14); border-radius:50%; }
+.bot-product-visual::after { inset:32%; border-color:rgba(93,140,255,.4); }
+.bot-product-visual small { position:relative; z-index:2; color:#919cab; font:700 5px/1 "Dimko Mono",monospace; letter-spacing:.1em; }
+.bot-product-visual strong { position:relative; z-index:2; margin-top:5px; font-size:21px; }
+.bot-product-visual > i { position:absolute; z-index:2; top:16%; right:16%; width:5px; height:5px; border-radius:50%; background:#8fb7ff; box-shadow:0 0 15px #8fb7ff; }
+.tone-psy { background:radial-gradient(circle at 70% 20%,rgba(155,151,255,.28),transparent 27%),linear-gradient(145deg,#1b1d2b,#090b10); }
+.tone-business { background:radial-gradient(circle at 70% 20%,rgba(216,175,86,.3),transparent 27%),linear-gradient(145deg,#251f16,#090b10); }
+.tone-pulse { background:radial-gradient(circle at 70% 20%,rgba(0,239,194,.22),transparent 27%),linear-gradient(145deg,#14231f,#080b10); }
+
 .project-featured .project-copy {
   width: 69%;
 }
