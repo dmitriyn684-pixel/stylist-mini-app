@@ -246,6 +246,7 @@ export function DimkoffPortalHero({ language }: HeroProps) {
   const sectionRef = useRef<HTMLElement>(null);
   const progress = useHeroProgress(sectionRef);
   const active = useHeroActive(sectionRef);
+  const baseUrl = import.meta.env.BASE_URL;
 
   return (
     <section
@@ -259,7 +260,8 @@ export function DimkoffPortalHero({ language }: HeroProps) {
         <div className={styles.canvas}><PortalCanvas progress={progress} active={active} /></div>
         <div className={styles.depth} aria-hidden="true" />
         <div className={styles.copy}>
-          <p>00 / DIGITAL PORTAL</p>
+          <p>DIMKOFF — AI PRODUCT STUDIO</p>
+          <div className={styles.formula}>SMM. AI. PRODUCT.</div>
           <h1>
             {language === 'ru'
               ? <>AI-продукты<br />и digital-сцены<br />для роста бизнеса</>
@@ -276,6 +278,9 @@ export function DimkoffPortalHero({ language }: HeroProps) {
             {language === 'ru' ? 'Обсудить проект' : 'Discuss a project'} ↗
           </a>
           <a href="#projects">{language === 'ru' ? 'Смотреть проекты' : 'View projects'} ↓</a>
+          <a href={`${baseUrl}portfolio/dimkoff-brandbook-2026-visual-v2.pdf`}>
+            {language === 'ru' ? 'Брендбук' : 'Brandbook'} ↗
+          </a>
         </div>
         <div className={styles.readout}>
           <span>DIGITAL PORTAL / ONLINE</span>

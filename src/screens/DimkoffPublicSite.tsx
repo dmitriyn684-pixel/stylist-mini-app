@@ -1,17 +1,43 @@
-import { lazy, Suspense, useEffect, useMemo, useState, type ReactNode } from 'react';
+import { lazy, Suspense, useEffect, useMemo, useState, type CSSProperties, type PointerEvent, type ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import styles from './DimkoffPublicSite.module.css';
+import { ProjectVisual } from './ProjectVisual';
 
 const PortalIntroScene = lazy(() =>
   import('./DimkoffPortalHero').then((module) => ({
     default: module.DimkoffPortalHero,
   })),
 );
+const ServiceMotionStage = lazy(() =>
+  import('./DimkoffStudioVisuals').then((module) => ({ default: module.ServiceMotionStage })),
+);
+const ConceptSignalField = lazy(() =>
+  import('./DimkoffStudioVisuals').then((module) => ({ default: module.ConceptSignalField })),
+);
+const SignalPortal = lazy(() =>
+  import('./DimkoffStudioVisuals').then((module) => ({ default: module.SignalPortal })),
+);
 
 type Language = 'ru' | 'en';
 type Copy = { ru: string; en: string };
 
 const text = (copy: Copy, language: Language) => copy[language];
+
+function handleTilt(event: PointerEvent<HTMLElement>) {
+  const target = event.currentTarget;
+  const bounds = target.getBoundingClientRect();
+  const x = (event.clientX - bounds.left) / bounds.width;
+  const y = (event.clientY - bounds.top) / bounds.height;
+  target.style.setProperty('--rx', `${(0.5 - y) * 7}deg`);
+  target.style.setProperty('--ry', `${(x - 0.5) * 9}deg`);
+  target.style.setProperty('--px', `${x * 100}%`);
+  target.style.setProperty('--py', `${y * 100}%`);
+}
+
+function resetTilt(event: PointerEvent<HTMLElement>) {
+  event.currentTarget.style.setProperty('--rx', '0deg');
+  event.currentTarget.style.setProperty('--ry', '0deg');
+}
 
 const directions = [
   {
@@ -46,13 +72,28 @@ const directions = [
       en: 'Offer, content, funnel, Telegram journey and launch.',
     },
   },
+  {
+    code: '05 / BRAND',
+    title: { ru: 'Brand System', en: 'Brand System' },
+    body: {
+      ru: 'Позиционирование, брендбук и продуктовая упаковка в едином языке.',
+      en: 'Positioning, brandbook and product packaging in one language.',
+    },
+  },
+  {
+    code: '06 / AUTO',
+    title: { ru: 'Automation', en: 'Automation' },
+    body: {
+      ru: 'Связанные процессы, данные, уведомления и AI-сценарии без ручной рутины.',
+      en: 'Connected processes, data, alerts and AI journeys without manual routine.',
+    },
+  },
 ] as const;
 
 const featuredProjects = [
   {
     name: 'CaloriePT AI 2.0',
     status: 'LIVE / AI NUTRITION',
-    image: 'caloriept-ai-live.webp',
     body: {
       ru: 'Telegram AI-продукт для питания и ежедневных сценариев.',
       en: 'A Telegram AI product for nutrition and everyday routines.',
@@ -61,7 +102,6 @@ const featuredProjects = [
   {
     name: 'Stylist AI',
     status: 'LIVE / FASHION MINI APP',
-    image: 'stylist-ai-showcase.webp',
     body: {
       ru: 'Гардероб, палитра и персональная AI-консультация.',
       en: 'Wardrobe, palette and personal AI consultation.',
@@ -70,7 +110,6 @@ const featuredProjects = [
   {
     name: 'AI Director',
     status: 'CONCEPT / IN DEVELOPMENT',
-    image: 'experience-ai-product.webp',
     body: {
       ru: 'Деловой AI-партнёр для первого уровня бизнес-проверки.',
       en: 'A business AI partner for first-line operational review.',
@@ -221,7 +260,14 @@ export function DimkoffLandingLite() {
           </div>
           <div className={styles.directionGrid}>
             {directions.map((direction) => (
-              <Link to="/services" key={direction.code}>
+              <Link
+                to="/services"
+                key={direction.code}
+                onPointerMove={handleTilt}
+                onPointerLeave={resetTilt}
+                style={{ '--rx': '0deg', '--ry': '0deg' } as CSSProperties}
+              >
+                <b aria-hidden="true"><i /><i /><i /></b>
                 <span>{direction.code}</span>
                 <h3>{text(direction.title, language)}</h3>
                 <p>{text(direction.body, language)}</p>
@@ -239,8 +285,14 @@ export function DimkoffLandingLite() {
           </div>
           <div className={styles.featuredGrid}>
             {featuredProjects.map((project) => (
-              <Link to={project.name === 'AI Director' ? '/concepts' : '/projects'} key={project.name}>
-                <figure><img src={`${assets}${project.image}`} alt="" loading="lazy" /></figure>
+              <Link
+                to={project.name === 'AI Director' ? '/concepts' : '/projects'}
+                key={project.name}
+                onPointerMove={handleTilt}
+                onPointerLeave={resetTilt}
+                style={{ '--rx': '0deg', '--ry': '0deg' } as CSSProperties}
+              >
+                <figure><ProjectVisual name={project.name} status={project.status} compact /></figure>
                 <span>{project.status}</span>
                 <h3>{project.name}</h3>
                 <p>{text(project.body, language)}</p>
@@ -266,22 +318,29 @@ export function DimkoffLandingLite() {
         </section>
 
         <section className={`${styles.homeSection} ${styles.portfolioBand}`}>
-          <p>04 / CASE LAB</p>
-          <h2>{language === 'ru' ? 'Портфолио и визуальная система' : 'Portfolio and visual system'}</h2>
-          <span>
-            {language === 'ru'
-              ? 'Глубокие кейсы, брендбук, PDF и Digital Experiences собраны на втором уровне сайта.'
-              : 'Deep cases, brandbook, PDFs and Digital Experiences live on the second site level.'}
-          </span>
-          <div>
-            <a href={`${baseUrl}portfolio/`}>{language === 'ru' ? 'Открыть портфолио' : 'Open portfolio'} ↗</a>
-            <a href={`${baseUrl}portfolio/dimkoff-brandbook-2026-visual-v2.pdf`}>
-              {language === 'ru' ? 'Открыть брендбук' : 'Open brandbook'} ↗
-            </a>
+          <div className={styles.portfolioCopy}>
+            <p>04 / CASE LAB</p>
+            <h2>{language === 'ru' ? 'Портфолио и визуальная система' : 'Portfolio and visual system'}</h2>
+            <span>
+              {language === 'ru'
+                ? 'Глубокие кейсы, брендбук, PDF и Digital Experiences собраны на втором уровне сайта.'
+                : 'Deep cases, brandbook, PDFs and Digital Experiences live on the second site level.'}
+            </span>
+            <div>
+              <a href={`${baseUrl}portfolio/`}>{language === 'ru' ? 'Открыть портфолио' : 'Open portfolio'} ↗</a>
+              <a href={`${baseUrl}portfolio/dimkoff-brandbook-2026-visual-v2.pdf`}>
+                {language === 'ru' ? 'Открыть брендбук' : 'Open brandbook'} ↗
+              </a>
+            </div>
           </div>
+          <figure className={styles.portfolioPreview}>
+            <img src={`${assets}brandbook-founder-site.webp`} alt="DimkoFF Visual Brandbook" loading="lazy" />
+            <span>VISUAL SYSTEM / 2026</span>
+          </figure>
         </section>
 
         <section className={`${styles.homeSection} ${styles.contact}`} id="contact">
+          <Suspense fallback={null}><SignalPortal language={language} /></Suspense>
           <p>05 / CONTACT</p>
           <h2>{language === 'ru' ? 'Обсудить AI-продукт или Telegram Mini App' : 'Discuss an AI product or Telegram Mini App'}</h2>
           <div>
@@ -302,7 +361,9 @@ const serviceSections = [
       ru: 'AI превращается в конкретный рабочий сценарий: проверяет, рекомендует, анализирует и помогает принимать решения.',
       en: 'AI becomes a practical workflow: reviewing, recommending, analysing and supporting decisions.',
     },
-    items: ['AI Director', 'Проверка документов', 'AI-ассистенты', 'Аналитика', 'Recommendations'],
+    items: ['AI Director', 'Проверка документов', 'AI-ассистенты', 'RAG-базы знаний', 'Автоматизация'],
+    audience: { ru: 'Бизнес, эксперты, сервисные команды', en: 'Businesses, experts, service teams' },
+    result: { ru: 'Быстрее проверка, решение и следующий шаг', en: 'Faster review, decision and next step' },
   },
   {
     number: '02',
@@ -312,6 +373,8 @@ const serviceSections = [
       en: 'A product inside familiar Telegram — without a separate registration or long onboarding.',
     },
     items: ['Mini App', 'Telegram-бот', 'Личный кабинет', 'Оплата', 'Уведомления', 'Админка'],
+    audience: { ru: 'Онлайн-сервисы, сообщества, личные бренды', en: 'Online services, communities, personal brands' },
+    result: { ru: 'Продукт и повторный сценарий внутри Telegram', en: 'A product and repeat journey inside Telegram' },
   },
   {
     number: '03',
@@ -320,7 +383,9 @@ const serviceSections = [
       ru: 'Сайты, которые объясняют ценность и создают ощущение продукта без визуального шума.',
       en: 'Sites that communicate value and create a product feeling without visual noise.',
     },
-    items: ['3D / WebGL site', 'Premium landing', 'Personal brand site', 'Product launch site'],
+    items: ['3D / WebGL site', 'Premium landing', 'Personal brand site', 'Product launch page', 'Motion showcase'],
+    audience: { ru: 'Premium-продукты, студии, основатели', en: 'Premium products, studios, founders' },
+    result: { ru: 'Сильная подача, доверие и понятный оффер', en: 'Strong presentation, trust and a clear offer' },
   },
   {
     number: '04',
@@ -330,20 +395,44 @@ const serviceSections = [
       en: 'From packaging and content to the Telegram journey, warm-up and first leads.',
     },
     items: ['Упаковка', 'Контент', 'Воронка', 'Telegram-маршрут', 'Прогрев', 'Запуск'],
+    audience: { ru: 'Эксперты, продукты, новые направления', en: 'Experts, products, new business lines' },
+    result: { ru: 'Маршрут от внимания до первого действия', en: 'A journey from attention to first action' },
+  },
+  {
+    number: '05',
+    title: { ru: 'Brand System', en: 'Brand System' },
+    lead: {
+      ru: 'Позиционирование, фирменный язык и продуктовая упаковка, которые делают предложение узнаваемым и цельным.',
+      en: 'Positioning, brand language and product packaging that make an offer coherent and recognisable.',
+    },
+    items: ['Позиционирование', 'Brandbook', 'Visual system', 'Product packaging', 'Launch materials'],
+    audience: { ru: 'Личные бренды, эксперты, новые продукты', en: 'Personal brands, experts, new products' },
+    result: { ru: 'Единый образ продукта во всех точках контакта', en: 'One product image across every touchpoint' },
+  },
+  {
+    number: '06',
+    title: { ru: 'Automation', en: 'Automation' },
+    lead: {
+      ru: 'Соединяем AI, Telegram, данные и уведомления в процессы, которые снимают повторяющуюся ручную работу.',
+      en: 'We connect AI, Telegram, data and alerts into processes that remove repetitive manual work.',
+    },
+    items: ['AI workflows', 'Интеграции', 'Уведомления', 'Data flows', 'Админ-сценарии'],
+    audience: { ru: 'Команды с повторяющимися операциями', en: 'Teams with repetitive operations' },
+    result: { ru: 'Меньше рутины, быстрее действие, прозрачнее контроль', en: 'Less routine, faster action, clearer control' },
   },
 ] as const;
 
 const allProjects = [
-  ['01', 'CaloriePT AI 2.0', 'LIVE', 'caloriept-ai-live.webp', 'Telegram AI-продукт для питания.', 'Люди, которые считают рацион и формируют привычки.', 'Сложный ежедневный расчёт и повторные действия.', 'Полный цикл AI + Telegram + база продуктов.'],
-  ['02', 'Stylist AI', 'LIVE', 'stylist-ai-showcase.webp', 'Персональный стилист внутри Mini App.', 'Пользователи fashion и beauty-сервисов.', 'Выбор образов, палитры и работа с гардеробом.', 'Продуктовую глубину и сложную Mini App-архитектуру.'],
-  ['03', 'Psy Mind AI', 'DEMO', 'psy-mind-ai-card.webp', 'AI-продукт для self-reflection.', 'Пользователи бережных психологических сценариев.', 'Регулярная рефлексия между сессиями.', 'Адаптацию AI-продукта под чувствительную нишу.'],
-  ['04', 'Businessmen AI', 'DEMO', 'businessmen-ai-card.webp', 'Нишевый AI-ментор.', 'Предприниматели и аудитория бизнес-обучения.', 'Практический разбор бизнес-вопросов.', 'Работу с образовательным продуктом и AI-ролью.'],
-  ['05', 'Pulse AI Coach', 'DEMO', 'pulse-ai-coach-card.webp', 'Coaching-продукт для привычек и performance.', 'Люди, которым важны фокус и системные действия.', 'Переход от намерения к повторяемому действию.', 'Широту продуктовой линейки Telegram AI.'],
-  ['06', 'Visual Brandbook DimkoFF', 'CASE', 'brandbook-founder-site.webp', 'Визуальная система AI Product Builder.', 'Клиенты, работодатели и партнёры.', 'Единое позиционирование и язык бренда.', 'Связку стратегии, SMM и арт-дирекции.'],
+  ['01', 'CaloriePT AI 2.0', 'LIVE', 'Telegram AI-продукт для питания.', 'Люди, которые считают рацион и формируют привычки.', 'Сложный ежедневный расчёт и повторные действия.', 'Полный цикл AI + Telegram + база продуктов.'],
+  ['02', 'Stylist AI', 'LIVE', 'Персональный стилист внутри Mini App.', 'Пользователи fashion и beauty-сервисов.', 'Выбор образов, палитры и работа с гардеробом.', 'Продуктовую глубину и сложную Mini App-архитектуру.'],
+  ['03', 'Psy Mind AI', 'DEMO', 'AI-продукт для self-reflection.', 'Пользователи бережных психологических сценариев.', 'Регулярная рефлексия между сессиями.', 'Адаптацию AI-продукта под чувствительную нишу.'],
+  ['04', 'Businessmen AI', 'DEMO', 'Нишевый AI-ментор.', 'Предприниматели и аудитория бизнес-обучения.', 'Практический разбор бизнес-вопросов.', 'Работу с образовательным продуктом и AI-ролью.'],
+  ['05', 'Pulse AI Coach', 'DEMO', 'Coaching-продукт для привычек и performance.', 'Люди, которым важны фокус и системные действия.', 'Переход от намерения к повторяемому действию.', 'Широту продуктовой линейки Telegram AI.'],
+  ['06', 'Visual Brandbook DimkoFF', 'CASE', 'Визуальная система AI Product Builder.', 'Клиенты, работодатели и партнёры.', 'Единое позиционирование и язык бренда.', 'Связку стратегии, SMM и арт-дирекции.'],
 ] as const;
 
 const conceptSheets = [
-  ['01', 'AI Director', 'CONCEPT / IN DEVELOPMENT', 'Деловой AI-партнёр в Telegram.', 'Собственники малого и среднего бизнеса.', 'Первичная проверка документов, сделок и рисков.', 'AI-проверка, вердикт, красные флаги и следующий шаг.', 'Умение превращать бизнес-риск в понятный AI-сценарий.'],
+  ['01', 'AI Director', 'CONCEPT / IN DEVELOPMENT', 'Деловой AI-партнёр в Telegram для собственников малого и среднего бизнеса.', 'Собственники малого и среднего бизнеса.', 'Договоры, коммерческие предложения, отчёты, сделки, поставщики, задачи и финансовые риски требуют быстрой первичной проверки.', 'Первый уровень проверки: вердикт, красные флаги и следующий шаг. Не заменяет юриста, бухгалтера или финдиректора полностью, но помогает понять, где можно потерять деньги.', 'Умение превращать бизнес-риск в понятный AI-сценарий.'],
   ['02', 'ExpertOS', 'CONCEPT', 'Продуктовая среда эксперта.', 'Эксперты, консультанты и авторы методик.', 'Контент, клиенты и методика живут отдельно.', 'Единая среда знаний, контента и сопровождения.', 'Системное мышление вокруг экспертного продукта.'],
   ['03', 'BriefPilot', 'CONCEPT', 'Умный брифинг до созвона.', 'Студии, агентства и B2B-сервисы.', 'Некачественные заявки и потеря времени.', 'Квалификация, сбор вводных и следующий маршрут.', 'Автоматизацию первой точки контакта.'],
   ['04', 'LaunchKit', 'CONCEPT', 'Система быстрого запуска.', 'Эксперты и небольшие команды.', 'Идея не превращается в последовательный запуск.', 'Оффер, контент, воронка и первые заявки.', 'Связку SMM и продуктовой разработки.'],
@@ -382,18 +471,31 @@ export function DimkoffServicesPage() {
           eyebrow="01 / SERVICES"
           title={language === 'ru' ? 'Что можно заказать' : 'What you can order'}
           lead={language === 'ru'
-            ? 'Четыре направления, которые можно собрать отдельно или соединить в один запуск.'
-            : 'Four directions that can work separately or become one launch.'}
+            ? 'Шесть направлений, которые можно собрать отдельно или соединить в один запуск.'
+            : 'Six directions that can work separately or become one launch.'}
         />
+        <Suspense fallback={<div className={styles.motionFallback}>DFF / SERVICE SYSTEM</div>}>
+          <ServiceMotionStage language={language} />
+        </Suspense>
         <div className={styles.serviceSheets}>
-          {serviceSections.map((section) => (
-            <section key={section.number}>
+          {serviceSections.map((section, index) => (
+            <section key={section.number} data-visual={String(index + 1).padStart(2, '0')}>
               <span>{section.number}</span>
-              <div>
+              <div className={styles.serviceCopy}>
                 <h2>{text(section.title, language)}</h2>
                 <p>{text(section.lead, language)}</p>
+                <dl>
+                  <div><dt>{language === 'ru' ? 'Для кого' : 'Audience'}</dt><dd>{text(section.audience, language)}</dd></div>
+                  <div><dt>{language === 'ru' ? 'Результат' : 'Result'}</dt><dd>{text(section.result, language)}</dd></div>
+                </dl>
+                <a href="https://t.me/AIStudioDimkoFF" target="_blank" rel="noreferrer">
+                  {language === 'ru' ? 'Обсудить направление' : 'Discuss this direction'} ↗
+                </a>
               </div>
-              <ul>{section.items.map((item) => <li key={item}>{item}</li>)}</ul>
+              <div className={styles.serviceVisual} aria-hidden="true">
+                <i /><i /><i /><b>{section.number}</b><small>DFF / PRODUCT LAYER</small>
+              </div>
+              <ul><li><em>{language === 'ru' ? 'Что входит' : 'Included'}</em></li>{section.items.map((item) => <li key={item}>{item}</li>)}</ul>
             </section>
           ))}
         </div>
@@ -405,7 +507,6 @@ export function DimkoffServicesPage() {
 
 export function DimkoffProjectsPage() {
   const { language, setLanguage } = useLanguage();
-  const assets = `${import.meta.env.BASE_URL}portfolio/assets/`;
   useEffect(() => {
     document.title = language === 'ru' ? 'Проекты — DimkoFF' : 'Projects — DimkoFF';
   }, [language]);
@@ -421,8 +522,13 @@ export function DimkoffProjectsPage() {
             : 'AI products and Telegram journeys across niches — separate from future concepts.'}
         />
         <div className={styles.projectSheets}>
-          {allProjects.map(([number, name, status, image, what, audience, pain, proof]) => (
-            <article key={name}>
+          {allProjects.map(([number, name, status, what, audience, pain, proof]) => (
+            <article
+              key={name}
+              onPointerMove={handleTilt}
+              onPointerLeave={resetTilt}
+              style={{ '--rx': '0deg', '--ry': '0deg' } as CSSProperties}
+            >
               <span>{number}</span>
               <div className={styles.projectTitle}><small>{status}</small><h2>{name}</h2></div>
               <dl>
@@ -431,7 +537,10 @@ export function DimkoffProjectsPage() {
                 <div><dt>{language === 'ru' ? 'Боль' : 'Pain'}</dt><dd>{pain}</dd></div>
                 <div><dt>{language === 'ru' ? 'Что доказывает' : 'Proof'}</dt><dd>{proof}</dd></div>
               </dl>
-              <figure><img src={`${assets}${image}`} alt="" loading="lazy" /></figure>
+              <figure><ProjectVisual name={name} status={status} /><i /></figure>
+              <Link to={name === 'Visual Brandbook DimkoFF' ? '/portfolio/' : '/projects/'} className={styles.projectLink}>
+                {language === 'ru' ? 'Смотреть кейс' : 'View case'} ↗
+              </Link>
             </article>
           ))}
         </div>
@@ -450,17 +559,20 @@ export function DimkoffConceptsPage() {
   return (
     <PublicShell language={language} setLanguage={setLanguage}>
       <main data-testid="dimkoff-concepts-page">
-        <InnerHero
-          eyebrow="03 / CONCEPT LAB"
-          title="Product thinking in public"
-          lead={language === 'ru'
-            ? 'Будущие продуктовые направления. Каждый концепт отделён от реальных работающих проектов.'
-            : 'Future product directions. Every concept is clearly separated from live products.'}
-        />
+        <Suspense fallback={<div className={styles.heroFallback}>DFF / SIGNAL FIELD</div>}>
+          <ConceptSignalField language={language} />
+        </Suspense>
         <div className={styles.conceptSheets}>
-          {conceptSheets.map(([number, name, status, what, audience, pain, product, proof]) => (
-            <article key={name}>
+          {conceptSheets.map(([number, name, status, what, audience, pain, product, proof], index) => (
+            <article
+              key={name}
+              className={index === 0 ? styles.conceptFeatured : undefined}
+              onPointerMove={handleTilt}
+              onPointerLeave={resetTilt}
+              style={{ '--rx': '0deg', '--ry': '0deg' } as CSSProperties}
+            >
               <header><span>{number}</span><small>{status}</small></header>
+              <div className={styles.conceptVisual} aria-hidden="true"><i /><i /><i /><b>{number}</b></div>
               <h2>{name}</h2>
               <dl>
                 <div><dt>{language === 'ru' ? 'Что' : 'What'}</dt><dd>{what}</dd></div>
@@ -481,6 +593,7 @@ export function DimkoffConceptsPage() {
 function PageContact({ language }: { language: Language }) {
   return (
     <section className={styles.pageContact}>
+      <Suspense fallback={null}><SignalPortal language={language} /></Suspense>
       <p>START / TELEGRAM</p>
       <h2>{language === 'ru' ? 'Есть задача для продукта?' : 'Have a product task?'}</h2>
       <a href="https://t.me/AIStudioDimkoFF" target="_blank" rel="noreferrer">

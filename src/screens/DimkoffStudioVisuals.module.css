@@ -1,0 +1,230 @@
+.serviceStage {
+  position: relative;
+  width: min(calc(100% - 64px), 1320px);
+  height: clamp(500px, 62vw, 720px);
+  margin: 0 auto clamp(90px, 10vw, 150px);
+  overflow: hidden;
+  border: 1px solid rgba(191, 233, 255, 0.16);
+  border-radius: 34px;
+  background:
+    radial-gradient(circle at 50% 48%, rgba(113, 145, 255, 0.18), transparent 24%),
+    linear-gradient(145deg, rgba(255,255,255,.045), transparent 34%),
+    #0b0e14;
+  perspective: 1100px;
+  isolation: isolate;
+}
+
+.serviceStage::before,
+.serviceStage::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.serviceStage::before {
+  background-image:
+    linear-gradient(rgba(159,199,255,.065) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(159,199,255,.065) 1px, transparent 1px);
+  background-size: 68px 68px;
+  mask-image: radial-gradient(circle, #000, transparent 72%);
+  transform: perspective(600px) rotateX(64deg) translateY(28%);
+}
+
+.serviceStage::after {
+  background: linear-gradient(105deg, transparent 38%, rgba(255,255,255,.08) 49%, transparent 60%);
+  transform: translateX(-120%);
+  animation: serviceSweep 8s ease-in-out infinite;
+}
+
+.serviceGlow {
+  position: absolute;
+  top: 44%;
+  left: 50%;
+  width: 38%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: rgba(113,145,255,.2);
+  filter: blur(70px);
+  transform: translate(-50%, -50%);
+}
+
+.serviceCore {
+  position: absolute;
+  z-index: 4;
+  top: 50%;
+  left: 50%;
+  display: grid;
+  place-items: center;
+  width: clamp(160px, 18vw, 230px);
+  aspect-ratio: 1;
+  border: 1px solid rgba(216,179,94,.32);
+  border-radius: 44% 56% 46% 54%;
+  background: linear-gradient(145deg, rgba(255,255,255,.16), rgba(15,20,31,.5) 44%, rgba(159,199,255,.12));
+  box-shadow: inset 0 1px rgba(255,255,255,.36), 0 35px 90px rgba(0,0,0,.45);
+  backdrop-filter: blur(18px);
+  transform: translate(-50%, -50%) rotate(45deg);
+  animation: coreFloat 8s ease-in-out infinite;
+}
+
+.serviceCore > * { transform: rotate(-45deg); }
+.serviceCore span { color: #9fc7ff; font: 700 8px/1 Consolas, monospace; letter-spacing: .12em; }
+.serviceCore strong { margin-top: -30px; font-size: clamp(14px, 1.5vw, 20px); letter-spacing: -.03em; }
+.serviceCore i { width: 42%; height: 1px; margin-top: -38px; background: linear-gradient(90deg, transparent, #d8b35e, transparent); }
+
+.servicePanel {
+  position: absolute;
+  z-index: 3;
+  display: grid;
+  width: clamp(210px, 23vw, 310px);
+  min-height: 138px;
+  padding: 21px;
+  border: 1px solid rgba(244,241,234,.14);
+  border-radius: 18px;
+  background: linear-gradient(145deg, rgba(255,255,255,.11), rgba(13,17,24,.52));
+  box-shadow: inset 0 1px rgba(255,255,255,.18), 0 26px 70px rgba(0,0,0,.32);
+  backdrop-filter: blur(20px);
+  animation: panelFloat 7s ease-in-out infinite;
+}
+
+.servicePanel small { color: #d8b35e; font: 700 8px/1 Consolas, monospace; }
+.servicePanel b { align-self: end; font-size: 14px; letter-spacing: .04em; }
+.servicePanel > span { display: flex; gap: 5px; margin-top: 13px; }
+.servicePanel > span i { width: 25%; height: 2px; background: #9fc7ff; opacity: .35; }
+.servicePanel1 { top: 12%; left: 8%; transform: rotateY(16deg) rotateZ(-2deg); }
+.servicePanel2 { top: 14%; right: 7%; transform: rotateY(-17deg) rotateZ(2deg); animation-delay: -2s; }
+.servicePanel3 { bottom: 12%; left: 11%; transform: rotateY(14deg) rotateZ(2deg); animation-delay: -4s; }
+.servicePanel4 { right: 10%; bottom: 10%; transform: rotateY(-14deg) rotateZ(-2deg); animation-delay: -6s; }
+
+.serviceOrbit {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 61%;
+  height: 36%;
+  border: 1px solid rgba(159,199,255,.24);
+  border-radius: 50%;
+  transform: translate(-50%, -50%) rotate(-10deg);
+  box-shadow: 0 0 34px rgba(159,199,255,.08);
+}
+
+.serviceStage > p {
+  position: absolute;
+  bottom: 24px;
+  left: 28px;
+  margin: 0;
+  color: #747e8c;
+  font: 700 9px/1.4 Consolas, monospace;
+  letter-spacing: .13em;
+}
+
+.signalField {
+  position: relative;
+  height: min(860px, 92vh);
+  min-height: 700px;
+  overflow: hidden;
+  border-bottom: 1px solid rgba(244,241,234,.1);
+  background:
+    radial-gradient(circle at 65% 50%, rgba(124, 128, 255, .16), transparent 27%),
+    linear-gradient(180deg, #080a0e, #0c0f16);
+}
+
+.signalCanvas { position: absolute; inset: 0; transform: translateX(18%); }
+.signalCanvas canvas { width: 100% !important; height: 100% !important; }
+.signalGrid {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(191,233,255,.19) .7px, transparent .7px);
+  background-size: 34px 34px;
+  mask-image: linear-gradient(90deg, transparent, #000 50%, transparent);
+  opacity: .35;
+  pointer-events: none;
+}
+
+.signalCopy {
+  position: absolute;
+  z-index: 5;
+  top: clamp(150px, 20vh, 220px);
+  left: max(32px, calc((100% - 1320px) / 2));
+  width: min(610px, 48vw);
+}
+
+.signalCopy p { margin: 0 0 22px; color: #d8b35e; font: 700 10px/1 Consolas, monospace; letter-spacing: .16em; }
+.signalCopy h1 { margin: 0; font-size: clamp(58px, 7.3vw, 112px); font-weight: 500; line-height: .88; letter-spacing: -.06em; }
+.signalCopy span { display: block; max-width: 510px; margin-top: 28px; color: #9ba3ae; font-size: clamp(16px, 1.4vw, 21px); line-height: 1.55; }
+
+.signalPanel {
+  position: absolute;
+  z-index: 4;
+  display: grid;
+  width: 250px;
+  padding: 17px;
+  border: 1px solid rgba(191,233,255,.18);
+  border-radius: 14px;
+  background: rgba(11,15,23,.56);
+  box-shadow: inset 0 1px rgba(255,255,255,.12), 0 20px 60px rgba(0,0,0,.35);
+  backdrop-filter: blur(14px);
+  animation: signalHover 8s ease-in-out infinite;
+}
+.signalPanel small { color: #778293; font: 700 7px/1 Consolas, monospace; letter-spacing: .11em; }
+.signalPanel strong { margin-top: 20px; font-size: 13px; }
+.signalPanel span { margin-top: 7px; color: #9fc7ff; font: 700 7px/1.2 Consolas, monospace; }
+.signalPanelA { top: 20%; right: 7%; transform: rotate(2deg); }
+.signalPanelB { right: 28%; bottom: 10%; animation-delay: -3s; }
+.signalPanelC { right: 4%; bottom: 20%; transform: rotate(-2deg); animation-delay: -5s; }
+
+.contactPortal {
+  position: relative;
+  width: min(420px, 80vw);
+  aspect-ratio: 1.8;
+  margin: 0 auto 34px;
+}
+.contactRing,
+.contactRing::before,
+.contactRing::after {
+  position: absolute;
+  inset: 12% 18%;
+  border: 1px solid rgba(159,199,255,.3);
+  border-radius: 50%;
+  content: "";
+}
+.contactRing { animation: contactSpin 15s linear infinite; transform: perspective(500px) rotateX(68deg); }
+.contactRing::before { inset: 18%; border-color: rgba(216,179,94,.4); }
+.contactRing::after { inset: 35%; box-shadow: 0 0 55px rgba(159,199,255,.3); }
+.contactRing i { position: absolute; width: 7px; height: 7px; border-radius: 50%; background: #bfe9ff; box-shadow: 0 0 20px #9fc7ff; }
+.contactRing i:nth-child(1) { top: 3%; left: 24%; }
+.contactRing i:nth-child(2) { top: 50%; right: -3px; }
+.contactRing i:nth-child(3) { bottom: 4%; left: 18%; background: #d8b35e; }
+.contactCore { position: absolute; inset: 0; display: grid; place-content: center; gap: 8px; text-align: center; }
+.contactCore small { color: #d8b35e; font: 700 10px/1 Consolas, monospace; }
+.contactCore strong { font-size: 12px; letter-spacing: .13em; }
+
+@keyframes serviceSweep { 0%, 52% { transform: translateX(-120%); } 72%, 100% { transform: translateX(120%); } }
+@keyframes coreFloat { 0%,100% { transform: translate(-50%,-50%) rotate(45deg) translateY(-5px); } 50% { transform: translate(-50%,-50%) rotate(48deg) translateY(7px); } }
+@keyframes panelFloat { 0%,100% { translate: 0 -4px; } 50% { translate: 0 8px; } }
+@keyframes signalHover { 0%,100% { translate: 0 -5px; } 50% { translate: 0 7px; } }
+@keyframes contactSpin { to { transform: perspective(500px) rotateX(68deg) rotateZ(360deg); } }
+
+@media (max-width: 700px) {
+  .serviceStage { width: calc(100% - 28px); height: 600px; border-radius: 24px; }
+  .servicePanel { width: 44%; min-height: 120px; padding: 15px; }
+  .servicePanel1 { top: 7%; left: 4%; }
+  .servicePanel2 { top: 9%; right: 4%; }
+  .servicePanel3 { bottom: 8%; left: 4%; }
+  .servicePanel4 { right: 4%; bottom: 6%; }
+  .serviceCore { width: 135px; }
+  .serviceOrbit { width: 90%; }
+  .serviceStage > p { left: 18px; bottom: 48%; width: 140px; }
+  .signalField { height: 760px; min-height: 720px; }
+  .signalCanvas { top: 25%; transform: scale(.72); }
+  .signalCopy { top: 115px; left: 18px; width: calc(100% - 36px); }
+  .signalCopy h1 { font-size: clamp(48px, 15vw, 68px); }
+  .signalPanel { width: 180px; padding: 13px; }
+  .signalPanelA { top: auto; right: 5%; bottom: 25%; }
+  .signalPanelB { right: auto; bottom: 8%; left: 5%; }
+  .signalPanelC { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .serviceStage::after, .serviceCore, .servicePanel, .signalPanel, .contactRing { animation: none; }
+}

@@ -1,4 +1,4 @@
-import { mkdir } from "node:fs/promises";
+import { copyFile, mkdir } from "node:fs/promises";
 import path from "node:path";
 import { chromium } from "playwright";
 
@@ -95,7 +95,7 @@ async function verifyHome(viewport, name) {
     !checks.h1.includes("digital") ||
     checks.heroScenes !== 1 ||
     checks.canvases !== 1 ||
-    checks.directions !== 4 ||
+    checks.directions !== 6 ||
     checks.featured !== 3 ||
     checks.reasons !== 3 ||
     checks.heavyScenes !== 0
@@ -143,7 +143,7 @@ async function verifyInternalPages() {
       route: "/services/",
       testId: "dimkoff-services-page",
       selector: '[class*="serviceSheets"] > section',
-      expected: 4,
+      expected: 6,
       screenshot: "services-desktop.png",
     },
     {
@@ -193,6 +193,14 @@ async function verifyInternalPages() {
       path: path.join(output, definition.screenshot),
       fullPage: false,
     });
+    if (definition.route === "/projects/") {
+      await page.locator('[class*="projectSheets"] > article').first().scrollIntoViewIfNeeded();
+      await page.waitForTimeout(450);
+      await page.screenshot({
+        path: path.join(output, "projects-product-mockup.png"),
+        fullPage: false,
+      });
+    }
     results[definition.route] = { cards, ...health };
     await page.close();
   }
@@ -221,7 +229,7 @@ async function verifyInternalMobile() {
   });
   const errors = [];
   const definitions = [
-    ["/services/", "dimkoff-services-page", '[class*="serviceSheets"] > section', 4],
+    ["/services/", "dimkoff-services-page", '[class*="serviceSheets"] > section', 6],
     ["/projects/", "dimkoff-projects-page", '[class*="projectSheets"] > article', 6],
     ["/concepts/", "dimkoff-concepts-page", '[class*="conceptSheets"] > article', 6],
   ];
@@ -267,13 +275,82 @@ async function verifyAppPreserved() {
   return preserved;
 }
 
+async function verifyPortfolio() {
+  const context = await browser.newContext({
+    viewport: { width: 1440, height: 1000 },
+    deviceScaleFactor: 1,
+  });
+  const page = await context.newPage();
+  const errors = [];
+  page.on("pageerror", (error) => errors.push(error.message));
+  const response = await page.goto(routeUrl("/portfolio/"), {
+    waitUntil: "domcontentloaded",
+    timeout: 60_000,
+  });
+  if (!response?.ok()) throw new Error(`/portfolio/ returned ${response?.status()}`);
+  await page.locator(".hero").waitFor({ state: "visible", timeout: 30_000 });
+  await page.waitForLoadState("networkidle");
+  const health = await pageHealth(page);
+  if (health.overflow > 1 || health.failedImages.length || errors.length) {
+    throw new Error(`Portfolio visual health failed: ${JSON.stringify({ health, errors })}`);
+  }
+  await page.screenshot({
+    path: path.join(output, "portfolio-desktop.png"),
+    fullPage: false,
+  });
+  await page.locator("#products").scrollIntoViewIfNeeded();
+  await page.waitForTimeout(450);
+  await page.screenshot({
+    path: path.join(output, "portfolio-products.png"),
+    fullPage: false,
+  });
+  await context.close();
+  return health;
+}
+
+async function recordMotion(route, testId, filename) {
+  const videoDir = path.join(output, ".video-temp");
+  await mkdir(videoDir, { recursive: true });
+  const context = await browser.newContext({
+    viewport: { width: 1440, height: 900 },
+    recordVideo: { dir: videoDir, size: { width: 1440, height: 900 } },
+  });
+  const errors = [];
+  const page = await openPage(context, route, testId, errors);
+  const video = page.video();
+  await page.mouse.move(1120, 370);
+  for (let step = 0; step < 12; step += 1) {
+    await page.mouse.move(1120 - step * 28, 360 + Math.sin(step) * 90);
+    await page.mouse.wheel(0, 220);
+    await page.waitForTimeout(320);
+  }
+  await page.waitForTimeout(900);
+  await page.close();
+  await context.close();
+  if (!video) throw new Error(`Video capture failed for ${route}`);
+  const source = await video.path();
+  await copyFile(source, path.join(output, filename));
+  const critical = errors.filter((error) => !error.includes("ERR_NETWORK_ACCESS_DENIED"));
+  if (critical.length) throw new Error(critical.join(" | "));
+  return filename;
+}
+
 await mkdir(output, { recursive: true });
 const results = {
   desktop: await verifyHome({ width: 1440, height: 1000 }, "desktop"),
   mobile: await verifyHome({ width: 390, height: 844 }, "mobile"),
   pages: await verifyInternalPages(),
   mobilePages: await verifyInternalMobile(),
-  appPreserved: await verifyAppPreserved(),
+  portfolio: await verifyPortfolio(),
+  videos: process.env.CAPTURE_MOTION === "1"
+    ? [
+        await recordMotion("/", "dimkoff-lite-home", "home-motion.webm"),
+        await recordMotion("/concepts/", "dimkoff-concepts-page", "concept-lab-motion.webm"),
+      ]
+    : ["home-motion.webm", "concept-lab-motion.webm"],
+  appPreserved: process.env.VERIFY_STYLIST_APP === "1"
+    ? await verifyAppPreserved()
+    : "unchanged by this task",
 };
 console.log(JSON.stringify({ base, ...results }, null, 2));
 await browser.close();

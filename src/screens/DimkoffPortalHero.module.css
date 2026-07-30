@@ -75,6 +75,13 @@
   letter-spacing: 0.17em;
 }
 
+.formula {
+  margin: 0 0 20px;
+  color: #bfe9ff;
+  font: 700 clamp(11px, 1vw, 14px)/1 "SFMono-Regular", Consolas, monospace;
+  letter-spacing: 0.21em;
+}
+
 .copy h1 {
   max-width: 760px;
   margin: 0;
@@ -123,6 +130,11 @@
 .actions a:first-child {
   color: #10131a;
   background: #d8b35e;
+}
+
+.actions a:last-child {
+  color: #e4c777;
+  border-color: rgba(216, 179, 94, 0.34);
 }
 
 .readout {
@@ -202,7 +214,7 @@
     flex: 1;
     justify-content: center;
     padding-inline: 10px;
-    font-size: 10px;
+    font-size: 9px;
   }
 }
 
