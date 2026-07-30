@@ -5,7 +5,12 @@ import { useOnboarding } from './hooks/useOnboarding';
 import { Layout } from './components/ui/Layout';
 import { PlaceholderScreen } from './components/ui/PlaceholderScreen';
 import { SuitcaseIcon, ProfileIcon } from './components/ui/icons';
-import { DimkoffAgencyLanding } from './screens/DimkoffAgencyLanding';
+import {
+  DimkoffConceptsPage,
+  DimkoffLandingLite,
+  DimkoffProjectsPage,
+  DimkoffServicesPage,
+} from './screens/DimkoffPublicSite';
 
 const OnboardingScreen = lazy(() =>
   import('./components/onboarding/OnboardingScreen').then((module) => ({ default: module.OnboardingScreen }))
@@ -101,7 +106,10 @@ function App() {
   return (
     <Suspense fallback={<RouteFallback />}>
       <Routes>
-      <Route path="/" element={<DimkoffAgencyLanding />} />
+      <Route path="/" element={<DimkoffLandingLite />} />
+      <Route path="/services" element={<DimkoffServicesPage />} />
+      <Route path="/projects" element={<DimkoffProjectsPage />} />
+      <Route path="/concepts" element={<DimkoffConceptsPage />} />
       <Route
         path="/onboarding"
         element={seen ? <Navigate to="/app" replace /> : <OnboardingScreen onFinish={markSeen} />}
