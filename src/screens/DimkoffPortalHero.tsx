@@ -85,114 +85,67 @@ function makeLetterDGeometry() {
 
 function PortalLetterD({ progress }: { progress: number }) {
   const group = useRef<THREE.Group>(null);
-  const inner = useRef<THREE.Group>(null);
   const geometry = useMemo(makeLetterDGeometry, []);
+  const edges = useMemo(() => new THREE.EdgesGeometry(geometry, 28), [geometry]);
 
-  useEffect(() => () => geometry.dispose(), [geometry]);
+  useEffect(() => () => {
+    geometry.dispose();
+    edges.dispose();
+  }, [edges, geometry]);
 
   useFrame((state) => {
-    if (!group.current || !inner.current) return;
+    if (!group.current) return;
     const time = state.clock.elapsedTime;
     group.current.rotation.y =
-      Math.sin(time * 0.22) * 0.2 + progress * 0.18 + state.pointer.x * 0.06;
+      -0.1 + Math.sin(time * 0.17) * 0.075 + progress * 0.08 + state.pointer.x * 0.035;
     group.current.rotation.x = THREE.MathUtils.lerp(
       group.current.rotation.x,
-      state.pointer.y * 0.07 + Math.sin(time * 0.31) * 0.035,
+      state.pointer.y * 0.035 + Math.sin(time * 0.24) * 0.018,
       0.04,
     );
-    inner.current.rotation.x = time * 0.17;
-    inner.current.rotation.y = -time * 0.23;
   });
 
   return (
-    <group ref={group} scale={[0.76, 0.76, 0.76]} position={[1.18, -0.08, 0]}>
+    <group ref={group} scale={[0.78, 0.78, 0.78]} position={[1.18, -0.08, 0]}>
       <mesh geometry={geometry}>
         <meshPhysicalMaterial
-          color="#262d38"
-          metalness={0.82}
-          roughness={0.2}
+          color="#35404f"
+          metalness={0.86}
+          roughness={0.16}
           clearcoat={1}
-          clearcoatRoughness={0.12}
-          iridescence={0.34}
+          clearcoatRoughness={0.06}
+          iridescence={0.18}
           iridescenceIOR={1.7}
-          emissive="#0b1426"
-          emissiveIntensity={0.18}
-          envMapIntensity={1.8}
+          emissive="#0b1a31"
+          emissiveIntensity={0.2}
+          envMapIntensity={2.4}
           side={THREE.DoubleSide}
         />
       </mesh>
-      <group ref={inner} position={[0.34, 0, 0.08]}>
-        <mesh position={[0.16, 0.2, 0.2]} scale={0.62}>
-          <icosahedronGeometry args={[0.78, 2]} />
-          <meshPhysicalMaterial
-            color="#cfe4ff"
-            transparent
-            opacity={0.68}
-            metalness={0.12}
-            roughness={0.1}
-            clearcoat={1}
-            clearcoatRoughness={0.05}
-            iridescence={0.84}
-            iridescenceIOR={1.7}
-            transmission={0.42}
-            thickness={0.62}
-            envMapIntensity={1.7}
-          />
-        </mesh>
-        <mesh position={[0.25, -0.72, -0.06]} rotation={[0.4, 0.2, 0.5]}>
-          <torusKnotGeometry args={[0.42, 0.11, 96, 16]} />
-          <meshPhysicalMaterial
-            color="#e4bd62"
-            metalness={0.56}
-            roughness={0.16}
-            emissive="#4b3210"
-            emissiveIntensity={0.24}
-          />
-        </mesh>
-        <mesh position={[0.2, 0.84, -0.18]} rotation={[0.3, 0.7, 0.1]} scale={0.42}>
-          <boxGeometry args={[1, 1, 1]} />
-          <meshPhysicalMaterial
-            color="#91c2ff"
-            transparent
-            opacity={0.62}
-            metalness={0.16}
-            roughness={0.08}
-            clearcoat={1}
-          />
-        </mesh>
-      </group>
-      <mesh rotation={[Math.PI / 2.38, 0.24, 0]}>
-        <torusGeometry args={[2.62, 0.018, 8, 160]} />
-        <meshBasicMaterial color="#9fc7ff" transparent opacity={0.42} />
+      <lineSegments geometry={edges} position={[0, 0, 0.38]}>
+        <lineBasicMaterial color="#a9d6ff" transparent opacity={0.32} />
+      </lineSegments>
+      <mesh geometry={geometry} scale={[0.87, 0.87, 0.76]} position={[0, 0, 0.48]}>
+        <meshPhysicalMaterial
+          color="#9fc7ff"
+          transparent
+          opacity={0.16}
+          metalness={0.12}
+          roughness={0.04}
+          clearcoat={1}
+          transmission={0.68}
+          thickness={0.65}
+          envMapIntensity={2}
+        />
       </mesh>
-      <mesh rotation={[Math.PI / 2.04, -0.28, Math.PI / 2]}>
-        <torusGeometry args={[2.24, 0.012, 8, 160]} />
-        <meshBasicMaterial color="#e9c66d" transparent opacity={0.34} />
+      <mesh rotation={[Math.PI / 2.22, 0.1, 0]}>
+        <torusGeometry args={[2.72, 0.012, 8, 180]} />
+        <meshBasicMaterial color="#9fc7ff" transparent opacity={0.25} />
       </mesh>
-      {[
-        [-2.7, 1.7, -0.6, 0.3],
-        [2.9, 1.35, -0.9, 0.22],
-        [2.55, -1.7, 0.25, 0.34],
-        [-2.35, -1.5, -0.2, 0.2],
-      ].map(([x, y, z, scale], index) => (
-        <mesh
-          key={`${x}-${y}`}
-          position={[x, y, z]}
-          rotation={[index * 0.42, index * 0.65, index * 0.28]}
-          scale={scale}
-        >
-          <tetrahedronGeometry args={[1, 0]} />
-          <meshPhysicalMaterial
-            color={index % 2 ? '#b9b1ff' : '#bfe9ff'}
-            transparent
-            opacity={0.46}
-            roughness={0.08}
-            clearcoat={1}
-            transmission={0.42}
-            thickness={0.45}
-          />
-        </mesh>
-      ))}
+      <mesh rotation={[Math.PI / 2.04, -0.18, Math.PI / 2]}>
+        <torusGeometry args={[2.34, 0.008, 8, 180]} />
+        <meshBasicMaterial color="#dfbd6c" transparent opacity={0.2} />
+      </mesh>
     </group>
   );
 }
@@ -212,8 +165,9 @@ function PortalCanvas({ progress, active }: { progress: number; active: boolean 
     >
       <ambientLight intensity={0.7} />
       <directionalLight position={[4, 5, 7]} intensity={4.8} color="#effffb" />
-      <pointLight position={[-4, -2, 4]} intensity={13} color="#8fb7ff" />
-      <pointLight position={[4, 1, 3]} intensity={4.2} color="#e4bd68" />
+      <pointLight position={[-4, -2, 4]} intensity={16} color="#8fb7ff" />
+      <pointLight position={[4, 1, 3]} intensity={5.4} color="#e4bd68" />
+      <pointLight position={[1, 4, 4]} intensity={7} color="#dbe8ff" />
       <Environment resolution={128}>
         <Lightformer
           intensity={4.5}
@@ -264,13 +218,13 @@ export function DimkoffPortalHero({ language }: HeroProps) {
           <div className={styles.formula}>SMM. AI. PRODUCT.</div>
           <h1>
             {language === 'ru'
-              ? <>AI-продукты<br />и digital-сцены<br />для роста бизнеса</>
-              : <>AI products<br />and digital scenes<br />for business growth</>}
+              ? <>AI-продукты,<br />Telegram Mini Apps<br />и digital-сцены</>
+              : <>AI products,<br />Telegram Mini Apps<br />and digital scenes</>}
           </h1>
           <span>
             {language === 'ru'
-              ? 'Соединяю SMM, AI и разработку, чтобы запускать Telegram Mini Apps, AI-ботов, сайты и продуктовые системы.'
-              : 'I connect SMM, AI and development to launch Telegram Mini Apps, AI bots, websites and product systems.'}
+              ? 'DimkoFF соединяет SMM, AI и разработку, чтобы превращать внимание в работающие продукты: ботов, Mini Apps, сайты, воронки, AI-ассистентов и системы запуска.'
+              : 'DimkoFF connects SMM, AI and development to turn attention into working products: bots, Mini Apps, websites, funnels, AI assistants and launch systems.'}
           </span>
         </div>
         <div className={styles.actions}>
@@ -278,8 +232,8 @@ export function DimkoffPortalHero({ language }: HeroProps) {
             {language === 'ru' ? 'Обсудить проект' : 'Discuss a project'} ↗
           </a>
           <a href="#projects">{language === 'ru' ? 'Смотреть проекты' : 'View projects'} ↓</a>
-          <a href={`${baseUrl}portfolio/dimkoff-brandbook-2026-visual-v2.pdf`}>
-            {language === 'ru' ? 'Брендбук' : 'Brandbook'} ↗
+          <a href={`${baseUrl}services/`}>
+            {language === 'ru' ? 'Открыть услуги' : 'Explore services'} ↗
           </a>
         </div>
         <div className={styles.readout}>

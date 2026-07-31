@@ -213,7 +213,7 @@
 
 .directionGrid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 16px;
   perspective: 1200px;
 }
@@ -316,7 +316,7 @@
 
 .featuredGrid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 18px;
   perspective: 1200px;
 }
@@ -373,8 +373,8 @@
 
 .reasonGrid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 18px;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12px;
 }
 
 .reasonGrid article {
@@ -390,7 +390,7 @@
 
 .reasonGrid h3 {
   margin: 90px 0 12px;
-  font-size: 25px;
+  font-size: clamp(18px, 1.6vw, 24px);
   font-weight: 560;
   letter-spacing: -0.035em;
 }
@@ -525,7 +525,7 @@
 .innerHero {
   width: min(calc(100% - 64px), 1320px);
   margin-inline: auto;
-  padding: clamp(170px, 19vw, 270px) 0 clamp(105px, 12vw, 170px);
+  padding: clamp(150px, 15vw, 210px) 0 clamp(72px, 8vw, 112px);
 }
 
 .innerHero > p {
@@ -535,7 +535,7 @@
 .innerHero h1 {
   max-width: 1060px;
   margin: 0;
-  font-size: clamp(60px, 9.5vw, 148px);
+  font-size: clamp(60px, 8.3vw, 128px);
   font-weight: 500;
   line-height: 0.88;
   letter-spacing: -0.06em;
@@ -579,21 +579,38 @@
 .serviceVisual {
   position: relative;
   align-self: center;
-  aspect-ratio: 1;
+  aspect-ratio: 1.18;
+  overflow: hidden;
   border: 1px solid rgba(159,199,255,.2);
-  border-radius: 28% 72% 46% 54%;
-  background: linear-gradient(145deg, rgba(159,199,255,.17), rgba(255,255,255,.025));
+  border-radius: 20px;
+  background:
+    linear-gradient(145deg, rgba(159,199,255,.12), rgba(255,255,255,.02)),
+    #111620;
   box-shadow: inset 0 1px rgba(255,255,255,.18), 0 28px 70px rgba(0,0,0,.25);
-  transform: rotate(9deg);
+  transform: perspective(800px) rotateY(-10deg) rotateX(3deg);
   transition: transform .7s cubic-bezier(.22,1,.36,1), border-color .5s;
 }
-.serviceSheets > section:hover .serviceVisual { border-color: rgba(216,179,94,.42); transform: rotate(3deg) translateY(-6px); }
-.serviceVisual > i { position: absolute; border: 1px solid rgba(159,199,255,.22); border-radius: 50%; }
-.serviceVisual > i:nth-child(1) { inset: 15%; }
-.serviceVisual > i:nth-child(2) { inset: 30%; border-color: rgba(216,179,94,.32); }
-.serviceVisual > i:nth-child(3) { top: 49%; left: 49%; width: 8px; height: 8px; background: #9fc7ff; box-shadow: 0 0 20px #9fc7ff; }
-.serviceVisual b { position: absolute; top: 50%; left: 50%; font: 400 clamp(42px,5vw,76px)/1 Consolas,monospace; opacity: .12; transform: translate(-50%,-50%) rotate(-9deg); }
-.serviceVisual small { position: absolute; bottom: 14px; left: 18px; color: #707986; font: 700 6px/1 Consolas,monospace; letter-spacing: .1em; transform: rotate(-9deg); }
+.serviceVisual::after {
+  content: "";
+  position: absolute;
+  inset: -45%;
+  background: linear-gradient(112deg,transparent 42%,rgba(255,255,255,.14) 50%,transparent 58%);
+  transform: translateX(-55%);
+  transition: transform .8s ease;
+}
+.serviceSheets > section:hover .serviceVisual { border-color: rgba(216,179,94,.42); transform: perspective(800px) rotateY(-3deg) translateY(-6px); }
+.serviceSheets > section:hover .serviceVisual::after { transform: translateX(55%); }
+.serviceVisual > i { position: absolute; border: 1px solid rgba(159,199,255,.2); border-radius: 8px; background: rgba(159,199,255,.035); }
+.serviceVisual > i:nth-child(1) { inset: 17% 12% 58%; }
+.serviceVisual > i:nth-child(2) { inset: 48% 44% 16% 12%; border-color: rgba(216,179,94,.25); }
+.serviceVisual > i:nth-child(3) { inset: 48% 12% 16% 64%; background: linear-gradient(180deg,rgba(159,199,255,.18),transparent); }
+.serviceVisual b { position: absolute; top: 50%; right: 16px; color: #9fc7ff; font: 400 clamp(36px,4vw,64px)/1 Consolas,monospace; opacity: .08; transform: translateY(-50%); }
+.serviceVisual small { position: absolute; bottom: 14px; left: 18px; color: #707986; font: 700 6px/1 Consolas,monospace; letter-spacing: .1em; }
+.serviceSheets > section[data-visual="02"] .serviceVisual { background: linear-gradient(145deg,rgba(185,177,255,.13),transparent),#11141e; }
+.serviceSheets > section[data-visual="03"] .serviceVisual { background: linear-gradient(145deg,rgba(216,179,94,.13),transparent),#171510; }
+.serviceSheets > section[data-visual="04"] .serviceVisual { background: linear-gradient(145deg,rgba(127,217,183,.1),transparent),#101815; }
+.serviceSheets > section[data-visual="05"] .serviceVisual { background: linear-gradient(145deg,rgba(220,178,190,.1),transparent),#181215; }
+.serviceSheets > section[data-visual="06"] .serviceVisual { background: linear-gradient(145deg,rgba(130,164,230,.12),transparent),#10151c; }
 
 .serviceSheets > section > span {
   color: var(--blue);
@@ -671,7 +688,7 @@
   display: grid;
   grid-template-columns: 65px 0.55fr 1fr;
   gap: 38px;
-  min-height: 330px;
+  min-height: 390px;
   padding-block: 55px;
   border-bottom: 1px solid rgba(20, 24, 32, 0.16);
   perspective: 1100px;
@@ -755,6 +772,27 @@
 .projectSheets figure > i { position: absolute; z-index: 8; inset: -40%; background: linear-gradient(115deg,transparent 40%,rgba(255,255,255,.18),transparent 58%); transform: translateX(-55%); transition: transform .8s; }
 .projectSheets article:hover figure > i { transform: translateX(55%); }
 .projectLink { position: absolute; right: 0; bottom: 24px; color: #555d68; font-size: 10px; font-weight: 800; text-decoration: none; text-transform: uppercase; letter-spacing: .08em; }
+.projectFeatures {
+  grid-column: 3;
+  display: flex;
+  flex-wrap: wrap;
+  align-self: end;
+  gap: 7px;
+  max-width: 650px;
+  margin-top: -58px;
+  padding-right: 32%;
+}
+.projectFeatures span,
+.conceptFeatures span {
+  padding: 7px 9px;
+  border: 1px solid rgba(20,24,32,.14);
+  border-radius: 999px;
+  color: #5d6470;
+  background: rgba(255,255,255,.34);
+  font: 700 7px/1 Consolas,monospace;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+}
 
 .conceptSheets {
   display: grid;
@@ -766,7 +804,7 @@
 
 .conceptSheets article {
   position: relative;
-  min-height: 570px;
+  min-height: 650px;
   padding: clamp(28px, 4vw, 55px);
   border: 1px solid var(--line);
   border-radius: 22px;
@@ -820,6 +858,18 @@
 
 .conceptSheets dd {
   color: #adb3bc;
+}
+
+.conceptFeatures {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 30px;
+}
+.conceptFeatures span {
+  border-color: rgba(159,199,255,.15);
+  color: #9ea8b5;
+  background: rgba(159,199,255,.035);
 }
 
 .pageContact {
@@ -925,6 +975,11 @@
   .projectSheets figure {
     right: 2%;
     width: 27vw;
+  }
+
+  .projectFeatures {
+    grid-column: 3;
+    padding-right: 0;
   }
 }
 
@@ -1085,6 +1140,12 @@
   .projectSheets dl {
     grid-column: 2;
     grid-template-columns: 1fr;
+  }
+
+  .projectFeatures {
+    grid-column: 2;
+    margin-top: 0;
+    padding-right: 0;
   }
 
   .projectSheets figure {

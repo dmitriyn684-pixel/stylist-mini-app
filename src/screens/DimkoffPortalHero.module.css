@@ -18,8 +18,9 @@
   min-height: 680px;
   overflow: hidden;
   background:
-    linear-gradient(90deg, rgba(8, 10, 14, 0.96) 0 41%, rgba(8, 10, 14, 0.38) 64%, rgba(8, 10, 14, 0.72) 100%),
-    radial-gradient(ellipse at 77% 82%, rgba(143, 183, 255, 0.08), transparent 31%);
+    linear-gradient(90deg, rgba(8, 10, 14, 0.98) 0 40%, rgba(8, 10, 14, 0.25) 66%, rgba(8, 10, 14, 0.56) 100%),
+    radial-gradient(ellipse at 77% 52%, rgba(113, 151, 214, 0.17), transparent 30%),
+    radial-gradient(ellipse at 77% 88%, rgba(216, 179, 94, 0.07), transparent 24%);
 }
 
 .canvas {
@@ -43,7 +44,7 @@
   width: min(600px, 42vw);
   height: 12%;
   border-radius: 50%;
-  background: radial-gradient(ellipse, rgba(191, 216, 255, 0.18), transparent 68%);
+  background: radial-gradient(ellipse, rgba(191, 216, 255, 0.26), transparent 68%);
   filter: blur(14px);
   transform: perspective(500px) rotateX(72deg);
   pointer-events: none;
@@ -170,8 +171,8 @@
   }
 
   .canvas {
-    top: 23%;
-    transform: translateX(5%) scale(0.76);
+    top: 34%;
+    transform: translateX(7%) scale(0.68);
   }
 
   .copy {

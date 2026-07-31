@@ -1,4 +1,4 @@
-import { copyFile, mkdir } from "node:fs/promises";
+import { mkdir } from "node:fs/promises";
 import path from "node:path";
 import { chromium } from "playwright";
 
@@ -11,6 +11,12 @@ const base =
   process.env.MAIN_LANDING_BASE_URL ||
   "http://127.0.0.1:4173/stylist-mini-app/";
 const browser = await chromium.launch({ headless: true });
+const closeSafely = async (target) => {
+  await Promise.race([
+    target.close().catch(() => undefined),
+    new Promise((resolve) => setTimeout(resolve, 4_000)),
+  ]);
+};
 
 const routeUrl = (route) => new URL(route.replace(/^\//, ""), base).href;
 
@@ -95,9 +101,9 @@ async function verifyHome(viewport, name) {
     !checks.h1.includes("digital") ||
     checks.heroScenes !== 1 ||
     checks.canvases !== 1 ||
-    checks.directions !== 6 ||
-    checks.featured !== 3 ||
-    checks.reasons !== 3 ||
+    checks.directions !== 4 ||
+    checks.featured !== 4 ||
+    checks.reasons !== 5 ||
     checks.heavyScenes !== 0
   ) {
     throw new Error(`Light home contract failed: ${JSON.stringify(checks)}`);
@@ -128,7 +134,7 @@ async function verifyHome(viewport, name) {
       !error.includes("THREE.WebGLRenderer"),
   );
   if (critical.length) throw new Error(critical.join(" | "));
-  await context.close();
+  await closeSafely(context);
   return checks;
 }
 
@@ -189,6 +195,12 @@ async function verifyInternalPages() {
     ) {
       throw new Error("AI Director concept status is missing");
     }
+    if (
+      definition.route === "/concepts/" &&
+      (await page.locator("canvas").count()) !== 0
+    ) {
+      throw new Error("Rejected Concept Lab WebGL model is still rendered");
+    }
     await page.screenshot({
       path: path.join(output, definition.screenshot),
       fullPage: false,
@@ -218,7 +230,7 @@ async function verifyInternalPages() {
     (error) => !error.includes("ERR_NETWORK_ACCESS_DENIED"),
   );
   if (critical.length) throw new Error(critical.join(" | "));
-  await context.close();
+  await closeSafely(context);
   return results;
 }
 
@@ -250,7 +262,7 @@ async function verifyInternalMobile() {
     (error) => !error.includes("ERR_NETWORK_ACCESS_DENIED"),
   );
   if (critical.length) throw new Error(critical.join(" | "));
-  await context.close();
+  await closeSafely(context);
   return results;
 }
 
@@ -270,7 +282,7 @@ async function verifyAppPreserved() {
     timeout: 30_000,
   });
   const preserved = await page.locator(".bottom-nav").isVisible();
-  await context.close();
+  await closeSafely(context);
   if (!preserved) throw new Error("Stylist AI /app route is not preserved");
   return preserved;
 }
@@ -304,35 +316,8 @@ async function verifyPortfolio() {
     path: path.join(output, "portfolio-products.png"),
     fullPage: false,
   });
-  await context.close();
+  await closeSafely(context);
   return health;
-}
-
-async function recordMotion(route, testId, filename) {
-  const videoDir = path.join(output, ".video-temp");
-  await mkdir(videoDir, { recursive: true });
-  const context = await browser.newContext({
-    viewport: { width: 1440, height: 900 },
-    recordVideo: { dir: videoDir, size: { width: 1440, height: 900 } },
-  });
-  const errors = [];
-  const page = await openPage(context, route, testId, errors);
-  const video = page.video();
-  await page.mouse.move(1120, 370);
-  for (let step = 0; step < 12; step += 1) {
-    await page.mouse.move(1120 - step * 28, 360 + Math.sin(step) * 90);
-    await page.mouse.wheel(0, 220);
-    await page.waitForTimeout(320);
-  }
-  await page.waitForTimeout(900);
-  await page.close();
-  await context.close();
-  if (!video) throw new Error(`Video capture failed for ${route}`);
-  const source = await video.path();
-  await copyFile(source, path.join(output, filename));
-  const critical = errors.filter((error) => !error.includes("ERR_NETWORK_ACCESS_DENIED"));
-  if (critical.length) throw new Error(critical.join(" | "));
-  return filename;
 }
 
 await mkdir(output, { recursive: true });
@@ -342,15 +327,10 @@ const results = {
   pages: await verifyInternalPages(),
   mobilePages: await verifyInternalMobile(),
   portfolio: await verifyPortfolio(),
-  videos: process.env.CAPTURE_MOTION === "1"
-    ? [
-        await recordMotion("/", "dimkoff-lite-home", "home-motion.webm"),
-        await recordMotion("/concepts/", "dimkoff-concepts-page", "concept-lab-motion.webm"),
-      ]
-    : ["home-motion.webm", "concept-lab-motion.webm"],
   appPreserved: process.env.VERIFY_STYLIST_APP === "1"
     ? await verifyAppPreserved()
     : "unchanged by this task",
 };
 console.log(JSON.stringify({ base, ...results }, null, 2));
-await browser.close();
+await closeSafely(browser);
+process.exit(0);
