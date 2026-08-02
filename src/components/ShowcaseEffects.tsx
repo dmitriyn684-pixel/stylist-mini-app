@@ -1,5 +1,7 @@
-import { useRef, useState, type CSSProperties, type MouseEvent } from 'react';
+import { lazy, Suspense, useRef, useState, type CSSProperties, type MouseEvent } from 'react';
 import './ShowcaseEffects.css';
+
+const ShowcaseWebGL = lazy(() => import('./ShowcaseWebGL').then((module) => ({ default: module.ShowcaseWebGL })));
 
 export type ShowcaseEffectVariant =
   | 'editorialList'
@@ -32,6 +34,7 @@ export function ShowcaseEffect({
     return (
       <section className="showcaseEffect showcaseEffect--editorial" data-showcase-effect={variant}>
         <EffectHead eyebrow={eyebrow} title={title} subtitle={subtitle} />
+        <EffectStage variant={variant} />
         <div className="editorialRows">
           {items.map((item, index) => (
             <article className="editorialRow" key={item.title}>
@@ -55,6 +58,7 @@ export function ShowcaseEffect({
         <div className="darkLayers__orb darkLayers__orb--one" />
         <div className="darkLayers__orb darkLayers__orb--two" />
         <EffectHead eyebrow={eyebrow} title={title} subtitle={subtitle} />
+        <EffectStage variant={variant} />
         <div className="layerStack">
           {items.map((item, index) => (
             <article className="layerCard" key={item.title} style={{ '--i': index } as CSSProperties}>
@@ -73,6 +77,7 @@ export function ShowcaseEffect({
       <section className="showcaseEffect showcaseEffect--glassMotion" data-showcase-effect={variant}>
         <div className="glassMotion__shine" />
         <EffectHead eyebrow={eyebrow} title={title} subtitle={subtitle} />
+        <EffectStage variant={variant} />
         <div className="motionStrips">
           {items.map((item, index) => (
             <div className="motionStrip" key={item.title}>
@@ -89,10 +94,21 @@ export function ShowcaseEffect({
   return (
     <section className="showcaseEffect showcaseEffect--hoverCards" data-showcase-effect={variant}>
       <EffectHead eyebrow={eyebrow} title={title} subtitle={subtitle} />
+      <EffectStage variant={variant} />
       <div className="spaceCards">
         {items.map((item, index) => <HoverSpaceCard key={item.title} item={item} index={index} />)}
       </div>
     </section>
+  );
+}
+
+function EffectStage({ variant }: { variant: ShowcaseEffectVariant }) {
+  return (
+    <div className={`showcaseEffect__stage showcaseEffect__stage--${variant}`}>
+      <Suspense fallback={<div className="showcaseEffect__stageFallback">DFF / LOADING 3D</div>}>
+        <ShowcaseWebGL variant={variant} />
+      </Suspense>
+    </div>
   );
 }
 

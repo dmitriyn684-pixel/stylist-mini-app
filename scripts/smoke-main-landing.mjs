@@ -190,10 +190,12 @@ async function verifyInternalPages() {
     const cards = await page.locator(definition.selector).count();
     const effect = page.locator(`[data-showcase-effect="${definition.effect}"]`);
     const effects = await effect.count();
+    const canvases = await page.locator(`[data-webgl-scene="${definition.effect}"] canvas`).count();
     const health = await pageHealth(page);
     if (
       cards !== definition.expected ||
       effects !== 1 ||
+      canvases !== 1 ||
       health.overflow > 1 ||
       health.failedImages.length
     ) {
@@ -208,12 +210,6 @@ async function verifyInternalPages() {
       )
     ) {
       throw new Error("AI Director concept status is missing");
-    }
-    if (
-      definition.route === "/concepts/" &&
-      (await page.locator("canvas").count()) !== 0
-    ) {
-      throw new Error("Rejected Concept Lab WebGL model is still rendered");
     }
     await page.screenshot({
       path: path.join(output, definition.screenshot),
@@ -235,7 +231,7 @@ async function verifyInternalPages() {
         path: path.join(output, "brand-system-case.png"),
       });
     }
-    results[definition.route] = { cards, effects, ...health };
+    results[definition.route] = { cards, effects, canvases, ...health };
     await page.close();
   }
 
@@ -285,7 +281,8 @@ async function verifyInternalMobile() {
     const cards = await page.locator(selector).count();
     const health = await pageHealth(page);
     const effects = await page.locator(`[data-showcase-effect="${effect}"]`).count();
-    if (cards !== expected || effects !== 1 || health.overflow > 1 || health.failedImages.length) {
+    const canvases = await page.locator(`[data-webgl-scene="${effect}"] canvas`).count();
+    if (cards !== expected || effects !== 1 || canvases !== 1 || health.overflow > 1 || health.failedImages.length) {
       throw new Error(`${route} mobile failed: ${JSON.stringify({ cards, health })}`);
     }
     if (route === "/projects/") {
@@ -294,7 +291,7 @@ async function verifyInternalMobile() {
         fullPage: false,
       });
     }
-    results[route] = { cards, effects, ...health };
+    results[route] = { cards, effects, canvases, ...health };
     await page.close();
   }
 
