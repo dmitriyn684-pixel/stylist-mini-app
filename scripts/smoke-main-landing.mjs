@@ -151,13 +151,23 @@ async function verifyInternalPages() {
       selector: '[class*="serviceSheets"] > section',
       expected: 6,
       screenshot: "services-desktop.png",
+      effect: "darkServiceLayers",
     },
     {
       route: "/projects/",
       testId: "dimkoff-projects-page",
-      selector: '[class*="projectSheets"] > article',
+      selector: '[data-project-case]',
       expected: 6,
-      screenshot: "projects-desktop.png",
+      screenshot: "projects-after.png",
+      effect: "editorialList",
+    },
+    {
+      route: "/partnership/",
+      testId: "dimkoff-partnership-page",
+      selector: '.motionStrip',
+      expected: 4,
+      screenshot: "partnership-desktop.png",
+      effect: "glassMotion",
     },
     {
       route: "/concepts/",
@@ -165,6 +175,7 @@ async function verifyInternalPages() {
       selector: '[class*="conceptSheets"] > article',
       expected: 6,
       screenshot: "concepts-desktop.png",
+      effect: "hoverSpaceCards",
     },
   ];
   const results = {};
@@ -177,9 +188,12 @@ async function verifyInternalPages() {
       errors,
     );
     const cards = await page.locator(definition.selector).count();
+    const effect = page.locator(`[data-showcase-effect="${definition.effect}"]`);
+    const effects = await effect.count();
     const health = await pageHealth(page);
     if (
       cards !== definition.expected ||
+      effects !== 1 ||
       health.overflow > 1 ||
       health.failedImages.length
     ) {
@@ -205,15 +219,23 @@ async function verifyInternalPages() {
       path: path.join(output, definition.screenshot),
       fullPage: false,
     });
+    await effect.scrollIntoViewIfNeeded();
+    await page.waitForTimeout(350);
+    await effect.screenshot({
+      path: path.join(output, `wow-${definition.effect}.png`),
+    });
     if (definition.route === "/projects/") {
-      await page.locator('[class*="projectSheets"] > article').first().scrollIntoViewIfNeeded();
+      await page.locator('[data-project-case]').first().scrollIntoViewIfNeeded();
       await page.waitForTimeout(450);
       await page.screenshot({
         path: path.join(output, "projects-product-mockup.png"),
         fullPage: false,
       });
+      await page.locator('[data-project-case="brandbook"]').screenshot({
+        path: path.join(output, "brand-system-case.png"),
+      });
     }
-    results[definition.route] = { cards, ...health };
+    results[definition.route] = { cards, effects, ...health };
     await page.close();
   }
 
@@ -224,6 +246,16 @@ async function verifyInternalPages() {
   results["/portfolio/"] = {
     status: portfolio.status(),
     contentType: portfolio.headers()["content-type"],
+  };
+  const brandbook = await context.request.get(
+    routeUrl("/portfolio/dimkoff-brandbook-2026-visual-v2.pdf"),
+  );
+  if (!brandbook.ok()) {
+    throw new Error(`Brandbook PDF returned ${brandbook.status()}`);
+  }
+  results["/portfolio/dimkoff-brandbook-2026-visual-v2.pdf"] = {
+    status: brandbook.status(),
+    contentType: brandbook.headers()["content-type"],
   };
 
   const critical = errors.filter(
@@ -241,20 +273,28 @@ async function verifyInternalMobile() {
   });
   const errors = [];
   const definitions = [
-    ["/services/", "dimkoff-services-page", '[class*="serviceSheets"] > section', 6],
-    ["/projects/", "dimkoff-projects-page", '[class*="projectSheets"] > article', 6],
-    ["/concepts/", "dimkoff-concepts-page", '[class*="conceptSheets"] > article', 6],
+    ["/services/", "dimkoff-services-page", '[class*="serviceSheets"] > section', 6, "darkServiceLayers"],
+    ["/projects/", "dimkoff-projects-page", '[data-project-case]', 6, "editorialList"],
+    ["/partnership/", "dimkoff-partnership-page", '.motionStrip', 4, "glassMotion"],
+    ["/concepts/", "dimkoff-concepts-page", '[class*="conceptSheets"] > article', 6, "hoverSpaceCards"],
   ];
   const results = {};
 
-  for (const [route, testId, selector, expected] of definitions) {
+  for (const [route, testId, selector, expected, effect] of definitions) {
     const page = await openPage(context, route, testId, errors);
     const cards = await page.locator(selector).count();
     const health = await pageHealth(page);
-    if (cards !== expected || health.overflow > 1 || health.failedImages.length) {
+    const effects = await page.locator(`[data-showcase-effect="${effect}"]`).count();
+    if (cards !== expected || effects !== 1 || health.overflow > 1 || health.failedImages.length) {
       throw new Error(`${route} mobile failed: ${JSON.stringify({ cards, health })}`);
     }
-    results[route] = { cards, ...health };
+    if (route === "/projects/") {
+      await page.screenshot({
+        path: path.join(output, "projects-mobile.png"),
+        fullPage: false,
+      });
+    }
+    results[route] = { cards, effects, ...health };
     await page.close();
   }
 

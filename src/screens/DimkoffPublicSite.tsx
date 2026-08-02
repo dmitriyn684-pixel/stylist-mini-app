@@ -1,5 +1,7 @@
 import { lazy, Suspense, useEffect, useMemo, useState, type CSSProperties, type PointerEvent, type ReactNode } from 'react';
 import { Link } from 'react-router-dom';
+import { ProjectCaseCard } from '../components/ProjectCaseCard';
+import { ShowcaseEffect } from '../components/ShowcaseEffects';
 import styles from './DimkoffPublicSite.module.css';
 import { ProjectVisual } from './ProjectVisual';
 
@@ -7,9 +9,6 @@ const PortalIntroScene = lazy(() =>
   import('./DimkoffPortalHero').then((module) => ({
     default: module.DimkoffPortalHero,
   })),
-);
-const ServiceMotionStage = lazy(() =>
-  import('./DimkoffStudioVisuals').then((module) => ({ default: module.ServiceMotionStage })),
 );
 const ConceptSignalField = lazy(() =>
   import('./DimkoffStudioVisuals').then((module) => ({ default: module.ConceptSignalField })),
@@ -192,6 +191,7 @@ function SiteHeader({
       <nav aria-label="Main navigation">
         <Link to="/services">{language === 'ru' ? 'Услуги' : 'Services'}</Link>
         <Link to="/projects">{language === 'ru' ? 'Проекты' : 'Projects'}</Link>
+        <Link to="/partnership">{language === 'ru' ? 'Партнёрам' : 'Partners'}</Link>
         <Link to="/concepts">{language === 'ru' ? 'Концепты' : 'Concepts'}</Link>
         <a href={`${baseUrl}portfolio/`}>{language === 'ru' ? 'Портфолио' : 'Portfolio'}</a>
       </nav>
@@ -432,14 +432,84 @@ const serviceSections = [
   },
 ] as const;
 
-const allProjects = [
-  ['01', 'CaloriePT AI 2.0', 'LIVE', 'Telegram AI-продукт для питания.', 'Люди, которые считают рацион и формируют привычки.', 'Сложный ежедневный расчёт и повторные действия.', 'Полный цикл AI + Telegram + база продуктов.', ['Фото еды', 'КБЖУ', 'Дневник', 'AI-итог дня', 'Рецепты из холодильника', 'AI-нутрициолог Анна'], 'https://caloriept.ru/webapp.html'],
-  ['02', 'Stylist AI', 'LIVE', 'Персональный AI-стилист внутри Telegram Mini App.', 'Пользователи fashion, beauty и wardrobe-сервисов.', 'Выбор образов, палитры и системная работа с гардеробом.', 'Продуктовую глубину, premium fashion UI и сложную Mini App-архитектуру.', ['Гардероб', 'Образы', 'AI-стилист', 'Палитра', 'Fashion-рекомендации'], '/app'],
-  ['03', 'Psy Mind AI', 'DEMO', 'AI-помощник для саморефлексии и мягкой психологической поддержки.', 'Пользователи бережных reflection-сценариев.', 'Регулярная рефлексия между сессиями. Не медицинский продукт.', 'Адаптацию AI-продукта под чувствительную нишу.', ['Mood signal', 'Reflection prompts', 'Дневной фокус'], 'https://t.me/psy_mind_rf_bot'],
-  ['04', 'Businessmen AI', 'DEMO', 'AI-наставник для бизнес-обучения и предпринимательских сценариев.', 'Предприниматели и аудитория бизнес-образования.', 'Переход от вопроса к структуре решения и плану действий.', 'Работу с образовательным продуктом и AI-ролью.', ['Mentor insight', 'Frameworks', 'Action plan'], 'https://t.me/businessmen_ai_bot'],
-  ['05', 'Pulse AI Coach', 'DEMO', 'AI-коуч по привычкам, фокусу, энергии и дисциплине.', 'Люди, которым важны performance и системные действия.', 'Переход от намерения к повторяемому действию.', 'Широту продуктовой линейки Telegram AI.', ['Streak', 'Pulse score', 'Focus', 'Progress'], 'https://t.me/PulseAICoach_bot'],
-  ['06', 'Visual Brandbook DimkoFF', 'CASE', 'Брендбук и визуальная система AI Product Builder.', 'Клиенты, работодатели и партнёры.', 'Единое позиционирование, digital-язык и презентация компетенций.', 'Связку стратегии, SMM, арт-дирекции и product packaging.', ['35 страниц', 'Visual system', 'Digital experiences', 'PDF'], '/portfolio/dimkoff-brandbook-2026-visual-v2.pdf'],
-] as const;
+const projectCases = [
+  {
+    title: 'CaloriePT AI 2.0', category: 'Wellness / Fitness / Nutrition', status: 'Live product', visual: 'calorie' as const,
+    intro: 'AI-нутрициолог и Telegram Mini App для питания, дневника калорий, привычек и сопровождения клиентов.',
+    problem: 'Фитнес-клубам, тренерам и wellness-проектам сложно удерживать клиента после тренировки. Питание, привычки и ежедневная дисциплина остаются вне клуба.',
+    solution: 'CaloriePT переносит сопровождение в Telegram: фото еды, КБЖУ, дневник, AI-итог дня, рецепты из холодильника, список покупок и сценарии для клубов.',
+    model: ['Subscription', 'White-label', 'License', 'Marketplace', 'Ambassadors'],
+    links: [{ label: 'Открыть продукт', href: 'https://t.me/Calorie_counter_rf_bot' }],
+  },
+  {
+    title: 'Stylist AI', category: 'Fashion / Beauty / Personal Style', status: 'Product direction', visual: 'stylist' as const,
+    intro: 'AI-стилист и Mini App для цифрового гардероба, образов и персональных рекомендаций.',
+    problem: 'Стилисты, бренды и fashion-комьюнити продают через контент, но не имеют интерактивного продукта внутри своей аудитории.',
+    solution: 'Stylist AI превращает гардероб, подбор образов и рекомендации в премиальный Mini App с возможностью white-label под стилиста или бренд.',
+    model: ['Subscription', 'White-label', 'Fashion commerce', 'Consultations', 'Community'],
+    links: [{ label: 'Открыть Mini App', href: '/app' }],
+  },
+  {
+    title: 'Psy Mind AI', category: 'Mental Wellness / Self-reflection', status: 'Bot product', visual: 'psy' as const,
+    intro: 'AI-помощник для саморефлексии, тревоги, выгорания, отношений, энергии и планирования.',
+    problem: 'Люди часто не готовы сразу идти к психологу: стыдно, дорого или непонятно, с чего начать разговор о своём состоянии.',
+    solution: 'Psy Mind AI снижает первый барьер: помогает сформулировать состояние, пройти мягкий разбор, получить упражнение и понять, когда обратиться к специалисту.',
+    note: 'Не является медицинским или психотерапевтическим сервисом, не ставит диагнозы и не заменяет специалиста.',
+    model: ['Subscription', 'White-label', 'Lead generation', 'Paid programs', 'Corporate wellbeing'],
+    links: [{ label: 'Открыть продукт', href: 'https://t.me/psy_mind_rf_bot' }],
+  },
+  {
+    title: 'Businessmen AI', category: 'Business Education / AI Mentor', status: 'Bot product', visual: 'business' as const,
+    intro: 'AI-наставник для предпринимателей, бизнес-клубов, онлайн-школ и экспертных Telegram-продуктов.',
+    problem: 'Образовательным проектам сложно удерживать ученика между уроками, эфирами и консультациями.',
+    solution: 'AI-наставник работает как постоянный слой поддержки: идеи, стратегия, продажи, мышление и вопросы по бизнесу превращаются в следующий шаг.',
+    model: ['Subscription', 'White-label', 'Course leads', 'Education programs'],
+    links: [{ label: 'Открыть продукт', href: 'https://t.me/businessmen_ai_bot' }],
+  },
+  {
+    title: 'AI Director', category: 'Business Control / RAG / Documents', status: 'In development', visual: 'director' as const,
+    intro: 'Онлайн-директор для малого и среднего бизнеса: проверка документов, риски, маркетинг, деньги и рекомендации собственнику.',
+    problem: 'Собственник часто видит проблему слишком поздно: деньги уже потеряны, договор подписан, реклама не окупилась или задачи просрочены.',
+    solution: 'AI Director даёт первичный бизнес-разбор: договоры, КП, налоги, маркетинг, риски, источники и план действий.',
+    note: 'Не заменяет юриста, бухгалтера, финансового директора или собственника. Это AI-слой первичного анализа и поддержки решений.',
+    model: ['B2B', 'Company deployment', 'White-label', 'License', 'Support'],
+    links: [{ label: 'Смотреть концепт', href: '/concepts' }],
+  },
+  {
+    title: 'DimkoFF Brand System', category: 'Brandbook / Visual Identity / Sales Pack', status: 'Completed visual system', visual: 'brandbook' as const,
+    intro: 'Премиальная визуальная система для AI Product Studio: брендбук, продуктовая архитектура, презентации, коммерческие материалы и investor-ready упаковка.',
+    problem: 'AI-продукты невозможно продавать дорого, если они выглядят как набор Telegram-ботов без единого позиционирования и языка.',
+    solution: 'Brand System собирает студию в одно целое: Visual Guideline 2026, продуктовую линейку, AI Studio messaging, клиентские презентации и материалы для партнёров и инвесторов.',
+    model: ['Brandbook', 'Visual System', 'Investor-ready', 'Partner Pack', 'AI Studio'],
+    links: [{ label: 'Открыть брендбук', href: '/portfolio/dimkoff-brandbook-2026-visual-v2.pdf' }, { label: 'Смотреть визуальную систему', href: '/portfolio/' }],
+  },
+];
+
+const editorialPortfolioItems = projectCases.map((project) => ({
+  title: project.title,
+  label: project.category.split(' / ').slice(0, 2).join(' / '),
+  description: project.intro,
+}));
+
+const serviceLayerItems = [
+  { label: '01', title: 'Product logic', description: 'Ниша, оффер, роли пользователей, сценарии, платные уровни и партнёрская модель.' },
+  { label: '02', title: 'Telegram Mini App', description: 'Интерфейс внутри Telegram, бот, авторизация, заявки, уведомления и оплата.' },
+  { label: '03', title: 'AI Layer', description: 'LLM, RAG, промпты, обработка файлов, фото, текстов и бизнес-данных.' },
+  { label: '04', title: 'Growth system', description: 'Воронка, подписка, white-label, реклама, партнёры и коммерческое предложение.' },
+];
+
+const partnershipItems = [
+  { label: 'White-label', title: 'Продукт под бренд партнёра', description: 'Фитнес-клуб, стилист, психолог, школа, эксперт или компания.' },
+  { label: 'License', title: 'Лицензирование готового решения', description: 'Партнёр получает готовую основу и запускает её в своей аудитории.' },
+  { label: 'Revenue share', title: 'Совместный запуск с экспертом', description: 'Эксперт даёт аудиторию и методологию, мы — продукт и воронку.' },
+  { label: 'Investor', title: 'Развитие портфеля AI-продуктов', description: 'Масштабирование через рекламу, B2B, клубы, франшизы и комьюнити.' },
+];
+
+const brandSystemItems = [
+  { label: 'Brandbook', title: 'DimkoFF Brandbook 2026', description: 'Позиционирование, продуктовая система, tone of voice и коммерческая рамка.' },
+  { label: 'Visual', title: 'Visual Guideline', description: 'Цвет, типографика, 3D, motion, glass и dark premium AI style.' },
+  { label: 'Sales', title: 'Investor / Partner Pack', description: 'Материалы для переговоров, презентаций, white-label и лицензий.' },
+];
 
 const conceptSheets = [
   ['01', 'AI Director', 'CONCEPT / IN DEVELOPMENT', 'Деловой AI-партнёр в Telegram для собственников малого и среднего бизнеса.', 'Собственники малого и среднего бизнеса.', 'Договоры, коммерческие предложения, отчёты, сделки, поставщики, задачи и финансовые риски требуют быстрой первичной проверки.', 'Первый уровень проверки: вердикт, красные флаги и следующий шаг. Не заменяет юриста, бухгалтера или финдиректора полностью, но помогает понять, где можно потерять деньги.', 'Снижает стоимость первой проверки и помогает быстрее подключить нужного специалиста.', ['Проверка договора', 'Деньги под риском', 'RAG-база', 'Вердикт', 'Вопросы специалисту', 'PDF-отчёт']],
@@ -484,9 +554,13 @@ export function DimkoffServicesPage() {
             ? 'Шесть направлений, которые можно собрать отдельно или соединить в один запуск.'
             : 'Six directions that can work separately or become one launch.'}
         />
-        <Suspense fallback={<div className={styles.motionFallback}>DFF / SERVICE SYSTEM</div>}>
-          <ServiceMotionStage language={language} />
-        </Suspense>
+        <ShowcaseEffect
+          variant="darkServiceLayers"
+          eyebrow="What we build"
+          title="AI-продукт под ключ: от идеи до монетизации."
+          subtitle="Мы собираем не просто интерфейс, а коммерческую систему: Mini App, bot logic, AI, платежи, подписку, white-label и сценарии продаж."
+          items={serviceLayerItems}
+        />
         <div className={styles.serviceSheets}>
           {serviceSections.map((section, index) => (
             <section key={section.number} data-visual={String(index + 1).padStart(2, '0')}>
@@ -523,41 +597,46 @@ export function DimkoffProjectsPage() {
 
   return (
     <PublicShell language={language} setLanguage={setLanguage}>
-      <main className={styles.lightPage} data-testid="dimkoff-projects-page">
+      <main data-testid="dimkoff-projects-page">
         <InnerHero
-          eyebrow="02 / REAL PRODUCTS"
-          title={language === 'ru' ? 'Реальные проекты' : 'Real projects'}
+          eyebrow="02 / PRODUCT PORTFOLIO"
+          title={language === 'ru' ? 'Портфель AI-продуктов, а не набор ботов' : 'An AI product portfolio, not a set of bots'}
           lead={language === 'ru'
-            ? 'AI-продукты и Telegram-сценарии в разных нишах — без смешивания с будущими концептами.'
-            : 'AI products and Telegram journeys across niches — separate from future concepts.'}
+            ? 'DimkoFF AI Studio развивает Telegram Mini Apps и AI-сервисы в wellness, fashion, psychology, business education и business control. Каждый проект можно развивать как подписку, white-label, лицензию, партнёрство или B2B-внедрение.'
+            : 'DimkoFF AI Studio develops Telegram Mini Apps and AI services across wellness, fashion, psychology, business education and business control — ready for subscription, white-label, license, partnership or B2B.'}
         />
-        <div className={styles.projectSheets}>
-          {allProjects.map(([number, name, status, what, audience, pain, proof, features, url]) => (
-            <article
-              key={name}
-              onPointerMove={handleTilt}
-              onPointerLeave={resetTilt}
-              style={{ '--rx': '0deg', '--ry': '0deg' } as CSSProperties}
-            >
-              <span>{number}</span>
-              <div className={styles.projectTitle}><small>{status}</small><h2>{name}</h2></div>
-              <dl>
-                <div><dt>{language === 'ru' ? 'Что' : 'What'}</dt><dd>{what}</dd></div>
-                <div><dt>{language === 'ru' ? 'Для кого' : 'Audience'}</dt><dd>{audience}</dd></div>
-                <div><dt>{language === 'ru' ? 'Боль' : 'Pain'}</dt><dd>{pain}</dd></div>
-                <div><dt>{language === 'ru' ? 'Что доказывает' : 'Proof'}</dt><dd>{proof}</dd></div>
-              </dl>
-              <div className={styles.projectFeatures}>
-                {features.map((feature) => <span key={feature}>{feature}</span>)}
-              </div>
-              <figure><ProjectVisual name={name} status={status} /><i /></figure>
-              <a href={`${url.startsWith('/') ? import.meta.env.BASE_URL.replace(/\/$/, '') : ''}${url}`} className={styles.projectLink} target={url.startsWith('http') ? '_blank' : undefined} rel={url.startsWith('http') ? 'noreferrer' : undefined}>
-                {language === 'ru' ? 'Смотреть кейс' : 'View case'} ↗
-              </a>
-            </article>
-          ))}
+        <div className={styles.projectsHeroActions}>
+          <a href="https://t.me/AIStudioDimkoFF" target="_blank" rel="noreferrer">Обсудить партнёрство ↗</a>
+          <a href="#product-cases">Смотреть продукты ↓</a>
+          <a href="https://t.me/Calorie_counter_rf_bot" target="_blank" rel="noreferrer">Открыть CaloriePT ↗</a>
         </div>
-        <PageContact language={language} />
+        <ShowcaseEffect
+          variant="editorialList"
+          eyebrow="Product portfolio"
+          title="Не боты. Портфель AI-продуктов."
+          subtitle="Каждый проект — отдельное коммерческое направление: с нишей, аудиторией, бизнес-моделью и возможностью white-label, лицензии или партнёрства."
+          items={editorialPortfolioItems}
+        />
+        <section className={styles.projectCases} id="product-cases">
+          <div className={styles.projectCasesHead}><p>03 / PRODUCT CASES</p><h2>Шесть направлений.<br />Одна продуктовая экосистема.</h2></div>
+          {projectCases.map((project) => (
+            <ProjectCaseCard
+              key={project.title}
+              {...project}
+              ctas={project.links.map((link) => ({ ...link, href: link.href.startsWith('/') ? `${import.meta.env.BASE_URL.replace(/\/$/, '')}${link.href}` : link.href }))}
+            />
+          ))}
+        </section>
+        <section className={styles.partnershipStrip}>
+          <span>SUBSCRIPTION / WHITE-LABEL / LICENSE / PARTNERSHIP / B2B</span>
+          <h2>Каждый проект можно развивать как отдельную коммерческую модель.</h2>
+          <Link to="/partnership">Посмотреть модели партнёрства ↗</Link>
+        </section>
+        <section className={styles.projectFinalCta}>
+          <p>BUY / LICENSE / BUILD</p>
+          <h2>Обсудить покупку, лицензию или white-label запуск</h2>
+          <div><a href="https://t.me/AIStudioDimkoFF" target="_blank" rel="noreferrer">Telegram ↗</a><a href="tel:+79999357608">+7 999 935-76-08</a></div>
+        </section>
       </main>
     </PublicShell>
   );
@@ -575,6 +654,13 @@ export function DimkoffConceptsPage() {
         <Suspense fallback={<div className={styles.heroFallback}>DFF / SIGNAL FIELD</div>}>
           <ConceptSignalField language={language} />
         </Suspense>
+        <ShowcaseEffect
+          variant="hoverSpaceCards"
+          eyebrow="Visual system"
+          title="Брендбук как продуктовая упаковка."
+          subtitle="DimkoFF Brand System показывает студию не как набор ботов, а как AI Product Studio с визуальным языком, продуктовой архитектурой и материалами для продаж."
+          items={brandSystemItems}
+        />
         <div className={styles.conceptSheets}>
           {conceptSheets.map(([number, name, status, what, audience, pain, product, benefit, features], index) => (
             <article
@@ -600,6 +686,35 @@ export function DimkoffConceptsPage() {
             </article>
           ))}
         </div>
+        <PageContact language={language} />
+      </main>
+    </PublicShell>
+  );
+}
+
+export function DimkoffPartnershipPage() {
+  const { language, setLanguage } = useLanguage();
+  useEffect(() => { document.title = language === 'ru' ? 'Партнёрство — DimkoFF' : 'Partnership — DimkoFF'; }, [language]);
+
+  return (
+    <PublicShell language={language} setLanguage={setLanguage}>
+      <main data-testid="dimkoff-partnership-page">
+        <InnerHero
+          eyebrow="03 / PARTNERSHIP"
+          title={language === 'ru' ? 'Запускаем AI-продукты вместе' : 'Building AI products together'}
+          lead={language === 'ru' ? 'Готовая продуктовая основа, ваша аудитория или экспертиза и понятная модель роста — без разработки с нуля.' : 'A proven product foundation, your audience or expertise and a clear growth model — without building from zero.'}
+        />
+        <ShowcaseEffect
+          variant="glassMotion"
+          eyebrow="Partnership models"
+          title="Не разовая разработка. Долгосрочная модель заработка."
+          subtitle="Один AI-продукт можно продавать как подписку, white-label, лицензию, B2B-внедрение или совместное направление с экспертом."
+          items={partnershipItems}
+        />
+        <section className={styles.partnerProof}>
+          <p>WHAT WE BRING</p>
+          <div><article><span>01</span><h2>Продукт</h2><p>Архитектура, Mini App, AI-логика, интерфейс и готовая основа для запуска.</p></article><article><span>02</span><h2>Упаковка</h2><p>Оффер, brand system, коммерческие материалы и маршрут из контента в продукт.</p></article><article><span>03</span><h2>Рост</h2><p>Подписка, white-label, лицензия, revenue share или B2B-модель под задачу.</p></article></div>
+        </section>
         <PageContact language={language} />
       </main>
     </PublicShell>

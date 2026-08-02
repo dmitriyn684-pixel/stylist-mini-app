@@ -663,6 +663,143 @@
   letter-spacing: .14em;
 }
 
+.projectsHeroActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  width: min(calc(100% - 64px), 1320px);
+  margin: -66px auto 78px;
+}
+
+.projectsHeroActions a,
+.projectFinalCta a,
+.partnershipStrip a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 0 18px;
+  border: 1px solid rgba(216, 179, 94, .42);
+  border-radius: 999px;
+  color: #e7c97c;
+  background: rgba(216, 179, 94, .055);
+  font-size: 11px;
+  font-weight: 750;
+  text-decoration: none;
+}
+
+.projectsHeroActions a:first-child,
+.projectFinalCta a:first-child {
+  color: #0b0e13;
+  background: #d8b35e;
+}
+
+.projectCases {
+  width: min(calc(100% - 64px), 1320px);
+  margin: clamp(100px, 12vw, 170px) auto 0;
+}
+
+.projectCasesHead {
+  display: grid;
+  grid-template-columns: .3fr 1fr;
+  gap: 40px;
+  align-items: start;
+  margin-bottom: 62px;
+}
+
+.projectCasesHead p,
+.partnerProof > p,
+.projectFinalCta > p {
+  color: #d8b35e;
+  font: 700 10px/1.2 Consolas, monospace;
+  letter-spacing: .14em;
+}
+
+.projectCasesHead h2 {
+  max-width: 950px;
+  margin: 0;
+  font-size: clamp(42px, 7vw, 96px);
+  font-weight: 500;
+  line-height: .9;
+  letter-spacing: -.06em;
+}
+
+.partnershipStrip {
+  width: min(calc(100% - 64px), 1320px);
+  margin: clamp(90px, 12vw, 160px) auto;
+  padding: clamp(34px, 6vw, 78px);
+  border: 1px solid rgba(216, 179, 94, .24);
+  border-radius: 32px;
+  background:
+    radial-gradient(circle at 82% 14%, rgba(0, 255, 209, .12), transparent 28%),
+    linear-gradient(135deg, rgba(216, 179, 94, .09), rgba(255, 255, 255, .025));
+}
+
+.partnershipStrip > span {
+  color: #d8b35e;
+  font: 700 9px/1.4 Consolas, monospace;
+  letter-spacing: .13em;
+}
+
+.partnershipStrip h2 {
+  max-width: 980px;
+  margin: 34px 0;
+  font-size: clamp(38px, 6vw, 80px);
+  font-weight: 500;
+  line-height: .94;
+  letter-spacing: -.055em;
+}
+
+.projectFinalCta {
+  width: min(calc(100% - 64px), 1320px);
+  margin: 0 auto;
+  padding: clamp(70px, 10vw, 130px) clamp(28px, 7vw, 92px);
+  border: 1px solid var(--line);
+  border-radius: 34px 34px 0 0;
+  background: radial-gradient(circle at 50% 0, rgba(143, 183, 255, .15), transparent 35%), #0d1118;
+  text-align: center;
+}
+
+.projectFinalCta h2 {
+  max-width: 1040px;
+  margin: 22px auto 38px;
+  font-size: clamp(46px, 7.4vw, 106px);
+  font-weight: 500;
+  line-height: .9;
+  letter-spacing: -.06em;
+}
+
+.projectFinalCta > div {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.partnerProof {
+  width: min(calc(100% - 64px), 1320px);
+  margin: clamp(90px, 12vw, 160px) auto 0;
+}
+
+.partnerProof > div {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  margin-top: 34px;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.partnerProof article {
+  min-height: 350px;
+  padding: 35px 30px;
+  border-left: 1px solid var(--line);
+}
+
+.partnerProof article:last-child { border-right: 1px solid var(--line); }
+.partnerProof article > span { color: #8fb7ff; font: 700 10px/1 Consolas, monospace; }
+.partnerProof h2 { margin: 130px 0 18px; font-size: clamp(32px, 4vw, 54px); font-weight: 500; letter-spacing: -.05em; }
+.partnerProof article p { color: var(--muted); line-height: 1.65; }
+
 .lightPage {
   color: #16181e;
   background: #f4f2ea;
@@ -927,6 +1064,11 @@
     display: none;
   }
 
+  .projectCasesHead { grid-template-columns: 1fr; }
+  .partnerProof > div { grid-template-columns: 1fr; }
+  .partnerProof article { min-height: 260px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  .partnerProof h2 { margin-top: 80px; }
+
   .headerActions {
     justify-self: end;
   }
@@ -1014,8 +1156,13 @@
   .serviceSheets,
   .projectSheets,
   .conceptSheets,
-  .pageContact,
-  .footer {
+    .pageContact,
+    .projectCases,
+    .projectsHeroActions,
+    .partnershipStrip,
+    .projectFinalCta,
+    .partnerProof,
+    .footer {
     width: calc(100% - 28px);
   }
 
@@ -1110,6 +1257,25 @@
   .innerHero > span {
     font-size: 16px;
   }
+
+  .projectsHeroActions {
+    display: grid;
+    margin-top: -50px;
+    margin-bottom: 54px;
+  }
+
+  .projectsHeroActions a { width: 100%; }
+
+  .projectCases { margin-top: 92px; }
+  .projectCasesHead { gap: 16px; margin-bottom: 38px; }
+  .projectCasesHead h2 { font-size: 48px; }
+  .partnershipStrip { padding: 34px 22px; border-radius: 24px; }
+  .partnershipStrip h2 { font-size: 44px; }
+  .projectFinalCta { padding-inline: 20px; }
+  .projectFinalCta h2 { font-size: 48px; }
+  .projectFinalCta a { width: 100%; }
+  .partnerProof article { padding: 28px 22px; }
+  .partnerProof h2 { margin-top: 55px; }
 
   .serviceSheets > section {
     grid-template-columns: 1fr;

@@ -8,6 +8,7 @@ import { SuitcaseIcon, ProfileIcon } from './components/ui/icons';
 import {
   DimkoffConceptsPage,
   DimkoffLandingLite,
+  DimkoffPartnershipPage,
   DimkoffProjectsPage,
   DimkoffServicesPage,
 } from './screens/DimkoffPublicSite';
@@ -109,6 +110,7 @@ function App() {
       <Route path="/" element={<DimkoffLandingLite />} />
       <Route path="/services" element={<DimkoffServicesPage />} />
       <Route path="/projects" element={<DimkoffProjectsPage />} />
+      <Route path="/partnership" element={<DimkoffPartnershipPage />} />
       <Route path="/concepts" element={<DimkoffConceptsPage />} />
       <Route
         path="/onboarding"
